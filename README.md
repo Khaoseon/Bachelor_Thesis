@@ -1,3 +1,5 @@
+[![Report preview](report/preview.png)](report/main.pdf)
+
 # Bachelor Project: CNN Robustness and Fourier Analysis
 
 This repository contains the code, experimental scripts, and final report for my Bachelor project on the frequency sensitivity of convolutional neural networks.
@@ -6,9 +8,7 @@ The project studies how directions from the Fourier basis can induce structured 
 
 The compiled report is available at:
 
-```text
-report/main.pdf
-```
+[Read the full report](report/main.pdf)
 
 ## Research Question
 
