@@ -1,0 +1,31 @@
+name: Fourier_Adversarial_Attack
+
+channels:
+  - defaults
+
+dependencies:
+  - python=3.12
+  - pip
+  - setuptools
+  - wheel
+
+  - pip:
+      - --index-url https://download.pytorch.org/whl/cu128
+      - torch==2.7.1
+      - torchvision==0.22.1
+      - torchaudio==2.7.1
+
+      - numpy
+      - scipy
+      - pandas
+      - matplotlib
+      - scikit-learn
+      - pillow
+      - pyyaml
+      - psutil
+      - gitpython
+      - wandb
+
+      - jupyterlab
+      - notebook
+      - ipykernel

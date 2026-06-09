@@ -1,0 +1,74 @@
+% !TeX root = ../main.tex
+
+\chapter*{Table des notations}
+\addcontentsline{toc}{chapter}{Table des notations}
+
+\renewcommand{\arraystretch}{1.35}
+\small
+
+\begin{longtable}{p{3cm} p{10.5cm}}
+    \hline
+    \textbf{Notation} & \textbf{Description} \\
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Notation} & \textbf{Description} \\
+    \hline
+    \endhead
+
+    \hline
+    \endfoot
+
+    \multicolumn{2}{l}{\textbf{Indices, images et fréquences}} \\
+    \hline
+    $N$ & Taille spatiale des images considérées. Dans les expériences sur CIFAR, $N=32$. \\
+    $\mathbb{Z}_N$ & Ensemble des indices $\{0,\dots,N-1\}$, interprétés modulo $N$. \\
+    $(m,n)$ & Coordonnées spatiales d'un pixel : $m$ pour la direction verticale, $n$ pour la direction horizontale. \\
+    $(u,v)$ & Fréquence de Fourier 2D : $u$ pour la fréquence verticale, $v$ pour la fréquence horizontale. \\
+    $w(u,v)$ & Indice aplati associé à la fréquence $(u,v)$, utilisé après vectorisation. \\
+    $x$, $X$, $Y$ & Image ou signal d'entrée, image d'entrée matricielle et image de sortie. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Fourier et convolution}} \\
+    \hline
+    $h$ & Filtre de convolution. \\
+    $h_{i,j}$ & Filtre reliant le canal d'entrée $j$ au canal de sortie $i$. \\
+    $*$ & Convolution circulaire. \\
+    $\phi_k$ & Vecteur de Fourier discret 1D associé à la fréquence $k$. \\
+    $\Phi_{u,v}$ & Onde de Fourier 2D associée à la fréquence $(u,v)$. \\
+    $F_N$ & Matrice de Fourier 1D dont les colonnes sont les vecteurs $\phi_k$. \\
+    $Q_N$ & Matrice de Fourier 2D vectorisée, définie par $Q_N = F_N \otimes F_N$. \\
+    $\operatorname{vec}(X)$ & Vectorisation de l'image $X$ en empilant ses colonnes. \\
+    $\lambda_f$, $\lambda^{i,j}_{u,v}$ & Valeurs propres associées à l'action d'un filtre de convolution sur une fréquence de Fourier. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Représentation matricielle du réseau}} \\
+    \hline
+    $I_r$ & Matrice identité de taille $r \times r$. En particulier, $I_N$ désigne l'identité de taille $N$, et $I_{m_k}$ l'identité agissant sur les canaux de la couche $k$. \\
+    $M$ & Matrice représentant une couche de convolution, ou l'opérateur linéaire global selon le contexte. \\
+    $M^{(k)}$ & Matrice représentant la $k$-ième couche de convolution de $\mathbb{C}^{m_kN^2}$ vers $\mathbb{C}^{m_{k+1}N^2}$. \\
+    $m_{\mathrm{in}}$, $m_{\mathrm{out}}$ & Nombre de canaux d'entrée et de sortie d'une couche de convolution considérée isolément. \\
+    $m_k$ & Nombre de canaux en entrée de la couche $k$. \\
+    $L$ & Matrice décrivant les mélanges de canaux dans le domaine de Fourier. \\
+    $G^{(w)}$ & Matrice de mélange associée à une fréquence donnée $w$. \\
+    $\sigma$ & Valeur singulière, utilisée pour mesurer l'amplification d'une direction d'entrée. \\
+    $a$, $b$ & Vecteurs singuliers droit et gauche associés à une fréquence donnée. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Perturbations et protocole expérimental}} \\
+    \hline
+    $\epsilon$ & Amplitude maximale autorisée pour la perturbation, mesurée en norme $\ell_\infty$. \\
+    $p_{u,v}$ & Motif spatial réel construit à partir de la fréquence $(u,v)$. \\
+    $\delta_{u,v}$ & Perturbation de Fourier normalisée associée à la fréquence $(u,v)$. \\
+    $\tilde{x}$ & Image perturbée obtenue après ajout de $\delta_{u,v}$ puis clipping dans $[0,1]$. \\
+    $f$ & Modèle de classification étudié. \\
+    $\mathcal{D}$ & Ensemble d'images utilisé pour l'évaluation. \\
+    $\operatorname{FR}(u,v)$ & \textit{Fool ratio} obtenu pour la fréquence $(u,v)$, c'est-à-dire la proportion de prédictions modifiées. \\
+    $H$ & Heatmap de sensibilité fréquentielle contenant les valeurs de $\operatorname{FR}(u,v)$. \\
+    $(u^\star,v^\star)$ & Fréquence qui maximise le \textit{fool ratio}. \\
+
+    \hline
+\end{longtable}
+
+\normalsize

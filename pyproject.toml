@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mon_projet_bachelor"
+version = "0.1.0"
+
+[tool.setuptools]
+# On dit à Python : "Le package s'appelle src et il est là."
+packages = ["src"]

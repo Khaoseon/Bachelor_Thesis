@@ -1,0 +1,82 @@
+\chapter{Vecteurs propres, valeurs propres et diagonalisation}
+\label{app:vecteurs-propres-diagonalisation}
+
+Soit $V$ un espace vectoriel de dimension finie $N$ sur un corps $\mathbb{K}$, et soit
+\[
+f : V \rightarrow V
+\]
+un endomorphisme, c'est-à-dire une application linéaire de $V$ dans lui-même.
+
+Un vecteur non nul $v \in V$ est appelé vecteur propre de $f$ s'il existe un scalaire
+$\lambda \in \mathbb{K}$ tel que :
+\[
+f(v) = \lambda v.
+\]
+Le scalaire $\lambda$ est alors appelé valeur propre associée au vecteur propre $v$.
+
+Cette relation signifie que l'application $f$ ne change pas la direction du vecteur $v$.
+Elle se contente de le multiplier par un facteur scalaire $\lambda$.
+
+Considérons maintenant une base
+\[
+\mathcal{B} = (e_1,\dots,e_N)
+\]
+de $V$. D'après le rappel de l'annexe~\ref{app:representation-lineaire-matrice},
+l'endomorphisme $f$ peut être représenté par une matrice dans cette base.
+
+La question naturelle est alors la suivante : peut-on choisir une base dans laquelle la matrice
+de $f$ devient particulièrement simple ?
+
+Le cas le plus favorable est celui où la base $\mathcal{B}$ est composée uniquement de
+vecteurs propres de $f$. Supposons donc que, pour tout $i \in \{1,\dots,N\}$, on ait :
+\[
+f(e_i) = \lambda_i e_i.
+\]
+
+Alors, dans la base $\mathcal{B}$, les coordonnées de $f(e_i)$ sont nulles partout sauf à la
+$i$-ème position :
+\[
+[f(e_i)]_{\mathcal{B}}
+=
+\begin{pmatrix}
+0 \\
+\vdots \\
+0 \\
+\lambda_i \\
+0 \\
+\vdots \\
+0
+\end{pmatrix}.
+\]
+
+La matrice représentant $f$ dans cette base a donc pour colonnes ces vecteurs de coordonnées.
+Elle est diagonale :
+\[
+A_{\mathcal{B}}
+=
+\begin{pmatrix}
+\lambda_1 & 0         & \cdots & 0 \\
+0         & \lambda_2 & \cdots & 0 \\
+\vdots    & \vdots    & \ddots & \vdots \\
+0         & 0         & \cdots & \lambda_N
+\end{pmatrix}.
+\]
+
+Autrement dit, si l'on dispose d'une base de vecteurs propres, l'action de $f$ devient très simple :
+chaque coordonnée est simplement multipliée par la valeur propre correspondante.
+
+Réciproquement, si la matrice de $f$ est diagonale dans une base donnée, alors les vecteurs de cette
+base sont des vecteurs propres de $f$.
+
+Cette observation explique l'intérêt de chercher une base de vecteurs propres : dans une telle base,
+l'application linéaire ne mélange plus les directions. Elle agit indépendamment sur chaque direction
+de la base.
+
+Dans le cadre de ce rapport, cette idée est appliquée à la convolution circulaire. La matrice associée
+à une convolution circulaire admet les vecteurs de Fourier comme vecteurs propres. Ainsi, lorsque
+l'on exprime le signal dans la base de Fourier, l'opérateur de convolution devient diagonal :
+\[
+C_h = F_N \Lambda_h F_N^{-1},
+\]
+où $F_N$ contient les vecteurs de Fourier et où $\Lambda_h$ est la matrice diagonale des valeurs
+propres associées.

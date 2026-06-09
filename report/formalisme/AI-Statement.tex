@@ -1,0 +1,42 @@
+{
+\thispagestyle{empty}
+\setstretch{1.2}
+\fontsize{12pt}{14.4pt}\selectfont
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Déclaration d'utilisation de l'IA}
+
+\begin{tikzpicture}[remember picture, overlay]
+    \node[opacity=0.08] at (current page.center) {
+        \includegraphics[width=0.7\textwidth]{formalisme/logo_unige.png} 
+    };
+\end{tikzpicture}
+
+\vspace*{\fill} 
+
+\begin{center}
+    {\huge \bfseries Déclaration d'utilisation de l'IA} \\[3em]
+
+    \begin{minipage}{0.85\textwidth}
+        \centering
+        Dans un souci de transparence et d'intégrité académique, l'auteur déclare avoir eu recours à des outils d'intelligence artificielle générative (\textbf{Gemini 3} et \textbf{ChatGPT 5.5}) comme assistance ponctuelle durant la rédaction de ce rapport.
+        
+        \vspace{2em}
+        
+        \raggedright
+        L'utilisation de ces outils a porté sur les tâches suivantes :
+        \begin{itemize}[label=\textbullet]
+            \item \textbf{Relecture et formulation :} correction orthographique, amélioration grammaticale, reformulation de phrases et fluidification de certains passages.
+            \item \textbf{Support LaTeX et TikZ :} assistance à la mise en forme du document, à la production de figures techniques et à la résolution de problèmes de compilation.
+        \end{itemize}
+        
+        \vspace{2em}
+        \centering
+
+        L'auteur reste le seul responsable des décisions scientifiques, de l'assimilation des articles, du protocole expérimental, de l'interprétation des résultats et, bien sûr, du rendu final de ce rapport.        
+    \end{minipage}
+\end{center}
+
+\vspace*{\fill} 
+\newpage
+}

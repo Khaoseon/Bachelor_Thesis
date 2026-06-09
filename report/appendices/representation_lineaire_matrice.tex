@@ -1,0 +1,120 @@
+\chapter{Représentation matricielle d'une application linéaire}
+\label{app:representation-lineaire-matrice}
+
+Soient $V$ et $W$ deux espaces vectoriels de dimensions finies sur un corps
+$\mathbb{K}$, où $\mathbb{K}$ désigne ici $\mathbb{R}$ ou $\mathbb{C}$.
+On note
+\[
+\mathcal{B} = (e_1,\dots,e_N)
+\]
+une base de $V$, et
+\[
+\mathcal{B}' = (e'_1,\dots,e'_M)
+\]
+une base de $W$.
+
+Soit maintenant une application linéaire
+\[
+f : V \rightarrow W.
+\]
+Tout vecteur $v \in V$ se décompose de manière unique dans la base $\mathcal{B}$ :
+\[
+v = \sum_{i=1}^{N} \alpha_i e_i,
+\]
+où les coefficients $\alpha_i$ sont les coordonnées de $v$ dans la base $\mathcal{B}$.
+
+Par linéarité de $f$, on a alors :
+\[
+f(v)
+=
+f\left(\sum_{i=1}^{N} \alpha_i e_i\right)
+=
+\sum_{i=1}^{N} \alpha_i f(e_i).
+\]
+
+Comme $f(e_i) \in W$, chaque vecteur $f(e_i)$ peut lui-même être décomposé dans la base
+$\mathcal{B}'$. Il existe donc des scalaires $a_{j i} \in \mathbb{K}$ tels que :
+\[
+f(e_i)
+=
+\sum_{j=1}^{M} a_{j i} e'_j.
+\]
+
+En remplaçant cette expression dans la formule précédente, on obtient :
+\[
+f(v)
+=
+\sum_{i=1}^{N} \alpha_i
+\left(
+\sum_{j=1}^{M} a_{j i} e'_j
+\right).
+\]
+
+En réorganisant les sommes selon les vecteurs de la base $\mathcal{B}'$, il vient :
+\[
+f(v)
+=
+\sum_{j=1}^{M}
+\left(
+\sum_{i=1}^{N} a_{j i}\alpha_i
+\right)
+e'_j.
+\]
+
+Si l'on note
+\[
+[f(v)]_{\mathcal{B}'}
+=
+\begin{pmatrix}
+\beta_1 \\
+\vdots \\
+\beta_M
+\end{pmatrix},
+\qquad
+[v]_{\mathcal{B}}
+=
+\begin{pmatrix}
+\alpha_1 \\
+\vdots \\
+\alpha_N
+\end{pmatrix},
+\]
+alors les coordonnées de $f(v)$ vérifient :
+\[
+\beta_j
+=
+\sum_{i=1}^{N} a_{j i}\alpha_i.
+\]
+
+On peut donc écrire sous forme matricielle :
+\[
+[f(v)]_{\mathcal{B}'}
+=
+A [v]_{\mathcal{B}},
+\]
+où
+\[
+A =
+(a_{j i})_{\substack{1 \leq j \leq M \\ 1 \leq i \leq N}}
+\in \mathbb{K}^{M \times N}.
+\]
+
+Autrement dit, la matrice $A$ représentant l'application linéaire $f$ est construite colonne
+par colonne : sa $i$-ème colonne est le vecteur des coordonnées de $f(e_i)$ dans la base
+$\mathcal{B}'$ :
+\[
+A
+=
+\begin{pmatrix}
+| & | &        & | \\
+[f(e_1)]_{\mathcal{B}'} & [f(e_2)]_{\mathcal{B}'} & \cdots & [f(e_N)]_{\mathcal{B}'} \\
+| & | &        & |
+\end{pmatrix}.
+\]
+
+Ainsi, toute application linéaire entre espaces vectoriels de dimensions finies peut être
+représentée par une matrice, dès lors que l'on a choisi une base dans l'espace de départ
+et une base dans l'espace d'arrivée.
+
+Il est important de noter que cette matrice dépend du choix des bases. Une même application
+linéaire peut donc avoir des représentations matricielles différentes selon les bases utilisées.

@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Secrets locaux
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Donnees, sorties experimentales et checkpoints
+data/
+outputs/
+wandb/
+*.pt
+*.pth
+*.ckpt
+
+# Documentation privee locale
+docs/
+
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*-eps-converted-to.pdf
+
+# OS, editeurs et metadonnees locales
+.DS_Store
+Thumbs.db
+Desktop.ini
+*:Zone.Identifier
+.vscode/
+.idea/
+.codex
+.agents/

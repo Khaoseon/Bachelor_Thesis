@@ -1,0 +1,77 @@
+\chapter{Introduction}
+
+Les réseaux de neurones convolutionnels, souvent appelés CNN pour \textit{Convolutional Neural Networks}, 
+inspirés par le cortex visuel des vertébrés, occupent une place centrale en vision par ordinateur. 
+Ils sont utilisés pour reconnaître des objets, classer des images, détecter des formes ou encore extraire 
+automatiquement des informations visuelles. 
+
+Leur efficacité vient en grande partie de leur capacité à apprendre des motifs locaux dans les 
+images, puis à les combiner progressivement pour construire des représentations plus abstraites. 
+
+\section*{Fragilités et attaques adversariales}
+
+Cependant, malgré leurs très bonnes performances, ces modèles peuvent présenter des fragilités structurelles. 
+Une image peut être faiblement modifiée, de telle manière que cela devienne imperceptible à l'oeil humain, 
+tout en entraînant un changement important dans la prédiction du réseau. Ce phénomène est connu sous le nom de 
+\textbf{perturbation adversariale}~\cite{szegedy2014intriguing}.
+
+Un aspect particulièrement intéressant de ces perturbations est leur caractère parfois universel. Dans certains cas, 
+il est possible de trouver une perturbation qui est directement basée sur l'architecture du réseau 
+(sa manière de fonctionner), exploitant une faiblesse structurelle du fonctionnement interne de ce dernier. 
+Ainsi ce genre de perturbation, une fois trouvée, peut être appliquée à n'importe quelle image, 
+\textbf{indépendamment} de son contenu, et tromper le modèle, pour une proportion importante d'images,
+dans ses prédictions. On parle alors de perturbation adversariale \textbf{universelle}~\cite{moosavi2017universal}. 
+
+La question centrale est alors de comprendre d'où vient cette sensibilité. Une première explication possible 
+consiste à l'attribuer aux données d'entraînement ou à l'optimisation du modèle. Dans ce travail, nous nous 
+intéressons à une autre piste : \textbf{la structure même des réseaux convolutionnels}. En effet, les CNN 
+reposent sur des couches de convolution, et ces couches possèdent des propriétés mathématiques particulières. 
+
+\section*{L'approche par la base de Fourier}
+
+Pour étudier cette question, nous choisissons d'utiliser la base de Fourier. Une image peut être 
+décrite pixel par pixel, mais elle peut aussi être décomposée en motifs fréquentiels : des variations lentes, 
+des oscillations rapides, des motifs horizontaux, verticaux ou diagonaux. Ces motifs fréquentiels donnent une 
+autre manière de décrire les structures présentes dans une image.
+
+Ainsi, analyser une image non plus seulement dans le domaine spatial, c'est-à-dire à partir de ses pixels, mais 
+aussi dans le domaine fréquentiel, permet de mieux comprendre quelles composantes de l'image influencent le 
+comportement du réseau et quelles directions de perturbation peuvent devenir particulièrement sensibles.
+
+Ce lien constitue le point de départ du travail de Tsuzuku et Sato~\cite{tsuzuku2019structural}, qui montrent 
+que certains réseaux convolutionnels sont particulièrement sensibles à des directions issues de la base de Fourier. 
+Leur idée est que certaines perturbations adversariales universelles peuvent être mieux comprises en étudiant la 
+manière dont les couches convolutionnelles traitent les fréquences.
+
+\begin{center}
+    \vspace{1em}
+    \rule{0.4\textwidth}{0.4pt} \\
+    \vspace{1em}
+    \begin{minipage}{0.85\textwidth}
+        \centering
+        \large \itshape
+        Comment l'architecture convolutionnelle des CNN induit-elle des directions de vulnérabilité privilégiées dans 
+        le domaine de Fourier, et dans quelle mesure cette sensibilité structurelle permet-elle de mieux comprendre 
+        l'existence de perturbations adversariales universelles ?
+    \end{minipage} \\
+    \vspace{1em}
+    \rule{0.4\textwidth}{0.4pt}
+    \vspace{1em}
+\end{center}
+
+L'objectif de ce rapport est de reprendre cette idée et de la reconstruire petit à petit de manière plus détaillée en 
+introduisant les éléments nécessaires pour comprendre les résultats, de telle manière que n'importe quel lecteur avec une connaissance 
+de base en algèbre linéaire et en machine learning puisse comprendre les implications de ce travail.
+
+\section*{Organisation du rapport}
+
+Pour répondre à cette problématique, le rapport est organisé de la manière suivante :
+
+\begin{itemize}[label=\textbullet, leftmargin=1.5cm]
+    \item \textbf{Chapitre 2 :} Présentation du contexte général : réseaux convolutionnels, robustesse et perturbations adversariales.
+    \item \textbf{Chapitre 3 :} Présentation des fondements théoriques reliant convolution et base de Fourier. 
+    On y montre notamment l'émergence naturelle des fonctions de Fourier dans l'analyse linéaire.
+    \item \textbf{Chapitre 4 :} Présentation de la reproduction expérimentale, du protocole utilisé, des \textit{heatmaps} 
+    de sensibilité fréquentielle, puis discussion des résultats et des limites.
+    \item \textbf{Conclusion :} Synthèse des enseignements et perspectives de recherche.
+\end{itemize}
