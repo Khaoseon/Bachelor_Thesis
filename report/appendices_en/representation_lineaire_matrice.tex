@@ -1,29 +1,29 @@
-\chapter{Représentation matricielle d'une application linéaire}
+\chapter{Matrix Representation of a Linear Map}
 \label{app:representation-lineaire-matrice}
 
-Soient $V$ et $W$ deux espaces vectoriels de dimensions finies sur un corps
-$\mathbb{K}$, où $\mathbb{K}$ désigne ici $\mathbb{R}$ ou $\mathbb{C}$.
-On note
+Let $V$ and $W$ be two finite-dimensional vector spaces over a field
+$\mathbb{K}$, where $\mathbb{K}$ denotes either $\mathbb{R}$ or $\mathbb{C}$.
+Let
 \[
 \mathcal{B} = (e_1,\dots,e_N)
 \]
-une base de $V$, et
+be a basis of $V$, and
 \[
 \mathcal{B}' = (e'_1,\dots,e'_M)
 \]
-une base de $W$.
+a basis of $W$.
 
-Soit maintenant une application linéaire
+Now consider a linear map
 \[
 f : V \rightarrow W.
 \]
-Tout vecteur $v \in V$ se décompose de manière unique dans la base $\mathcal{B}$ :
+Every vector $v \in V$ has a unique decomposition in the basis $\mathcal{B}$:
 \[
 v = \sum_{i=1}^{N} \alpha_i e_i,
 \]
-où les coefficients $\alpha_i$ sont les coordonnées de $v$ dans la base $\mathcal{B}$.
+where the coefficients $\alpha_i$ are the coordinates of $v$ in the basis $\mathcal{B}$.
 
-Par linéarité de $f$, on a alors :
+By linearity of $f$,
 \[
 f(v)
 =
@@ -32,15 +32,15 @@ f\left(\sum_{i=1}^{N} \alpha_i e_i\right)
 \sum_{i=1}^{N} \alpha_i f(e_i).
 \]
 
-Comme $f(e_i) \in W$, chaque vecteur $f(e_i)$ peut lui-même être décomposé dans la base
-$\mathcal{B}'$. Il existe donc des scalaires $a_{j i} \in \mathbb{K}$ tels que :
+Since $f(e_i) \in W$, each vector $f(e_i)$ can itself be decomposed in the basis
+$\mathcal{B}'$. There therefore exist scalars $a_{j i} \in \mathbb{K}$ such that
 \[
 f(e_i)
 =
 \sum_{j=1}^{M} a_{j i} e'_j.
 \]
 
-En remplaçant cette expression dans la formule précédente, on obtient :
+Substituting this expression into the preceding formula gives
 \[
 f(v)
 =
@@ -50,7 +50,7 @@ f(v)
 \right).
 \]
 
-En réorganisant les sommes selon les vecteurs de la base $\mathcal{B}'$, il vient :
+Rearranging the sums according to the vectors of the basis $\mathcal{B}'$ yields
 \[
 f(v)
 =
@@ -61,7 +61,7 @@ f(v)
 e'_j.
 \]
 
-Si l'on note
+If we write
 \[
 [f(v)]_{\mathcal{B}'}
 =
@@ -79,29 +79,29 @@ Si l'on note
 \alpha_N
 \end{pmatrix},
 \]
-alors les coordonnées de $f(v)$ vérifient :
+then the coordinates of $f(v)$ satisfy
 \[
 \beta_j
 =
 \sum_{i=1}^{N} a_{j i}\alpha_i.
 \]
 
-On peut donc écrire sous forme matricielle :
+We can therefore write this in matrix form as
 \[
 [f(v)]_{\mathcal{B}'}
 =
 A [v]_{\mathcal{B}},
 \]
-où
+where
 \[
 A =
 (a_{j i})_{\substack{1 \leq j \leq M \\ 1 \leq i \leq N}}
 \in \mathbb{K}^{M \times N}.
 \]
 
-Autrement dit, la matrice $A$ représentant l'application linéaire $f$ est construite colonne
-par colonne : sa $i$-ème colonne est le vecteur des coordonnées de $f(e_i)$ dans la base
-$\mathcal{B}'$ :
+In other words, the matrix $A$ representing the linear map $f$ is constructed column
+by column: its $i$-th column is the coordinate vector of $f(e_i)$ in the basis
+$\mathcal{B}'$:
 \[
 A
 =
@@ -112,9 +112,9 @@ A
 \end{pmatrix}.
 \]
 
-Ainsi, toute application linéaire entre espaces vectoriels de dimensions finies peut être
-représentée par une matrice, dès lors que l'on a choisi une base dans l'espace de départ
-et une base dans l'espace d'arrivée.
+Thus, every linear map between finite-dimensional vector spaces can be
+represented by a matrix once a basis has been chosen for the domain
+and a basis for the codomain.
 
-Il est important de noter que cette matrice dépend du choix des bases. Une même application
-linéaire peut donc avoir des représentations matricielles différentes selon les bases utilisées.
+This matrix depends on the choice of bases. The same linear
+map can therefore have different matrix representations depending on the bases used.

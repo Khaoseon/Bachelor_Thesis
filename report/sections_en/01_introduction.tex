@@ -1,47 +1,47 @@
 \chapter{Introduction}
 
-Les réseaux de neurones convolutionnels, souvent appelés CNN pour \textit{Convolutional Neural Networks}, 
-inspirés par le cortex visuel des vertébrés, occupent une place centrale en vision par ordinateur. 
-Ils sont utilisés pour reconnaître des objets, classer des images, détecter des formes ou encore extraire 
-automatiquement des informations visuelles. 
+\textit{Convolutional neural networks}, often abbreviated as CNNs,
+are inspired by the vertebrate visual cortex and play a central role in computer vision.
+They are used to recognize objects, classify images, detect shapes, and automatically extract
+visual information.
 
-Leur efficacité vient en grande partie de leur capacité à apprendre des motifs locaux dans les 
-images, puis à les combiner progressivement pour construire des représentations plus abstraites. 
+Their effectiveness stems largely from their ability to learn local patterns in
+images and progressively combine them into more abstract representations.
 
-\section*{Fragilités et attaques adversariales}
+\section*{Vulnerabilities and Adversarial Attacks}
 
-Cependant, malgré leurs très bonnes performances, ces modèles peuvent présenter des fragilités structurelles. 
-Une image peut être faiblement modifiée, de telle manière que cela devienne imperceptible à l'oeil humain, 
-tout en entraînant un changement important dans la prédiction du réseau. Ce phénomène est connu sous le nom de 
-\textbf{perturbation adversariale}~\cite{szegedy2014intriguing}.
+Despite their strong performance, these models can exhibit structural vulnerabilities.
+An image can be modified slightly, in a way that is imperceptible to the human eye,
+yet causes a substantial change in the network's prediction. This phenomenon is known as an
+\textbf{adversarial perturbation}~\cite{szegedy2014intriguing}.
 
-Un aspect particulièrement intéressant de ces perturbations est leur caractère parfois universel. Dans certains cas, 
-il est possible de trouver une perturbation qui est directement basée sur l'architecture du réseau 
-(sa manière de fonctionner), exploitant une faiblesse structurelle du fonctionnement interne de ce dernier. 
-Ainsi ce genre de perturbation, une fois trouvée, peut être appliquée à n'importe quelle image, 
-\textbf{indépendamment} de son contenu, et tromper le modèle, pour une proportion importante d'images,
-dans ses prédictions. On parle alors de perturbation adversariale \textbf{universelle}~\cite{moosavi2017universal}. 
+A particularly interesting aspect of these perturbations is that they can sometimes be universal. In some cases,
+a perturbation can be found that is based directly on the network's architecture
+(how it operates), exploiting a structural weakness in its internal workings.
+Once found, such a perturbation can be applied to any image,
+\textbf{regardless} of its content, and cause the model to make incorrect
+predictions on a substantial proportion of images. This is called a \textbf{universal} adversarial perturbation~\cite{moosavi2017universal}.
 
-La question centrale est alors de comprendre d'où vient cette sensibilité. Une première explication possible 
-consiste à l'attribuer aux données d'entraînement ou à l'optimisation du modèle. Dans ce travail, nous nous 
-intéressons à une autre piste : \textbf{la structure même des réseaux convolutionnels}. En effet, les CNN 
-reposent sur des couches de convolution, et ces couches possèdent des propriétés mathématiques particulières. 
+The central question is then where this sensitivity comes from. One possible explanation
+attributes it to the training data or model optimization. In this work, we
+explore another possibility: \textbf{the very structure of convolutional networks}. CNNs
+rely on convolutional layers, which have specific mathematical properties.
 
-\section*{L'approche par la base de Fourier}
+\section*{The Fourier Basis Approach}
 
-Pour étudier cette question, nous choisissons d'utiliser la base de Fourier. Une image peut être 
-décrite pixel par pixel, mais elle peut aussi être décomposée en motifs fréquentiels : des variations lentes, 
-des oscillations rapides, des motifs horizontaux, verticaux ou diagonaux. Ces motifs fréquentiels donnent une 
-autre manière de décrire les structures présentes dans une image.
+To investigate this question, we use the Fourier basis. An image can be
+described pixel by pixel, but it can also be decomposed into frequency patterns: slow variations,
+rapid oscillations, and horizontal, vertical, or diagonal patterns. These frequency patterns provide
+another way to describe the structures present in an image.
 
-Ainsi, analyser une image non plus seulement dans le domaine spatial, c'est-à-dire à partir de ses pixels, mais 
-aussi dans le domaine fréquentiel, permet de mieux comprendre quelles composantes de l'image influencent le 
-comportement du réseau et quelles directions de perturbation peuvent devenir particulièrement sensibles.
+Analyzing an image not only in the spatial domain, through its pixels, but
+also in the frequency domain therefore helps us understand which image components influence
+the network's behavior and which perturbation directions may become particularly sensitive.
 
-Ce lien constitue le point de départ du travail de Tsuzuku et Sato~\cite{tsuzuku2019structural}, qui montrent 
-que certains réseaux convolutionnels sont particulièrement sensibles à des directions issues de la base de Fourier. 
-Leur idée est que certaines perturbations adversariales universelles peuvent être mieux comprises en étudiant la 
-manière dont les couches convolutionnelles traitent les fréquences.
+This connection is the starting point of the work by Tsuzuku and Sato~\cite{tsuzuku2019structural}, who show
+that certain convolutional networks are particularly sensitive to directions drawn from the Fourier basis.
+Their idea is that some universal adversarial perturbations can be better understood by studying
+how convolutional layers process frequencies.
 
 \begin{center}
     \vspace{1em}
@@ -50,28 +50,28 @@ manière dont les couches convolutionnelles traitent les fréquences.
     \begin{minipage}{0.85\textwidth}
         \centering
         \large \itshape
-        Comment l'architecture convolutionnelle des CNN induit-elle des directions de vulnérabilité privilégiées dans 
-        le domaine de Fourier, et dans quelle mesure cette sensibilité structurelle permet-elle de mieux comprendre 
-        l'existence de perturbations adversariales universelles ?
+        How does the convolutional architecture of CNNs give rise to preferred directions of vulnerability in
+        the Fourier domain, and to what extent does this structural sensitivity help us understand
+        the existence of universal adversarial perturbations?
     \end{minipage} \\
     \vspace{1em}
     \rule{0.4\textwidth}{0.4pt}
     \vspace{1em}
 \end{center}
 
-L'objectif de ce rapport est de reprendre cette idée et de la reconstruire petit à petit de manière plus détaillée en 
-introduisant les éléments nécessaires pour comprendre les résultats, de telle manière que n'importe quel lecteur avec une connaissance 
-de base en algèbre linéaire et en machine learning puisse comprendre les implications de ce travail.
+The goal of this report is to revisit this idea and reconstruct it step by step in greater detail,
+introducing the concepts needed to understand the results so that any reader with a basic knowledge
+of linear algebra and machine learning can understand the implications of this work.
 
-\section*{Organisation du rapport}
+\section*{Report Organization}
 
-Pour répondre à cette problématique, le rapport est organisé de la manière suivante :
+To address this question, the report is organized as follows:
 
 \begin{itemize}[label=\textbullet, leftmargin=1.5cm]
-    \item \textbf{Chapitre 2 :} Présentation du contexte général : réseaux convolutionnels, robustesse et perturbations adversariales.
-    \item \textbf{Chapitre 3 :} Présentation des fondements théoriques reliant convolution et base de Fourier. 
-    On y montre notamment l'émergence naturelle des fonctions de Fourier dans l'analyse linéaire.
-    \item \textbf{Chapitre 4 :} Présentation de la reproduction expérimentale, du protocole utilisé, des \textit{heatmaps} 
-    de sensibilité fréquentielle, puis discussion des résultats et des limites.
-    \item \textbf{Conclusion :} Synthèse des enseignements et perspectives de recherche.
+    \item \textbf{Chapter 2:} General background on convolutional networks, robustness, and adversarial perturbations.
+    \item \textbf{Chapter 3:} Theoretical foundations connecting convolution and the Fourier basis.
+    In particular, this chapter shows how Fourier functions emerge naturally in linear analysis.
+    \item \textbf{Chapter 4:} Experimental reproduction, the protocol used, and frequency sensitivity \textit{heatmaps},
+    followed by a discussion of the results and limitations.
+    \item \textbf{Conclusion:} Summary of the findings and directions for future research.
 \end{itemize}

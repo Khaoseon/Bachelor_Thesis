@@ -1,40 +1,40 @@
-\chapter{Vecteurs propres, valeurs propres et diagonalisation}
+\chapter{Eigenvectors, Eigenvalues, and Diagonalization}
 \label{app:vecteurs-propres-diagonalisation}
 
-Soit $V$ un espace vectoriel de dimension finie $N$ sur un corps $\mathbb{K}$, et soit
+Let $V$ be a vector space of finite dimension $N$ over a field $\mathbb{K}$, and let
 \[
 f : V \rightarrow V
 \]
-un endomorphisme, c'est-à-dire une application linéaire de $V$ dans lui-même.
+be an endomorphism, that is, a linear map from $V$ to itself.
 
-Un vecteur non nul $v \in V$ est appelé vecteur propre de $f$ s'il existe un scalaire
-$\lambda \in \mathbb{K}$ tel que :
+A nonzero vector $v \in V$ is called an eigenvector of $f$ if there exists a scalar
+$\lambda \in \mathbb{K}$ such that
 \[
 f(v) = \lambda v.
 \]
-Le scalaire $\lambda$ est alors appelé valeur propre associée au vecteur propre $v$.
+The scalar $\lambda$ is then called the eigenvalue associated with the eigenvector $v$.
 
-Cette relation signifie que l'application $f$ ne change pas la direction du vecteur $v$.
-Elle se contente de le multiplier par un facteur scalaire $\lambda$.
+This relation means that the map $f$ does not change the direction of the vector $v$.
+It simply multiplies it by a scalar factor $\lambda$.
 
-Considérons maintenant une base
+Now consider a basis
 \[
 \mathcal{B} = (e_1,\dots,e_N)
 \]
-de $V$. D'après le rappel de l'annexe~\ref{app:representation-lineaire-matrice},
-l'endomorphisme $f$ peut être représenté par une matrice dans cette base.
+of $V$. As recalled in Appendix~\ref{app:representation-lineaire-matrice},
+the endomorphism $f$ can be represented by a matrix in this basis.
 
-La question naturelle est alors la suivante : peut-on choisir une base dans laquelle la matrice
-de $f$ devient particulièrement simple ?
+A natural question is whether we can choose a basis in which the matrix
+of $f$ becomes particularly simple.
 
-Le cas le plus favorable est celui où la base $\mathcal{B}$ est composée uniquement de
-vecteurs propres de $f$. Supposons donc que, pour tout $i \in \{1,\dots,N\}$, on ait :
+The most favorable case is when the basis $\mathcal{B}$ consists entirely of
+eigenvectors of $f$. Suppose, therefore, that for every $i \in \{1,\dots,N\}$,
 \[
 f(e_i) = \lambda_i e_i.
 \]
 
-Alors, dans la base $\mathcal{B}$, les coordonnées de $f(e_i)$ sont nulles partout sauf à la
-$i$-ème position :
+Then, in the basis $\mathcal{B}$, the coordinates of $f(e_i)$ are zero everywhere except at the
+$i$-th position:
 \[
 [f(e_i)]_{\mathcal{B}}
 =
@@ -49,8 +49,8 @@ $i$-ème position :
 \end{pmatrix}.
 \]
 
-La matrice représentant $f$ dans cette base a donc pour colonnes ces vecteurs de coordonnées.
-Elle est diagonale :
+The matrix representing $f$ in this basis therefore has these coordinate vectors as its columns.
+It is diagonal:
 \[
 A_{\mathcal{B}}
 =
@@ -62,21 +62,21 @@ A_{\mathcal{B}}
 \end{pmatrix}.
 \]
 
-Autrement dit, si l'on dispose d'une base de vecteurs propres, l'action de $f$ devient très simple :
-chaque coordonnée est simplement multipliée par la valeur propre correspondante.
+In other words, given a basis of eigenvectors, the action of $f$ becomes very simple:
+each coordinate is merely multiplied by the corresponding eigenvalue.
 
-Réciproquement, si la matrice de $f$ est diagonale dans une base donnée, alors les vecteurs de cette
-base sont des vecteurs propres de $f$.
+Conversely, if the matrix of $f$ is diagonal in a given basis, then the vectors of that
+basis are eigenvectors of $f$.
 
-Cette observation explique l'intérêt de chercher une base de vecteurs propres : dans une telle base,
-l'application linéaire ne mélange plus les directions. Elle agit indépendamment sur chaque direction
-de la base.
+This observation explains why it is useful to find a basis of eigenvectors: in such a basis,
+the linear map no longer mixes directions. It acts independently on each direction
+of the basis.
 
-Dans le cadre de ce rapport, cette idée est appliquée à la convolution circulaire. La matrice associée
-à une convolution circulaire admet les vecteurs de Fourier comme vecteurs propres. Ainsi, lorsque
-l'on exprime le signal dans la base de Fourier, l'opérateur de convolution devient diagonal :
+In this report, this idea is applied to circular convolution. The matrix associated
+with circular convolution has the Fourier vectors as eigenvectors. Thus, when
+the signal is expressed in the Fourier basis, the convolution operator becomes diagonal:
 \[
 C_h = F_N \Lambda_h F_N^{-1},
 \]
-où $F_N$ contient les vecteurs de Fourier et où $\Lambda_h$ est la matrice diagonale des valeurs
-propres associées.
+where $F_N$ contains the Fourier vectors and $\Lambda_h$ is the diagonal matrix of the
+associated eigenvalues.

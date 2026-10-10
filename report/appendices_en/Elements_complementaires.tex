@@ -1,79 +1,79 @@
-\chapter{Éléments complémentaires}
+\chapter{Supplementary Material}
 
-\section{Périodicité, bords et phénomène de Gibbs}
+\section{Periodicity, Boundaries, and the Gibbs Phenomenon}
 \label{app:periodicite-bords-gibbs}
 
-Dans ce mémoire, nous utilisons fréquemment la transformée de Fourier discrète et la convolution
-circulaire. Ces outils reposent implicitement sur une hypothèse de périodisation du signal. Il est donc
-utile de rappeler brièvement le lien entre périodicité, spectre de Fourier et effets de bord.
+Throughout this thesis, we frequently use the discrete Fourier transform and circular
+convolution. These tools implicitly rely on a signal periodization assumption. It is therefore
+useful to briefly recall the relationship between periodicity, the Fourier spectrum, and boundary effects.
 
 \begin{itemize}
-    \item Si un signal est défini sur un domaine infini, par exemple sur $\mathbb{R}$, et qu'il n'est pas périodique,
-    alors son contenu fréquentiel est décrit par un \emph{spectre continu}. On parle alors de transformée de Fourier.
+    \item If a signal is defined on an infinite domain, for example $\mathbb{R}$, and is not periodic,
+    its frequency content is described by a \emph{continuous spectrum}. This is the setting of the Fourier transform.
 
-    \item Si un signal est périodique, son contenu fréquentiel devient au contraire \emph{discret} :
-    le signal se décompose en une somme de modes harmoniques de fréquences bien déterminées.
-    On parle dans ce cas de série de Fourier.
+    \item If a signal is periodic, by contrast, its frequency content is \emph{discrete}:
+    the signal decomposes into a sum of harmonic modes with well-defined frequencies.
+    This is the setting of Fourier series.
 
-    \item Enfin, dans le cas des signaux numériques de longueur finie, on utilise souvent une hypothèse de
-    périodisation. Le signal est alors considéré comme périodiquement prolongé : ses deux extrémités sont
-    artificiellement raccordées, comme si l'on enroulait la feuille sur laquelle il est tracé pour former une boucle.
+    \item Finally, for digital signals of finite length, a periodization
+    assumption is often used. The signal is then considered to be periodically extended: its two endpoints are
+    artificially joined, as if the sheet on which it is drawn were rolled into a loop.
 \end{itemize}
 
-Cette hypothèse est mathématiquement très utile, car elle permet d'utiliser la transformée de Fourier
-discrète et de représenter certaines convolutions comme des convolutions circulaires. Elle peut cependant
-introduire un artefact lorsque les bords du signal ne se raccordent pas naturellement. Si le bord droit ne rejoint pas le bord gauche avec une valeur
-compatible, une discontinuité artificielle apparaît à la jonction.
+This assumption is mathematically very useful because it allows us to use the discrete Fourier
+transform and to represent certain convolutions as circular convolutions. However, it can
+introduce an artifact when the signal boundaries do not join naturally. If the right boundary does not meet the left boundary at a
+compatible value, an artificial discontinuity appears at the junction.
 
-Cette discontinuité est importante du point de vue de Fourier. En effet, une approximation par un nombre fini de modes de Fourier représente difficilement un saut
-abrupt. Elle produit alors des oscillations parasites au voisinage de
-la coupure. Ce comportement est connu sous le nom de phénomène de Gibbs~\cite{oppenheim2009discrete}.
+This discontinuity matters from a Fourier perspective. An approximation using a finite number of Fourier modes struggles to represent an abrupt
+jump. It therefore produces spurious oscillations near
+the discontinuity. This behavior is known as the Gibbs phenomenon~\cite{oppenheim2009discrete}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/theory/fourier_periodicite_gibbs.pdf}
-    \caption{À gauche : un signal non périodique défini sur un domaine infini possède un spectre continu.
-    Au centre : un signal périodique possède un spectre discret constitué de raies harmoniques.
-    À droite : un signal de support fini peut présenter une discontinuité artificielle lorsqu'il est périodisé.}
+    \caption{Left: a nonperiodic signal defined on an infinite domain has a continuous spectrum.
+    Center: a periodic signal has a discrete spectrum consisting of harmonic lines.
+    Right: a signal with finite support may exhibit an artificial discontinuity when periodized.}
     \label{fig:gibbs}
 \end{figure}
 
-\section{Détail de la preuve de la structure BCCB}
+\section{Detailed Proof of the BCCB Structure}
 \label{app:preuve_bccb}
 
-On reprend ici le cas d'une convolution circulaire 2D mono-canal. L'objectif est de montrer,
-pas à pas, pourquoi la matrice $M$ associée à cette convolution est circulante par blocs, 
-et chacun de ses blocs est lui-même circulant.
+We revisit the case of a single-channel 2D circular convolution. The goal is to show,
+step by step, why the matrix $M$ associated with this convolution is block-circulant
+and why each of its blocks is itself circulant.
 
 \begin{proof}
 
-On note $X\in\mathbb{C}^{N\times N}$ l'image d'entrée, $Y\in\mathbb{C}^{N\times N}$ l'image de
-sortie, et $h\in\mathbb{C}^{N\times N}$ le filtre. On rappelle que dans le cadre circulaire, la convolution 2D s'écrit
+Let $X\in\mathbb{C}^{N\times N}$ denote the input image, $Y\in\mathbb{C}^{N\times N}$ the output
+image, and $h\in\mathbb{C}^{N\times N}$ the filter. Recall that, in the circular setting, 2D convolution is written as
 
 $$\begin{aligned}
     Y[m,n] &= \sum_{a=0}^{N-1} \sum_{b=0}^{N-1} h[a,b] \, X[(m-a)\bmod N, \, (n-b)\bmod N] \\
            &= \sum_{a=0}^{N-1} \sum_{b=0}^{N-1} h[(m-a)\bmod N, \, (n-b)\bmod N] \, X[a, b].
 \end{aligned}$$
 
-Avec la vectorisation par colonnes, l'entrée $X[r,s]$ correspond à l'indice vectorisé
-$r+Ns$, et la sortie $Y[m,n]$ correspond à l'indice vectorisé $m+Nn$. La matrice $M$ est définie
-par
+With column-wise vectorization, the input entry $X[r,s]$ corresponds to the vectorized index
+$r+Ns$, and the output entry $Y[m,n]$ corresponds to the vectorized index $m+Nn$. The matrix $M$ is defined
+by
 \[
     \operatorname{vec}(Y)=M\operatorname{vec}(X).
 \]
-Le coefficient de $M$ situé à la ligne $m+Nn$ et à la colonne $r+Ns$ indique donc comment le pixel
-$X[r,s]$ contribue au pixel $Y[m,n]$.
+The entry of $M$ in row $m+Nn$ and column $r+Ns$ therefore indicates how pixel
+$X[r,s]$ contributes to pixel $Y[m,n]$.
 
-D'après la formule de convolution 2D, cette contribution est donnée par
+According to the 2D convolution formula, this contribution is given by
 \[
     M_{m+Nn,\;r+Ns}
     =
     h[(m-r)\bmod N,\,(n-s)\bmod N].
 \]
-Cette formule est le point central de la preuve : le coefficient dépend seulement des décalages
-circulaires entre les positions d'entrée et de sortie.
+This formula is central to the proof: the entry depends only on the circular
+shifts between the input and output positions.
 
-On découpe maintenant la matrice $M$ en $N\times N$ blocs, chacun de taille $N\times N$ :
+We now partition the matrix $M$ into $N\times N$ blocks, each of size $N\times N$:
 \[
 M =
 \begin{pmatrix}
@@ -83,10 +83,10 @@ B_{1,0} & B_{1,1} & \cdots & B_{1,N-1} \\
 B_{N-1,0} & B_{N-1,1} & \cdots & B_{N-1,N-1}
 \end{pmatrix}.
 \]
-Dans ce découpage, le bloc $B_{n,s}$ décrit l'effet de la colonne $s$ de l'image d'entrée sur la
-colonne $n$ de l'image de sortie.
+In this partition, block $B_{n,s}$ describes the effect of column $s$ of the input image on
+column $n$ of the output image.
 
-Les coefficients de ce bloc sont donc
+The entries of this block are therefore
 \[
     (B_{n,s})_{m,r}
     =
@@ -95,22 +95,22 @@ Les coefficients de ce bloc sont donc
     h[(m-r)\bmod N,\,(n-s)\bmod N].
 \]
 
-Fixons maintenant deux colonnes $n$ et $s$. Leur décalage circulaire est
+Now fix two columns $n$ and $s$. Their circular shift is
 \[
     \delta = (n-s)\bmod N.
 \]
-Avec cette notation, l'expression précédente devient
+With this notation, the preceding expression becomes
 \[
     (B_{n,s})_{m,r}
     =
     h[(m-r)\bmod N,\delta].
 \]
 
-Pour un $\delta$ fixé, le coefficient $(B_{n,s})_{m,r}$ dépend de $m$ et $r$ uniquement à travers
-la différence circulaire $(m-r)\bmod N$. Cela signifie que les lignes du bloc se répètent par
-décalage circulaire. Autrement dit, chaque bloc $B_{n,s}$ est une matrice circulante.
+For a fixed $\delta$, the entry $(B_{n,s})_{m,r}$ depends on $m$ and $r$ only through
+the circular difference $(m-r)\bmod N$. This means that the rows of the block repeat under
+circular shifts. In other words, each block $B_{n,s}$ is a circulant matrix.
 
-Pour rendre cela plus explicite, on définit le vecteur
+To make this more explicit, define the vector
 \[
 h_\delta =
 \begin{pmatrix}
@@ -120,24 +120,24 @@ h[1,\delta] \\
 h[N-1,\delta]
 \end{pmatrix}.
 \]
-Le bloc $B_{n,s}$ est alors la matrice circulante construite à partir de ce vecteur :
+Block $B_{n,s}$ is then the circulant matrix constructed from this vector:
 \[
     B_{n,s}
     =
     C_{h_\delta}.
 \]
-Comme $\delta=(n-s)\bmod N$, on peut aussi écrire
+Since $\delta=(n-s)\bmod N$, we can also write
 \[
     B_{n,s}
     =
     C_{h_{(n-s)\bmod N}}.
 \]
 
-Cette formule montre maintenant le deuxième niveau de circularité. Lorsque l'on change $n$ et $s$,
-les blocs ne changent pas de manière quelconque : ils dépendent seulement du décalage circulaire
-$(n-s)\bmod N$. Les blocs eux-mêmes sont donc organisés de manière circulaire.
+This formula reveals the second level of circularity. As $n$ and $s$ change,
+the blocks do not vary arbitrarily: they depend only on the circular shift
+$(n-s)\bmod N$. The blocks themselves are therefore arranged in a circulant pattern.
 
-La matrice complète $M$ peut alors s'écrire sous la forme
+The full matrix $M$ can then be written as
 \[
 M =
 \begin{pmatrix}
@@ -149,41 +149,41 @@ C_{h_{N-1}} & C_{h_{N-2}} & C_{h_{N-3}} & \cdots & C_{h_0}
 \end{pmatrix}.
 \]
 
-Cette écriture fait apparaître clairement les deux propriétés recherchées :
+This representation clearly exhibits the two required properties:
 \[
-    \boxed{\text{chaque bloc est circulant}}
-    \qquad\text{et}\qquad
-    \boxed{\text{les blocs sont eux-mêmes organisés circulairement}.}
+    \boxed{\text{each block is circulant}}
+    \qquad\text{and}\qquad
+    \boxed{\text{the blocks themselves form a circulant pattern}.}
 \]
-Par conséquent, $M$ est bien une matrice circulante par blocs avec des blocs circulants, c'est-à-dire
-une matrice BCCB.
+Consequently, $M$ is indeed a block-circulant matrix with circulant blocks, that is,
+a BCCB matrix.
 
 \end{proof}
 
-\section{Détail de la preuve pour les skip connections}
+\section{Detailed Proof for Skip Connections}
 \label{app:preuve_skip_connection}
 
-On reprend ici le cas d'une \textit{skip connection} identité étudié dans la section~\ref{sec:skip-normalisation}. 
-L'objectif est de vérifier explicitement que les vecteurs singuliers droits conservent la même structure fréquentielle que dans le cas sans \textit{skip connection}.
+We revisit the identity \textit{skip connection} studied in Section~\ref{sec:skip-normalisation}.
+The goal is to verify explicitly that the right singular vectors retain the same frequency structure as in the case without a \textit{skip connection}.
 
 \begin{proof}
 
-Soit $a \in \mathbb{C}^m$ un vecteur singulier droit de $G_{\mathrm{skip}}^{(w)}$, associé à une valeur singulière $\sigma$ et à un vecteur singulier gauche $b \in \mathbb{C}^m$ :
+Let $a \in \mathbb{C}^m$ be a right singular vector of $G_{\mathrm{skip}}^{(w)}$, associated with a singular value $\sigma$ and a left singular vector $b \in \mathbb{C}^m$:
 \[
 G_{\mathrm{skip}}^{(w)}a = \sigma b.
 \]
 
-Dans l'espace complet du réseau, on considère le vecteur
+In the full network space, consider the vector
 \[
 v = a \otimes (Q_N)_w.
 \]
-En utilisant la même notation que précédemment, cela correspond à
+In the same notation as before, this corresponds to
 \[
 v = a \otimes (F_N)_u \otimes (F_N)_v,
 \]
-où l'indice aplati $w$ correspond au couple de fréquences spatiales $(u,v)$.
+where the flattened index $w$ corresponds to the spatial frequency pair $(u,v)$.
 
-Appliquons maintenant l'opérateur $M_{\mathrm{skip}}$ à ce vecteur :
+Now apply the operator $M_{\mathrm{skip}}$ to this vector:
 \begin{align*}
 M_{\mathrm{skip}}v
 &=
@@ -191,41 +191,41 @@ M_{\mathrm{skip}}v
 \bigl(a \otimes (Q_N)_w\bigr).
 \end{align*}
 
-Comme $(Q_N)_w = Q_N e_w$, on a
+Since $(Q_N)_w = Q_N e_w$, we have
 \[
 a \otimes (Q_N)_w
 =
 (I_m \otimes Q_N)(a \otimes e_w).
 \]
-Donc
+Thus,
 \begin{align*}
 M_{\mathrm{skip}}v
 &=
 (I_m \otimes Q_N)(L + I_{mN^2})(a \otimes e_w).
 \end{align*}
 
-La présence du vecteur canonique $e_w$ sélectionne les coefficients associés à la fréquence $w$. 
-Sur cette fréquence, l'opérateur central se comporte comme la matrice de mélange augmentée
+The standard basis vector $e_w$ selects the coefficients associated with frequency $w$.
+At this frequency, the central operator acts as the augmented mixing matrix
 \[
 G_{\mathrm{skip}}^{(w)} = G^{(w)} + I_m.
 \]
-Ainsi, l'action sur les canaux et sur la fréquence spatiale se sépare :
+Thus, its action on the channels separates from its action on the spatial frequency:
 \begin{align*}
 (L + I_{mN^2})(a \otimes e_w)
 &= (G^{(w)}a + I_m a) \otimes e_w \\
 &= (G_{\mathrm{skip}}^{(w)}a) \otimes e_w.
 \end{align*}
 
-Comme $a$ est un vecteur singulier droit de $G_{\mathrm{skip}}^{(w)}$, on a
+Since $a$ is a right singular vector of $G_{\mathrm{skip}}^{(w)}$, we have
 \[
 G_{\mathrm{skip}}^{(w)}a = \sigma b.
 \]
-On obtient donc
+We therefore obtain
 \[
 (L + I_{mN^2})(a \otimes e_w) = \sigma(b \otimes e_w).
 \]
 
-En réinjectant ce résultat dans l'expression de $M_{\mathrm{skip}}v$, il vient :
+Substituting this result into the expression for $M_{\mathrm{skip}}v$ gives:
 \begin{align*}
 M_{\mathrm{skip}}v
 &=
@@ -234,28 +234,28 @@ M_{\mathrm{skip}}v
 &= \sigma\bigl(b \otimes (Q_N)_w\bigr).
 \end{align*}
 
-Ainsi, l'application de $M_{\mathrm{skip}}$ au vecteur
+Thus, applying $M_{\mathrm{skip}}$ to the vector
 \[
 v = a \otimes (Q_N)_w
 \]
-donne bien un vecteur de sortie de même fréquence spatiale :
+indeed yields an output vector with the same spatial frequency:
 \[
 M_{\mathrm{skip}}v = \sigma\bigl(b \otimes (Q_N)_w\bigr).
 \]
 
-La fréquence spatiale $(Q_N)_w$ est donc conservée. Seuls l'amplitude globale, donnée par $\sigma$, et le profil de canaux, donné par $b$, sont modifiés.
+The spatial frequency $(Q_N)_w$ is therefore preserved. Only the overall amplitude, given by $\sigma$, and the channel profile, given by $b$, change.
 
-Par conséquent, les vecteurs singuliers droits de l'opérateur avec \textit{skip connection} restent de la forme
+Consequently, the right singular vectors of the operator with a \textit{skip connection} remain of the form
 \[
 a \otimes (Q_N)_w,
 \]
-c'est-à-dire
+that is,
 \[
 a \otimes (F_N)_u \otimes (F_N)_v.
 \]
 \end{proof}
 
-\section{Représentation graphique du stride}
+\section{Graphical Representation of Stride}
 
 \definecolor{gridblue}{HTML}{006699}
 \definecolor{gridteal}{HTML}{148F77}
@@ -271,7 +271,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
         % =========================================================================
         \begin{scope}[shift={(0,0)}]
             % Titre parfaitement centré sur l'axe vertical de la figure (x=0)
-            \node[font=\large\bfseries] at (0,6.5) {Stride = 1 (Glissement continu)};
+            \node[font=\large\bfseries] at (0,6.5) {Stride = 1 (Continuous sliding)};
             
             \begin{scope}[x={(0.6cm,0.3cm)}, y={(-0.6cm,0.3cm)}, z={(0cm,0.8cm)}]
                 
@@ -312,7 +312,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
                     \draw[black, thick] (1,\i,4.5) -- (4,\i,4.5);
                 }
                 
-                \node[anchor=south east, font=\small\bfseries] at (1,4,4.7) {Sortie $3 \times 3$};
+                \node[anchor=south east, font=\small\bfseries] at (1,4,4.7) {Output $3 \times 3$};
             
                 % Pixel calculé
                 \fill[selectgray, opacity=0.9] (1,1,4.5) -- (2,1,4.5) -- (2,2,4.5) -- (1,2,4.5) -- cycle;
@@ -320,7 +320,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
                 
             \end{scope}
             
-            \node[font=\small\bfseries] at (0,-1.5) {Entrée $5 \times 5$};
+            \node[font=\small\bfseries] at (0,-1.5) {Input $5 \times 5$};
             
         \end{scope}
 
@@ -328,7 +328,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
         % DROITE : Stride = 2 
         % =========================================================================
         \begin{scope}[shift={(10,0)}] 
-            \node[font=\large\bfseries] at (0,6.5) {Stride = 2 (Pas de 2 positions)};
+            \node[font=\large\bfseries] at (0,6.5) {Stride = 2 (Steps of 2 positions)};
 
             \begin{scope}[x={(0.6cm,0.3cm)}, y={(-0.6cm,0.3cm)}, z={(0cm,0.8cm)}]
                 
@@ -367,7 +367,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
                 \draw[black, thick] (2.5,1.5,4.5) -- (2.5,3.5,4.5);
                 \draw[black, thick] (1.5,2.5,4.5) -- (3.5,2.5,4.5);
                 
-                \node[anchor=south east, font=\small\bfseries] at (1.5,3.5,4.7) {Sortie $2 \times 2$};
+                \node[anchor=south east, font=\small\bfseries] at (1.5,3.5,4.7) {Output $2 \times 2$};
 
                 % Pixel calculé
                 \fill[selectgray, opacity=0.9] (1.5,1.5,4.5) -- (2.5,1.5,4.5) -- (2.5,2.5,4.5) -- (1.5,2.5,4.5) -- cycle;
@@ -375,7 +375,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
                 
             \end{scope}
             
-            \node[font=\small\bfseries] at (0,-1.5) {Entrée $5 \times 5$};
+            \node[font=\small\bfseries] at (0,-1.5) {Input $5 \times 5$};
             
         \end{scope}
 
@@ -384,19 +384,19 @@ a \otimes (F_N)_u \otimes (F_N)_v.
         % =========================================================================
         \node[anchor=center, draw=black!30, thick, rounded corners, fill=white, inner sep=10pt] at (5,-3.2) {
             \begin{tikzpicture}
-                \fill[gridblue] (0,0) rectangle (0.5,0.5); \node[right, font=\small\bfseries] at (0.6,0.25) {Entrée};
-                \fill[gridred, opacity=0.8] (3,0) rectangle (3.5,0.5); \node[right, font=\small\bfseries] at (3.6,0.25) {Filtre};
-                \fill[gridteal] (6,0) rectangle (6.5,0.5); \node[right, font=\small\bfseries] at (6.6,0.25) {Sortie};
-                \fill[selectgray] (9,0) rectangle (9.5,0.5); \node[right, font=\small\bfseries] at (9.6,0.25) {Pixel calculé};
+                \fill[gridblue] (0,0) rectangle (0.5,0.5); \node[right, font=\small\bfseries] at (0.6,0.25) {Input};
+                \fill[gridred, opacity=0.8] (3,0) rectangle (3.5,0.5); \node[right, font=\small\bfseries] at (3.6,0.25) {Filter};
+                \fill[gridteal] (6,0) rectangle (6.5,0.5); \node[right, font=\small\bfseries] at (6.6,0.25) {Output};
+                \fill[selectgray] (9,0) rectangle (9.5,0.5); \node[right, font=\small\bfseries] at (9.6,0.25) {Computed pixel};
             \end{tikzpicture}
         };
 
     \end{tikzpicture}
-    \caption{Effet du \textit{stride} sur la résolution spatiale de sortie.}
+    \caption{Effect of \textit{stride} on the output spatial resolution.}
     \label{fig:stride_comparison}
 \end{figure}
 
-\section{Illustration de l'average pooling}
+\section{Illustration of Average Pooling}
 
 \begin{figure}[H]
     \centering
@@ -425,7 +425,7 @@ a \otimes (F_N)_u \otimes (F_N)_v.
         }
 
         % --- FLECHE DE TRANSITION ---
-        \draw[->, >=stealth, very thick, black!60] (4.5, 2) -- node[above, font=\footnotesize, text=black] {Moyenne locale} node[below, font=\footnotesize, text=black] {\textit{Stride} $s=2$} (7, 2);
+        \draw[->, >=stealth, very thick, black!60] (4.5, 2) -- node[above, font=\footnotesize, text=black] {Local average} node[below, font=\footnotesize, text=black] {\textit{Stride} $s=2$} (7, 2);
 
         % --- GRILLE DE SORTIE (2x2) ---
         \begin{scope}[xshift=7.5cm, yshift=1cm]
@@ -445,60 +445,60 @@ a \otimes (F_N)_u \otimes (F_N)_v.
         \end{scope}
 
     \end{tikzpicture}
-    \caption{Illustration spatiale de l'opération d'\textit{average pooling}. Chaque bloc de $2 \times 2$ pixels de l'image d'entrée est remplacé par sa moyenne arithmétique, réduisant ainsi la résolution spatiale par un facteur $s=2$.}
+    \caption{Spatial illustration of the \textit{average pooling} operation. Each $2 \times 2$ block of pixels in the input image is replaced by its arithmetic mean, reducing the spatial resolution by a factor of $s=2$.}
     \label{fig:avg_pooling_spatial}
 \end{figure}
 
-\section{Rappel sur la SVD et les directions d'amplification}
+\section{Review of the SVD and Amplification Directions}
 \label{app:svd-sensibilite}
 
-Soit
+Let
 \[
     M \in \mathbb{C}^{m_{\mathrm{out}}N^2 \times m_{\mathrm{in}}N^2}
 \]
-la matrice représentant un opérateur de convolution multi-canaux. Comme cette matrice n'est pas
-nécessairement carrée, on utilise la décomposition en valeurs singulières plutôt qu'une diagonalisation
-classique par valeurs propres.
+be the matrix representing a multichannel convolution operator. Since this matrix is not
+necessarily square, we use singular value decomposition rather than standard
+eigendecomposition.
 
-La décomposition en valeurs singulières de $M$ s'écrit
+The singular value decomposition of $M$ is
 \[
     M = U \Sigma V^H,
 \]
-où $U$ et $V$ sont des matrices unitaires, et où $\Sigma$ est une matrice diagonale rectangulaire
-contenant les valeurs singulières de $M$ :
+where $U$ and $V$ are unitary matrices, and $\Sigma$ is a rectangular diagonal matrix
+containing the singular values of $M$:
 \[
     \sigma_1 \geq \sigma_2 \geq \cdots \geq 0.
 \]
-Les colonnes de $V$ sont appelées vecteurs singuliers droits de $M$ : elles vivent dans l'espace
-d'entrée. Les colonnes de $U$ sont appelées vecteurs singuliers gauches de $M$ : elles vivent dans
-l'espace de sortie.
+The columns of $V$ are called the right singular vectors of $M$: they lie in the input
+space. The columns of $U$ are called the left singular vectors of $M$: they lie in
+the output space.
 
-Pour comprendre pourquoi les vecteurs singuliers droits décrivent les directions d'amplification,
-on considère la matrice auto-adjointe positive $M^H M$. À partir de la SVD, on obtient
+To understand why right singular vectors describe amplification directions,
+consider the positive self-adjoint matrix $M^H M$. From the SVD, we obtain
 \[
     M^H M
     =
     (U\Sigma V^H)^H(U\Sigma V^H).
 \]
-En utilisant $(ABC)^H = C^H B^H A^H$, il vient
+Using $(ABC)^H = C^H B^H A^H$ gives
 \[
     M^H M
     =
     V\Sigma^H U^H U \Sigma V^H.
 \]
-Comme $U$ est unitaire, on a $U^H U = I$, donc
+Since $U$ is unitary, $U^H U = I$, so
 \[
     M^H M
     =
     V\Sigma^H \Sigma V^H.
 \]
-La matrice $\Sigma^H\Sigma$ est diagonale et contient les carrés des valeurs singulières :
+The matrix $\Sigma^H\Sigma$ is diagonal and contains the squared singular values:
 \[
     \Sigma^H\Sigma
     =
     \operatorname{diag}(\sigma_1^2,\sigma_2^2,\dots).
 \]
-Ainsi,
+Thus,
 \[
     M^H M
     =
@@ -506,10 +506,10 @@ Ainsi,
     \operatorname{diag}(\sigma_1^2,\sigma_2^2,\dots)
     V^H.
 \]
-Cela montre que les vecteurs singuliers droits de $M$ sont exactement les vecteurs propres de
-$M^H M$, et que les valeurs propres associées sont les carrés des valeurs singulières.
+This shows that the right singular vectors of $M$ are precisely the eigenvectors of
+$M^H M$, and that the associated eigenvalues are the squared singular values.
 
-En particulier, si $v_i$ désigne la $i$-ème colonne de $V$, alors
+In particular, if $v_i$ denotes the $i$-th column of $V$, then
 \[
     M^H M v_i
     =
@@ -521,17 +521,17 @@ En particulier, si $v_i$ désigne la $i$-ème colonne de $V$, alors
     =
     \sigma_i^2 v_i,
 \]
-où
+where
 \[
     D=\operatorname{diag}(\sigma_1^2,\sigma_2^2,\dots).
 \]
-Ainsi,
+Thus,
 \[
     M^H M v_i = \sigma_i^2 v_i.
 \]
 
-De manière équivalente, la valeur singulière $\sigma_i$ mesure l'amplification induite par $M$
-dans la direction $v_i$. En effet,
+Equivalently, the singular value $\sigma_i$ measures the amplification induced by $M$
+in direction $v_i$. Indeed,
 \[
     \|Mv_i\|_2^2
     =
@@ -543,155 +543,155 @@ dans la direction $v_i$. En effet,
     =
     \sigma_i^2 \|v_i\|_2^2.
 \]
-Comme $V$ est unitaire, ses colonnes forment une base orthonormée. En particulier,
+Since $V$ is unitary, its columns form an orthonormal basis. In particular,
 \[
     \|v_i\|_2 = 1.
 \]
-On obtient donc
+We therefore obtain
 \[
     \|Mv_i\|_2 = \sigma_i.
 \]
 
-La plus grande valeur singulière décrit l'amplification maximale de $M$ parmi les entrées de norme
-$1$ :
+The largest singular value describes the maximum amplification of $M$ among inputs with norm
+$1$:
 \[
     \sigma_1
     =
     \max_{\|x\|_2=1}\|Mx\|_2.
 \]
-Si $\sigma_1$ est simple, la direction qui réalise cette amplification maximale est le vecteur singulier
-droit $v_1$. Si $\sigma_1$ est multiple, il n'y a pas une seule direction maximale : toute direction
-unitaire dans le sous-espace associé à $\sigma_1$ donne la même amplification.
+If $\sigma_1$ is simple, the direction achieving this maximum amplification is the right singular
+vector $v_1$. If $\sigma_1$ has multiplicity greater than one, there is no single maximizing direction: every
+unit-norm direction in the subspace associated with $\sigma_1$ yields the same amplification.
 
-Dans le cadre de l'analyse fréquentielle des convolutions, les directions de forte sensibilité du réseau
-correspondent donc aux vecteurs singuliers droits associés aux grandes valeurs singulières.
+In the frequency analysis of convolutions, the network's highly sensitive directions
+therefore correspond to right singular vectors associated with large singular values.
 
-\section{Spectre de Fourier moyen des images propres}
+\section{Mean Fourier Spectrum of Clean Images}
 \label{annexe:spectres_moyens_cifar}
 
-Cette annexe présente le spectre de Fourier moyen des images non perturbées de CIFAR-10 et CIFAR-100.
-L'objectif n'est pas de mesurer directement la sensibilité du modèle, mais d'observer quelles fréquences
-sont naturellement présentes dans les données d'entrée.
+This appendix presents the mean Fourier spectrum of unperturbed CIFAR-10 and CIFAR-100 images.
+The aim is not to measure model sensitivity directly, but to observe which frequencies
+are naturally present in the input data.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/results/mean_clean_spectrum_comparison_cifar.pdf}
-    \caption{Spectre de Fourier moyen des images non perturbées de CIFAR-10 et CIFAR-100. Les valeurs affichées
-    correspondent à $\log(1+|\mathcal{F}(x)|)$, moyennées sur les images du dataset.}
+    \caption{Mean Fourier spectrum of unperturbed CIFAR-10 and CIFAR-100 images. The displayed values
+    correspond to $\log(1+|\mathcal{F}(x)|)$, averaged over the images in the dataset.}
     \label{fig:mean_clean_spectrum_comparison_cifar}
 \end{figure}
 
-On observe que les deux datasets possèdent une structure fréquentielle très similaire : 
-l'énergie est fortement concentrée autour du centre du spectre et décroît progressivement selon une forme 
-proche d'un losange. Les lignes horizontale et verticale plus marquées indiquent également que certaines 
-directions fréquentielles sont plus présentes que d'autres dans les images non perturbées.
+The two datasets exhibit very similar frequency structures:
+energy is strongly concentrated around the center of the spectrum and gradually decreases in an approximately
+diamond-shaped pattern. The more pronounced horizontal and vertical lines also indicate that certain
+frequency directions are more prevalent than others in the unperturbed images.
 
-Cette observation fournit une piste d'interprétation pour les heatmaps SFA. Elle montre que les images
-d'entrée possèdent elles-mêmes une organisation fréquentielle non uniforme. La sensibilité du modèle
-peut donc dépendre à la fois de l'architecture et des statistiques des données utilisées pendant
-l'entraînement.
+This observation suggests a possible interpretation of the SFA heatmaps. It shows that the input
+images themselves have a nonuniform frequency organization. Model sensitivity
+may therefore depend both on the architecture and on the statistics of the data used during
+training.
 
-Cette comparaison reste toutefois descriptive. Le spectre moyen caractérise les images d'entrée, alors
-que les heatmaps SFA mesurent la réponse du modèle à des perturbations imposées. Les deux objets ne
-doivent donc pas être confondus.
+However, this comparison remains descriptive. The mean spectrum characterizes the input images,
+whereas the SFA heatmaps measure the model's response to imposed perturbations. The two should
+therefore not be conflated.
 
-\section{Analyse complémentaire : rôle du mélange des canaux dans la SFA}
+\section{Supplementary Analysis: The Role of Channel Mixing in SFA}
 \label{annexe:color_sfa}
 
-Dans le cadre théorique présenté au chapitre précédent, les directions singulières d'un modèle
-convolutionnel linéarisé peuvent s'écrire sous une forme du type
+In the theoretical framework presented in the previous chapter, the singular directions of a
+linearized convolutional model can be written in the form
 \[
     v = a \otimes q_{u,v},
 \]
-où \(q_{u,v}\) représente une composante spatiale de Fourier et où
-\(a \in \mathbb{R}^3\) décrit le mélange entre les canaux rouge, vert et bleu.
+where \(q_{u,v}\) represents a spatial Fourier component and
+\(a \in \mathbb{R}^3\) describes the mixing of the red, green, and blue channels.
 
-La \textit{Single Fourier Attack} utilisée dans le protocole principal simplifie ce cadre. Elle ne cherche
-pas à optimiser simultanément la fréquence spatiale et le vecteur couleur \(a\). Le même motif de
-Fourier est appliqué aux trois canaux RGB, ce qui revient à utiliser le vecteur
+The \textit{Single Fourier Attack} used in the main protocol simplifies this framework. It does not seek
+to optimize the spatial frequency and the color vector \(a\) simultaneously. The same Fourier
+pattern is applied to all three RGB channels, which amounts to using the vector
 \[
     a_{\mathrm{uni}} = (1,1,1).
 \]
-L'espace de recherche est donc réduit au choix de la fréquence $(u,v)$. Cette simplification
-rend l'attaque beaucoup plus simple à évaluer, puisqu'il suffit de parcourir les fréquences du
-domaine de Fourier. Elle est également cohérente avec la contrainte $\ell_\infty$ utilisée dans
-le protocole principal : le motif est appliqué avec l'amplitude maximale autorisée sur chacun des
-trois canaux.
+The search space is therefore reduced to the choice of frequency $(u,v)$. This simplification
+makes the attack much easier to evaluate, since we need only iterate over the frequencies in the
+Fourier domain. It is also consistent with the $\ell_\infty$ constraint used in
+the main protocol: the pattern is applied at the maximum allowed amplitude to each of the
+three channels.
 
-Nous distinguons alors deux manières de contraindre le mélange entre canaux. La première
-conserve une contrainte comparable à la SFA standard en norme $\ell_\infty$, afin de tester si
-un autre choix de direction couleur peut améliorer l'attaque à amplitude maximale identique. La
-seconde utilise un budget de type $\ell_1$ sur les coefficients du vecteur couleur. Dans ce cas,
-un vecteur comme $a=(3,0,0)$ est possible : le budget total est concentré sur un seul canal, ce
-qui ne correspond plus exactement à la contrainte de la SFA standard. Les deux variantes ne
-mesurent donc pas exactement la même chose ; elles servent plutôt à tester si le choix du mélange
-RGB peut renforcer l'effet d'une fréquence de Fourier.
+We then distinguish two ways of constraining channel mixing. The first
+retains an $\ell_\infty$-norm constraint comparable to standard SFA, to test whether
+another choice of color direction can improve the attack at the same maximum amplitude. The
+second uses an $\ell_1$-type budget on the color vector's coefficients. In this case,
+a vector such as $a=(3,0,0)$ is possible: the total budget is concentrated in a single channel,
+which no longer corresponds exactly to the standard SFA constraint. The two variants
+therefore do not measure exactly the same thing; rather, they test whether the choice of RGB
+mixing can strengthen the effect of a Fourier frequency.
 
-\subsection*{Recherche de vecteurs RGB par fréquence}
+\subsection*{Searching for RGB Vectors at Each Frequency}
 
-La figure~\ref{fig:color_sfa_foolratio_and_activation_grids} compare la SFA standard avec des variantes
-où le vecteur RGB \(a\) est choisi parmi un ensemble restreint de combinaisons possibles.
+Figure~\ref{fig:color_sfa_foolratio_and_activation_grids} compares standard SFA with variants
+in which the RGB vector \(a\) is chosen from a limited set of possible combinations.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/results/color_sfa_foolratio_and_activation_grids.pdf}
-    \caption{Comparaison entre la SFA standard et des variantes où le vecteur RGB \(a\) est choisi par fréquence.
-    À gauche, le meilleur \textit{fool ratio} obtenu par chaque méthode est comparé à la baseline de bruit
-    aléatoire. Au centre et à droite, chaque case indique le meilleur vecteur RGB trouvé pour la fréquence
-    correspondante, selon deux contraintes de budget différentes.}
+    \caption{Comparison between standard SFA and variants in which the RGB vector \(a\) is chosen for each frequency.
+    Left: the best \textit{fool ratio} obtained by each method is compared with the random-noise
+    baseline. Center and right: each cell indicates the best RGB vector found for the corresponding
+    frequency under two different budget constraints.}
     \label{fig:color_sfa_foolratio_and_activation_grids}
 \end{figure}
 
-Dans la variante renormalisée en norme $\ell_\infty$, la meilleure variante colorée retrouve
-pratiquement le même résultat que la SFA standard. Ce qui indique que, sous cette contrainte, le
-choix d'un mélange RGB différent n'améliore pas significativement l'attaque par rapport à la
-direction uniforme $(1,1,1)$.
+In the variant renormalized in the $\ell_\infty$ norm, the best color variant achieves
+almost the same result as standard SFA. This indicates that, under this constraint,
+choosing a different RGB mixture does not significantly improve the attack compared with the
+uniform direction $(1,1,1)$.
 
-Avec la variante sous budget $\ell_1$ sur les coefficients couleur, le meilleur score augmente légèrement,
-passant d'environ \(0.732\) à \(0.766\), avec la fréquence \((16,8)\) et le vecteur \(a=(2,1,0)\).
-Ce qui est assez modeste dans notre cas.
+With the variant using an $\ell_1$ budget on the color coefficients, the best score increases slightly,
+from approximately \(0.732\) to \(0.766\), with frequency \((16,8)\) and vector \(a=(2,1,0)\).
+This improvement is fairly modest in our case.
 
-\subsection*{Comparaison de directions couleur fixes}
+\subsection*{Comparison of Fixed Color Directions}
 
-Nous avons ensuite comparé plusieurs directions couleur simples :
+We then compared several simple color directions:
 \[
 (1,1,1), \quad (1,0,0), \quad (0,1,0), \quad (0,0,1),
 \]
-ainsi que des directions chromatiques opposées :
+as well as opponent color directions:
 \[
 (1,-1,0), \quad (1,0,-1), \quad (0,1,-1),
 \]
-et une direction de type luminance.
+and a luminance-like direction.
 
-Les résultats de la figure~\ref{fig:color_sfa_cifar10} montrent que la direction standard
-$(1,1,1)$ reste nettement la plus efficace. Les directions appliquées à un seul canal ont un effet
-plus faible, tandis que les directions chromatiques opposées $(1,-1,0)$, $(1,0,-1)$ et
-$(0,1,-1)$ donnent des fool ratios presque nuls.
+The results in Figure~\ref{fig:color_sfa_cifar10} show that the standard direction
+$(1,1,1)$ remains by far the most effective. Directions applied to a single channel have a
+weaker effect, while the opponent color directions $(1,-1,0)$, $(1,0,-1)$, and
+$(0,1,-1)$ yield almost zero fool ratios.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/results/color_sfa_cifar10_barplot.pdf}
-    \caption{Comparaison de plusieurs directions couleur pour la \textit{Single Fourier Attack}
-    sur CIFAR-10.}
+    \caption{Comparison of several color directions for the \textit{Single Fourier Attack}
+    on CIFAR-10.}
     \label{fig:color_sfa_cifar10}
 \end{figure}
 
-Cette observation suggère que, pour la fréquence étudiée, les directions chromatiques opposées
-sont faiblement transmises par le réseau. Nous pouvons l'interpréter à partir du cadre
-multi-canaux. Pour une fréquence fixée $(u,v)$, l'effet d'une direction couleur
-$a \in \mathbb{R}^3$ est décrit par la matrice de mélange $G^{(u,v)}$ :
+This observation suggests that, for the frequency studied, opponent color directions
+are weakly transmitted by the network. We can interpret this using the multichannel
+framework. For a fixed frequency $(u,v)$, the effect of a color direction
+$a \in \mathbb{R}^3$ is described by the mixing matrix $G^{(u,v)}$:
 \[
     \beta = G^{(u,v)}a.
 \]
-La SFA standard correspond au choix
+Standard SFA corresponds to the choice
 \[
     a_{\mathrm{uni}} = (1,1,1),
 \]
-c'est-à-dire à une variation commune des trois canaux RGB.
+that is, a common variation in all three RGB channels.
 
-\paragraph{Cas idéalement symétrique.}
-Supposons que, pour la fréquence considérée, le réseau réponde de la même manière aux trois
-canaux d'entrée. Cela revient à supposer que les trois colonnes de $G^{(u,v)}$ sont identiques :
+\paragraph{Ideally symmetric case.}
+Suppose that, at the frequency considered, the network responds identically to the three
+input channels. This amounts to assuming that the three columns of $G^{(u,v)}$ are identical:
 \[
     G^{(u,v)}
     =
@@ -706,43 +706,43 @@ canaux d'entrée. Cela revient à supposer que les trois colonnes de $G^{(u,v)}$
     1 & 1 & 1
     \end{pmatrix},
 \]
-où $g \in \mathbb{C}^{m_{\mathrm{out}}}$ décrit la réponse fréquentielle commune du réseau.
+where $g \in \mathbb{C}^{m_{\mathrm{out}}}$ describes the network's common frequency response.
 
-Alors, pour toute direction couleur $a=(a_R,a_G,a_B)$, on obtient
+Then, for any color direction $a=(a_R,a_G,a_B)$, we obtain
 \[
     G^{(u,v)}a
     =
     g(a_R+a_G+a_B).
 \]
-L'amplification dépend donc uniquement de la somme des composantes de $a$. Sous une contrainte
-$\ell_\infty$ comparable à celle de la SFA standard,
+Amplification therefore depends only on the sum of the components of $a$. Under an
+$\ell_\infty$ constraint comparable to that of standard SFA,
 \[
     |a_R|, |a_G|, |a_B| \leq 1,
 \]
-cette somme est maximale en valeur absolue pour
+the absolute value of this sum is maximized by
 \[
     a=(1,1,1)
 \]
-ou pour son opposé. Ainsi, dans ce cadre symétrique simplifié, la direction uniforme
-$a_{\mathrm{uni}}$ est optimale.
+or its negative. Thus, in this simplified symmetric setting, the uniform direction
+$a_{\mathrm{uni}}$ is optimal.
 
-Inversement, toute direction couleur vérifiant
+Conversely, any color direction satisfying
 \[
     a_R+a_G+a_B=0
 \]
-est annulée par $G^{(u,v)}$. C'est le cas des directions chromatiques opposées
+is annihilated by $G^{(u,v)}$. This is the case for the opponent color directions
 \[
     (1,-1,0), \qquad (1,0,-1), \qquad (0,1,-1).
 \]
-Dans ce modèle simplifié, ces directions appartiennent donc au noyau de la matrice de mélange
-fréquentielle :
+In this simplified model, these directions therefore belong to the kernel of the per-frequency
+mixing matrix:
 \[
     G^{(u,v)}a = 0.
 \]
 
-\paragraph{Cas approximativement symétrique.}
-Dans un réseau réel, les colonnes de $G^{(u,v)}$ ne sont pas exactement identiques. On peut
-cependant séparer une composante commune aux trois canaux et un terme résiduel :
+\paragraph{Approximately symmetric case.}
+In a real network, the columns of $G^{(u,v)}$ are not exactly identical. However, we can
+separate a component common to all three channels from a residual term:
 \[
     G^{(u,v)}
     =
@@ -752,7 +752,7 @@ cependant séparer une composante commune aux trois canaux et un terme résiduel
     \end{pmatrix}
     + E,
 \]
-où l'on peut prendre
+where we can take
 \[
     g
     =
@@ -761,84 +761,84 @@ où l'on peut prendre
     1 \\ 1 \\ 1
     \end{pmatrix}.
 \]
-Le terme $E$ mesure alors l'écart à une réponse parfaitement commune aux trois canaux.
+The term $E$ then measures the deviation from a response that is perfectly shared by all three channels.
 
-Pour une direction chromatique opposée telle que $a_R+a_G+a_B=0$, la composante commune
-disparaît :
+For an opponent color direction such that $a_R+a_G+a_B=0$, the common component
+vanishes:
 \[
     G^{(u,v)}a = Ea.
 \]
-Ainsi, si $\|E\|$ est faible, alors
+Thus, if $\|E\|$ is small, then
 \[
     \|G^{(u,v)}a\|_2
     \leq
     \|E\|\,\|a\|_2.
 \]
-Les directions chromatiques opposées ne sont donc plus annulées exactement, mais elles restent
-faiblement transmises lorsque le mélange fréquentiel entre les canaux est proche d'une réponse
-commune.
+Opponent color directions are therefore no longer exactly annihilated, but they remain
+weakly transmitted when frequency-dependent channel mixing is close to a common
+response.
 
-Cette proposition fournit une interprétation théorique des résultats observés dans la
-figure~\ref{fig:color_sfa_cifar10}. La forte efficacité de $(1,1,1)$ suggère que la fréquence
-étudiée active principalement une direction commune aux canaux, tandis que les faibles scores
-des directions chromatiques opposées peuvent s'expliquer par une quasi-annulation dans le
-mélange fréquentiel des canaux.
+This proposition provides a theoretical interpretation of the results observed in
+Figure~\ref{fig:color_sfa_cifar10}. The high effectiveness of $(1,1,1)$ suggests that the frequency
+studied primarily activates a direction common to the channels, while the low scores
+of opponent color directions may be explained by near cancellation in
+frequency-dependent channel mixing.
 
-\section{Heatmaps internes par couche}
+\section{Internal Heatmaps by Layer}
 \label{annexe:heatmaps_internes_couches}
 
-En complément de l'analyse d'amplification présentée dans le chapitre principal, nous visualisons ici
-l'effet des perturbations de Fourier à différents niveaux internes du réseau. Pour chaque fréquence,
-nous mesurons la variation moyenne normalisée des activations après perturbation, puis nous la
-comparons au \textit{fool ratio} final.
+To complement the amplification analysis presented in the main chapter, we visualize here
+the effect of Fourier perturbations at different internal levels of the network. For each frequency,
+we measure the normalized mean change in activations after perturbation and then
+compare it with the final \textit{fool ratio}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/results/layerwise_fourier_heatmaps_comparison_vgg_cifar10_cifar100.pdf}
-    \caption{Heatmaps internes par couche pour \texttt{VGGSmallBN} sur CIFAR-10 et CIFAR-100.
-    Les premières colonnes représentent la variation moyenne normalisée des activations internes après
-    perturbation de Fourier. La dernière colonne indique le \textit{fool ratio} final.}
+    \caption{Internal heatmaps by layer for \texttt{VGGSmallBN} on CIFAR-10 and CIFAR-100.
+    The first columns show the normalized mean change in internal activations after
+    Fourier perturbation. The last column shows the final \textit{fool ratio}.}
     \label{fig:annexe_layerwise_fourier_heatmaps}
 \end{figure}
 
-Ces visualisations montrent que la structure fréquentielle observée dans les heatmaps finales apparaît
-déjà dans les représentations internes du réseau. Elle devient plus marquée dans les blocs profonds et
-dans les logits, ce qui suggère que certaines fréquences sont progressivement amplifiées au cours du
-traitement convolutionnel.
+These visualizations show that the frequency structure observed in the final heatmaps is
+already present in the network's internal representations. It becomes more pronounced in deeper blocks and
+in the logits, suggesting that certain frequencies are progressively amplified during
+convolutional processing.
 
-\section{Analyse complémentaire des marges logits et des frontières locales}
+\section{Further Analysis of Logit Margins and Local Boundaries}
 \label{annexe:marges-logits}
 
-Cette annexe complète l'analyse expérimentale du chapitre~4. L'objectif est de mieux comprendre
-pourquoi le modèle entraîné sur CIFAR-100 apparaît plus fragile que celui entraîné sur CIFAR-10.
+This appendix complements the experimental analysis in Chapter~4. The goal is to better understand
+why the model trained on CIFAR-100 appears more fragile than the one trained on CIFAR-10.
 
-\subsection{Distribution des marges logits}
+\subsection{Distribution of Logit Margins}
 
-Pour chaque image du jeu de test, on calcule les logits produits par le modèle. On note ensuite
-$z_{(1)}$ le plus grand logit et $z_{(2)}$ le deuxième plus grand logit. La marge logit est définie par
+For each image in the test set, we compute the logits produced by the model. Let
+$z_{(1)}$ denote the largest logit and $z_{(2)}$ the second-largest logit. The logit margin is defined as
 \[
     m(x) = z_{(1)}(x) - z_{(2)}(x).
 \]
 
-Cette quantité mesure basiquement l'écart entre la classe prédite et la classe concurrente la plus proche selon
-le modèle.
+This quantity simply measures the gap between the predicted class and its closest competing class according to
+the model.
 
-La figure~\ref{fig:logit-margin-histograms} compare les distributions des marges logits pour
-VGGSmallBN sur CIFAR-10 et CIFAR-100. On observe que la distribution de CIFAR-100 est
-nettement plus concentrée vers les faibles marges. La médiane est d'environ $4.15$ pour CIFAR-100,
-contre environ $11.12$ pour CIFAR-10. Cela signifie que, sur CIFAR-100, les prédictions du modèle
-sont en moyenne moins fortement séparées de leur seconde meilleure classe.
+Figure~\ref{fig:logit-margin-histograms} compares the distributions of logit margins for
+VGGSmallBN on CIFAR-10 and CIFAR-100. The CIFAR-100 distribution is
+much more concentrated at small margins. The median is approximately $4.15$ for CIFAR-100,
+compared with approximately $11.12$ for CIFAR-10. This means that, on CIFAR-100, the model's predictions
+are, on average, less strongly separated from their second-best class.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/results/logit_margin_histograms_cifar10_cifar100.pdf}
-    \caption{Distribution des marges logits pour VGGSmallBN sur CIFAR-10 et CIFAR-100. La marge est définie comme la différence entre le plus grand logit et le deuxième plus grand logit.}
+    \caption{Distribution of logit margins for VGGSmallBN on CIFAR-10 and CIFAR-100. The margin is defined as the difference between the largest and second-largest logits.}
     \label{fig:logit-margin-histograms}
 \end{figure}
 
-Ce résultat donne un appui supplémentaire à l'interprétation proposée dans le chapitre~4 :
-la plus grande fragilité observée sur CIFAR-100 ne vient pas seulement du choix d'une fréquence
-particulière, mais aussi du fait que les décisions du modèle semblent moins séparées. 
+This result provides further support for the interpretation proposed in Chapter~4:
+the greater fragility observed on CIFAR-100 arises not only from the choice of a particular
+frequency, but also from the apparently weaker separation between the model's decisions.
 
 % \subsection{Carte moyenne de stabilité locale}
 

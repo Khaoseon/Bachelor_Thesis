@@ -249,25 +249,25 @@
 
 % !TeX root = ../main_en.tex
 
-\chapter{Contexte}
+\chapter{Background}
 
-Ce chapitre fixe les notions utiles pour la suite : les CNN comme modèles fondés sur la convolution, la robustesse comme stabilité de la prédiction, 
-et les perturbations adversariales comme directions dans l'espace des images.
+This chapter establishes the concepts needed for the rest of the report: CNNs as convolution-based models, robustness as prediction stability,
+and adversarial perturbations as directions in image space.
 
-\section{Les réseaux convolutionnels en vision par ordinateur}
+\section{Convolutional Networks in Computer Vision}
 
-Une image numérique peut être vue comme un tenseur $X \in \mathbb{R}^{C \times H \times W}$, où $C$ désigne les canaux couleur, et $H,W$ 
-la taille spatiale. Un classifieur apprend une fonction
+A digital image can be viewed as a tensor $X \in \mathbb{R}^{C \times H \times W}$, where $C$ denotes the color channels and $H,W$
+the spatial dimensions. A classifier learns a function
 \[
     f : \mathbb{R}^{C \times H \times W} \longrightarrow \{1,\ldots,K\},
 \]
-qui associe à chaque image une classe parmi $K$ catégories.
+that assigns each image to one of $K$ categories.
 
-Les réseaux convolutionnels exploitent la structure spatiale de l'image. Contrairement à une couche entièrement connectée, une convolution 
-applique le même filtre local à toutes les positions. Ce partage des poids permet de détecter un motif, par exemple un bord ou une texture, indépendamment de sa position. 
+Convolutional networks exploit the spatial structure of images. Unlike a fully connected layer, a convolution
+applies the same local filter at every position. This weight sharing enables a pattern, such as an edge or a texture, to be detected regardless of its position.
 
-En empilant plusieurs couches, le réseau combine des motifs locaux en représentations plus abstraites. Les premières couches capturent des 
-structures simples, tandis que les couches profondes construisent des informations plus liées aux objets. La figure~\ref{fig:lenet5} illustre ce principe.
+By stacking several layers, the network combines local patterns into more abstract representations. The first layers capture
+simple structures, while deeper layers produce information more closely related to objects. Figure~\ref{fig:lenet5} illustrates this principle.
 
 \begin{figure}[H]
     \centering
@@ -365,52 +365,53 @@ structures simples, tandis que les couches profondes construisent des informatio
     \node[below, align=center] at (24.2, \textY) {Gaussian connections};
         \end{tikzpicture}
     }
-    \caption{Architecture du réseau de neurones convolutionnel LeNet-5. Adapté de \cite{lecun1998gradient}.}
+    \caption{Architecture of the LeNet-5 convolutional neural network. Adapted from \cite{lecun1998gradient}.}
     \label{fig:lenet5}
 \end{figure}
 
-L'output de taille $10$ correspond ici à une prédiction parmi les dix chiffres possibles.
+The output of size $10$ here corresponds to a prediction among the ten possible digits.
 
-\section{Robustesse des modèles de vision}
+\section{Robustness of Vision Models}
 
-La performance est souvent mesurée sur des images propres, proches de celles utilisées pendant l'entraînement. Cette mesure ne suffit pas : un modèle peut être précis, mais instable face à de petites variations.
+Performance is often measured on clean images similar to those used during training. This measure is insufficient: a model can be accurate yet unstable under small variations.
 
-Soit une image $x$ et une perturbation $\delta$. Un modèle est robuste localement si sa prédiction reste stable lorsque $x$ est remplacée par $x+\delta$ :
+Consider an image $x$ and a perturbation $\delta$. A model is locally robust if its prediction remains stable when $x$ is replaced by $x+\delta$:
 \[
     f(x+\delta) = f(x)
-    \qquad \text{pour des perturbations } \delta \text{ suffisamment petites.}
+    \qquad \text{for perturbations } \delta \text{ that are sufficiently small.}
 \]
 
-\section{Perturbations adversariales}
+\section{Adversarial Perturbations}
 \label{sec:perturbation_adversariale}
 
-Une perturbation adversariale est une modification choisie pour changer la prédiction d'un modèle, tout en restant faible ou peu visible pour l'oeil humain~\cite{szegedy2014intriguing}. Ce n'est pas un bruit aléatoire : elle suit une direction qui influence fortement la sortie du réseau.
+An adversarial perturbation is a modification chosen to change a model's prediction while remaining small or barely visible to the human eye~\cite{szegedy2014intriguing}. It is not random noise: it follows a direction that strongly influences the network's output.
 
-À partir d'une image $x$, on construit une image perturbée
+Starting from an image $x$, we construct a perturbed image
 \[
     \widetilde{x} = x + \delta,
 \]
-avec une perturbation $\delta$ suffisamment petite, mais telle que
+with a perturbation $\delta$ that is sufficiently small but satisfies
 \[
     f(\widetilde{x}) \neq f(x).
 \]
-Dans ce rapport, ces perturbations servent surtout d'outil d'analyse : elles indiquent quelles directions de l'espace des images sont fortement amplifiées par le modèle.
+In this report, these perturbations primarily serve as an analytical tool: they indicate which directions in image space are strongly amplified by the model.
 
-\section{Perturbations universelles et directions de vulnérabilité}
+\section{Universal Perturbations and Directions of Vulnerability}
 
-Dans le cas le plus simple, une perturbation adversariale est construite pour une image donnée. Elle dépend donc fortement de cette image.
+In the simplest case, an adversarial perturbation is constructed for a given image and therefore depends strongly on that image.
 
-Une perturbation adversariale universelle repose sur une idée plus forte : trouver une seule perturbation $\delta$, que l'on ajoute à de nombreuses images 
-différentes~\cite{moosavi2017universal}.
+A universal adversarial perturbation is based on a stronger idea: finding a single perturbation $\delta$ that can be added to many
+different images~\cite{moosavi2017universal}.
 
-Une telle perturbation n'exploite donc pas seulement une particularité d'une image précise. Elle exploite une direction sensible du modèle, liée aux poids appris, 
-aux données, aux non-linéarités, mais aussi à la structure de l'architecture. C'est ce dernier point qui motive ce rapport.
+Such a perturbation therefore exploits more than a particular feature of a specific image. It exploits a sensitive direction of the model, related to the learned weights,
+the data, and nonlinearities, but also to the structure of the architecture. This last point motivates the present report.
 
-Si l'on considère une image comme un point dans un espace de grande dimension, une perturbation est un déplacement. Certaines directions ont peu d'effet, 
-tandis que d'autres traversent rapidement une frontière de décision, comme illustré dans la figure~\ref{fig:vulnerabilite_universelle_exacte}. 
+If an image is viewed as a point in a high-dimensional space, a perturbation is a displacement. Some directions have little effect,
+whereas others quickly cross a decision boundary, as illustrated in Figure~\ref{fig:vulnerabilite_universelle_exacte}.
 
 \begin{figure}[H]
     \centering
+    \resizebox{\linewidth}{!}{%
     \begin{tikzpicture}[scale=1, font=\sffamily]
 
         \definecolor{class0}{HTML}{EBF5FB} 
@@ -485,29 +486,30 @@ tandis que d'autres traversent rapidement une frontière de décision, comme ill
         \filldraw[accentred] (5.5, 5.6) circle (2pt);
         \filldraw[accentred] (7.2, 5.6) circle (2pt);
         
-        \node[accentred, font=\footnotesize\bfseries, inner sep=2pt] at (5.5, 6.3) {Sortie de la classe 0};
+        \node[accentred, font=\footnotesize\bfseries, inner sep=2pt] at (5.5, 6.3) {Leaving class 0};
 
         \begin{scope}[shift={(10.5, 2.5)}]
             \fill[white] (-0.2, -0.1) rectangle (7.8, 3.1);
             
             \filldraw[black] (0.2, 2.6) circle (2.5pt);
-            \node[right, font=\small] at (0.6, 2.6) {Points d'entrée distincts ($x, y, z$)};
+            \node[right, font=\small] at (0.6, 2.6) {Distinct input points ($x, y, z$)};
             
             \fill[class0] (0, 1.7) rectangle (0.4, 2.1);
             \draw[gray, thin] (0, 1.7) rectangle (0.4, 2.1);
-            \node[right, font=\small] at (0.6, 1.9) {Classe d'origine};
+            \node[right, font=\small] at (0.6, 1.9) {Original class};
 
             \draw[accentgreen, thick, dashed] (0, 1.0) -- (0.5, 1.0);
             
-            \node[right, font=\small] at (0.6, 1.0) {Direction robuste (grande marge)};
+            \node[right, font=\small] at (0.6, 1.0) {Robust direction (large margin)};
             
             \draw[accentred, ->, >=stealth, thick] (0, 0.3) -- (0.5, 0.3);
-            \node[right, font=\small] at (0.6, 0.3) {$\eta_{adv}$ : Perturbation universelle};
+            \node[right, font=\small] at (0.6, 0.3) {$\eta_{adv}$: Universal perturbation};
         \end{scope}
 
     \end{tikzpicture}
-    \caption{Illustration d'une perturbation universelle dans une région de décision anisotrope. 
-    La même direction de perturbation $\eta_{adv}$ est appliquée à plusieurs points d'entrée 
-    distincts $x$, $y$ et $z$ et les fait sortir de la région associée à la classe 0.}
+    }
+    \caption{Illustration of a universal perturbation in an anisotropic decision region.
+    The same perturbation direction $\eta_{adv}$ is applied to several distinct input points
+    $x$, $y$, and $z$, moving them outside the region associated with class 0.}
     \label{fig:vulnerabilite_universelle_exacte}
 \end{figure}

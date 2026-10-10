@@ -1,40 +1,40 @@
-\chapter{Fondements théoriques : convolution et base de Fourier}
+\chapter[Theoretical Foundations: Convolution and the Fourier Basis]{Theoretical Foundations:\\Convolution and the Fourier Basis}
 
-\section{Objectif de cette section}
+\section{Objective of This Section}
 
-Cette section a pour objectif de reconstruire le raisonnement théorique proposé par 
-Tsuzuku et Sato~\cite{tsuzuku2019structural}. Il s'agit de comprendre pourquoi les réseaux convolutionnels 
-présentent une sensibilité particulière à certaines directions de la base de Fourier, en caractérisant mathématiquement 
-ces vulnérabilités.
+This section aims to reconstruct the theoretical reasoning proposed by
+Tsuzuku and Sato~\cite{tsuzuku2019structural}. The aim is to understand why convolutional networks
+are particularly sensitive to certain directions of the Fourier basis by mathematically characterizing
+these vulnerabilities.
 
-L'idée générale repose sur la structure mathématique des couches convolutionnelles. 
-Pour l'étudier, nous nous placerons dans un cadre linéaire simplifié, en faisant fi des éléments 
-classiquement introduits le long du processus de décision d'un CNN pour en briser la linéarité 
-(tels que les fonctions d'activation non linéaires et le \textit{max-pooling}).
+The general idea rests on the mathematical structure of convolutional layers.
+To study this structure, we adopt a simplified linear framework, setting aside the components
+commonly introduced into neural networks to break linearity
+(such as nonlinear activation functions and \textit{max-pooling}).
 
-Les développements qui suivent utilisent deux rappels classiques d'algèbre linéaire :
-la représentation matricielle d'une application linéaire, et le lien entre vecteurs propres,
-valeurs propres et diagonalisation. Ces rappels sont donnés en annexes~\ref{app:representation-lineaire-matrice}
-et~\ref{app:vecteurs-propres-diagonalisation}.
+The following developments use two standard linear algebra results:
+the matrix representation of a linear map and the relationship between eigenvectors,
+eigenvalues, and diagonalization. These results are reviewed in Appendices~\ref{app:representation-lineaire-matrice}
+and~\ref{app:vecteurs-propres-diagonalisation}.
 
-\section{Conventions de Fourier et de vectorisation}
+\section{Fourier and Vectorization Conventions}
 \label{sec:conventions-fourier-vectorisation}
 
-Avant d'étudier les convolutions, nous fixons les conventions utilisées dans tout le chapitre.
+Before studying convolutions, we establish the conventions used throughout this chapter.
 
-Dans la suite, toutes les fréquences et tous les indices spatiaux seront interprétés modulo $N$.
+In what follows, all frequencies and spatial indices are interpreted modulo $N$.
 
-\subsection{Base de Fourier 1D et transformée discrète}
+\subsection{1D Fourier Basis and Discrete Transform}
 
-Pour un entier $N \geq 1$, on note
+For an integer $N \geq 1$, let
 \[
     \mathbb{Z}_N = \{0,\dots,N-1\}
 \]
-l'ensemble des indices pris modulo $N$. Concrètement, cela signifie que l'indice $N$ est identifié
-à l'indice $0$, l'indice $N+1$ à l'indice $1$, et ainsi de suite. Cette convention sera utilisée dans
-tout le chapitre.
+denote the set of indices taken modulo $N$. In concrete terms, this means that index $N$ is identified
+with index $0$, index $N+1$ with index $1$, and so on. This convention is used
+throughout the chapter.
 
-Pour chaque fréquence $k\in\mathbb{Z}_N$, on définit le vecteur de Fourier discret normalisé
+For each frequency $k\in\mathbb{Z}_N$, we define the normalized discrete Fourier vector
 \begin{equation}
     \phi_k[n]
     =
@@ -43,15 +43,15 @@ Pour chaque fréquence $k\in\mathbb{Z}_N$, on définit le vecteur de Fourier dis
     \qquad n\in\mathbb{Z}_N.
     \label{eq:def_base_fourier_1d}
 \end{equation}
-Le vecteur $\phi_k$ représente une onde discrète de fréquence $k$. Les petites valeurs de $k$
-correspondent à des variations lentes, tandis que les fréquences plus élevées correspondent à des
-oscillations plus rapides sur les $N$ points du signal. Le facteur $1/\sqrt{N}$ sert à normaliser le
-vecteur, ce qui donne
+The vector $\phi_k$ represents a discrete wave of frequency $k$. Small values of $k$
+correspond to slow variations, while higher frequencies correspond to
+faster oscillations over the $N$ signal points. The factor $1/\sqrt{N}$ normalizes the
+vector, giving
 \[
     \|\phi_k\|_2 = 1.
 \]
 
-On regroupe tous ces vecteurs dans une même matrice :
+We collect all these vectors in a single matrix:
 \begin{equation}
     F_N
     =
@@ -62,24 +62,24 @@ On regroupe tous ces vecteurs dans une même matrice :
     \end{pmatrix}.
     \label{eq:def_matrice_fourier_1d}
 \end{equation}
-La matrice $F_N$ contient donc, colonne par colonne, toutes les directions de Fourier possibles
-pour un signal de taille $N$. Avec la normalisation choisie, ses colonnes forment une base
-orthonormée de $\mathbb{C}^N$, c'est-à-dire
+The matrix $F_N$ therefore contains, column by column, all possible Fourier directions
+for a signal of size $N$. With the chosen normalization, its columns form an
+orthonormal basis of $\mathbb{C}^N$, that is,
 \[
     F_N^H F_N = I_N,
     \qquad
     F_N^{-1}=F_N^H.
 \]
 
-La transformée de Fourier discrète consiste alors à exprimer un signal
-$x\in\mathbb{C}^N$ dans cette base. Avec notre convention, les coefficients de Fourier de $x$ sont
-donnés par
+The discrete Fourier transform then consists of expressing a signal
+$x\in\mathbb{C}^N$ in this basis. Under our convention, the Fourier coefficients of $x$ are
+given by
 \begin{equation}
     \widehat{x}
     =
     F_N^H x,
 \end{equation}
-c'est-à-dire, composante par composante,
+or, component by component,
 \begin{equation}
     \widehat{x}[k]
     =
@@ -88,15 +88,15 @@ c'est-à-dire, composante par composante,
     x[n]e^{-2\pi i kn/N}.
     \label{eq:def_dft_1d}
 \end{equation}
-Le coefficient $\widehat{x}[k]$ mesure la contribution de la fréquence $k$ dans le signal.
+The coefficient $\widehat{x}[k]$ measures the contribution of frequency $k$ to the signal.
 
-Comme $F_N$ est unitaire, on peut reconstruire le signal à partir de ses coefficients de Fourier par
+Since $F_N$ is unitary, the signal can be reconstructed from its Fourier coefficients as
 \begin{equation}
     x
     =
     F_N\widehat{x},
 \end{equation}
-ou encore, composante par composante,
+or, component by component,
 \begin{equation}
     x[n]
     =
@@ -106,23 +106,23 @@ ou encore, composante par composante,
     \label{eq:def_idft_1d}
 \end{equation}
 
-\subsection{Base de Fourier 2D}
+\subsection{2D Fourier Basis}
 
-On passe maintenant des signaux 1D aux images 2D. Pour une image
-$X\in\mathbb{C}^{N\times N}$, on utilise les indices spatiaux
+We now move from 1D signals to 2D images. For an image
+$X\in\mathbb{C}^{N\times N}$, we use spatial indices
 \[
     (m,n)\in\mathbb{Z}_N^2.
 \]
-L'indice $m$ désigne la position verticale, et l'indice $n$ la position horizontale.
+The index $m$ denotes the vertical position, and $n$ the horizontal position.
 
-De la même manière, une fréquence 2D est décrite par un couple
+Similarly, a 2D frequency is described by a pair
 \[
     (u,v)\in\mathbb{Z}_N^2.
 \]
-L'indice $u$ correspond à la fréquence verticale, tandis que l'indice $v$ correspond à la fréquence
-horizontale.
+The index $u$ corresponds to the vertical frequency, while $v$ corresponds to the horizontal
+frequency.
 
-Pour chaque couple de fréquences $(u,v)$, on définit l'image de Fourier 2D
+For each frequency pair $(u,v)$, we define the 2D Fourier image
 \begin{equation}
     \Phi_{u,v}[m,n]
     =
@@ -132,29 +132,29 @@ Pour chaque couple de fréquences $(u,v)$, on définit l'image de Fourier 2D
     e^{2\pi i(um+vn)/N}.
     \label{eq:def_base_fourier_2d}
 \end{equation}
-Cette formule signifie qu'une onde de Fourier 2D est obtenue comme le produit d'une onde verticale
-et d'une onde horizontale sous forme matricielle : $\Phi_{u,v} = \phi_u \phi_v^T$.
+This formula means that a 2D Fourier mode is obtained as the product of a vertical wave
+and a horizontal wave, in matrix form: $\Phi_{u,v} = \phi_u \phi_v^T$.
 
-En faisant varier les fréquences $u$ et $v$, on obtient différents motifs périodiques dans l'espace
-des images. Visuellement, ces motifs peuvent prendre la forme de bandes, de grilles ou d'oscillations
-orientées, dont la densité dépend directement du couple $(u,v)$. Ainsi, ajouter une direction de
-Fourier à une image revient à lui superposer un motif géométrique périodique.
+Varying the frequencies $u$ and $v$ produces different periodic patterns in image
+space. Visually, these patterns can take the form of stripes, grids, or oriented
+oscillations whose density depends directly on the pair $(u,v)$. Adding a Fourier
+direction to an image therefore amounts to superimposing a periodic geometric pattern.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/theory/fourier_basis_2d.pdf}
-    \caption{Visualisation des bases de Fourier 2D pour tous les couples de fréquences $(u,v)$ d'une image de taille $9 \times 9$. La partie réelle et la partie imaginaire sont affichées séparément. Les basses fréquences sont situées au centre des grilles, tandis que les hautes fréquences se trouvent en périphérie.}
+    \caption{Visualization of 2D Fourier basis functions for all frequency pairs $(u,v)$ of an image of size $9 \times 9$. The real and imaginary parts are displayed separately. Low frequencies lie at the center of the grids, while high frequencies lie at the edges.}
     \label{fig:fourier_basis_2d}
 \end{figure}
 
-Dans les figures, on représentera parfois les fréquences de manière centrée, avec les basses fréquences
-au centre de l'image. Cette convention est pratique pour la visualisation. En revanche, dans les formules,
-les indices restent toujours dans $\{0,\dots,N-1\}$ et sont interprétés modulo $N$.
+In figures, frequencies are sometimes shown in a centered arrangement, with low frequencies
+at the center of the image. This convention is convenient for visualization. In the formulas, however,
+the indices always remain in $\{0,\dots,N-1\}$ and are interpreted modulo $N$.
 
-\subsection{Vectorisation et produit de Kronecker}
+\subsection{Vectorization and the Kronecker Product}
 
-Dans tout le chapitre, nous vectorisons les images en empilant les colonnes. Pour
-$X\in\mathbb{C}^{N\times N}$, on pose donc
+Throughout this chapter, we vectorize images by stacking their columns. For
+$X\in\mathbb{C}^{N\times N}$, we therefore define
 \begin{equation}
 \operatorname{vec}(X)
 =
@@ -169,15 +169,15 @@ X[N-1,N-1]
 \end{pmatrix}.
 \label{eq:def_vectorisation_colonnes}
 \end{equation}
-On lit d'abord la première colonne, puis la deuxième, et ainsi de suite. Avec cette convention,
-l'entrée $X[m,n]$ correspond à l'indice vectorisé
+The first column is read first, then the second, and so on. Under this convention,
+entry $X[m,n]$ corresponds to the vectorized index
 \[
     m+Nn.
 \]
 
-Nous utiliserons aussi le produit de Kronecker, noté $\otimes$. Défini comme suit, soient
-$A \in \mathbb{C}^{m \times n}$ et $B \in \mathbb{C}^{p \times q}$, alors la matrice par blocs de taille
-$mp \times nq$ est définie par
+We also use the Kronecker product, denoted by $\otimes$. It is defined as follows: for
+$A \in \mathbb{C}^{m \times n}$ and $B \in \mathbb{C}^{p \times q}$, the block matrix of size
+$mp \times nq$ is defined by
 
 $$
 A \otimes B =
@@ -189,11 +189,11 @@ a_{m1}B & a_{m2}B & \cdots & a_{mn}B
 \end{pmatrix}.
 $$
 
-Il permet notamment de construire
-une base de Fourier 2D à partir de deux bases de Fourier 1D. Les propriétés algébriques de la
-vectorisation et du produit de Kronecker sont déjà connues en analyse matricielle~\cite{horn2013matrix}.
+In particular, it allows us to construct
+a 2D Fourier basis from two 1D Fourier bases. The algebraic properties of
+vectorization and the Kronecker product are established results in matrix analysis~\cite{horn2013matrix}.
 
-Avec notre convention de vectorisation par colonnes, on a en particulier
+Under our column-wise vectorization convention, in particular,
 \begin{equation}
     \operatorname{vec}(ab^T)
     =
@@ -201,36 +201,36 @@ Avec notre convention de vectorisation par colonnes, on a en particulier
     \label{eq:vec_produit_exterieur}
 \end{equation}
 
-En appliquant cette identité à l'image de Fourier
+Applying this identity to the Fourier image
 \[
     \Phi_{u,v}=\phi_u\phi_v^T,
 \]
-on obtient
+gives
 \begin{equation}
     \operatorname{vec}(\Phi_{u,v})
     =
     \phi_v\otimes\phi_u.
     \label{eq:vec_fourier_2d}
 \end{equation}
-Ainsi, dans toute la suite du chapitre, la colonne de $Q_N$ associée à la fréquence 2D $(u,v)$ sera notée
+Thus, throughout the remainder of the chapter, the column of $Q_N$ associated with the 2D frequency $(u,v)$ is denoted by
 \[
     q_{u,v}
     =
     \phi_v\otimes\phi_u.
 \]
 
-On note alors
+We then denote by
 \begin{equation}
     Q_N = F_N \otimes F_N
     \label{eq:def_base_fourier_2d_vectorisee}
 \end{equation}
-la base de Fourier 2D vectorisée. Par unitarité de $F_N$ :
+the vectorized 2D Fourier basis. Since $F_N$ is unitary,
 \[
     Q_N^H Q_N = I_{N^2}.
 \]
-Les colonnes de $Q_N$ forment donc une base orthonormée de $\mathbb{C}^{N^2}$.
+The columns of $Q_N$ form an orthonormal basis of $\mathbb{C}^{N^2}$.
 
-Avec la notation précédente, la colonne associée à la fréquence $(u,v)$ est
+With the preceding notation, the column associated with frequency $(u,v)$ is
 \[
     (Q_N)_{w(u,v)}
     =
@@ -238,39 +238,39 @@ Avec la notation précédente, la colonne associée à la fréquence $(u,v)$ est
     =
     \phi_v\otimes\phi_u.
 \]
-L'indice $w(u,v)$ est simplement l'indice aplati qui permet de passer du couple de fréquences
-$(u,v)$ à un seul indice de colonne dans $Q_N$. Il est défini par
+The index $w(u,v)$ is simply the flattened index that maps the frequency pair
+$(u,v)$ to a single column index in $Q_N$. It is defined by
 \begin{equation}
     w(u,v)=u+Nv.
     \label{eq:indice_frequence_aplati}
 \end{equation}\
 
-Réciproquement, si l'on connaît un indice aplati $w\in\{0,\dots,N^2-1\}$, on retrouve le couple
-de fréquences correspondant par
+Conversely, given a flattened index $w\in\{0,\dots,N^2-1\}$, the corresponding frequency
+pair is recovered as
 \[
     u = w \bmod N,
     \qquad
     v = \left\lfloor \frac{w}{N} \right\rfloor.
 \]
 
-\section{Convolution discrète en dimension 1}
+\section{Discrete Convolution in Dimension 1}
 
-Avant d'étudier les images, nous commençons par le cas plus simple d'un signal discret périodique représenté 
-par sa période $x = (x[0], x[1], \ldots, x[N-1])$ avec $x[i] \in \mathbb{R}$.
-Soit $x \in \mathbb{R}^N$ notre signal et $h = (h[0], h[1], \ldots, h[N-1]) \in \mathbb{R}^N$ notre filtre (qui sera 
-supposé de même taille que le signal, quitte à être complété par des zéros). 
-La convolution circulaire entre $h$ et $x$ est définie par :
+Before studying images, we begin with the simpler case of a periodic discrete signal represented
+by one period $x = (x[0], x[1], \ldots, x[N-1])$ with $x[i] \in \mathbb{R}$.
+Let $x \in \mathbb{R}^N$ be our signal and $h = (h[0], h[1], \ldots, h[N-1]) \in \mathbb{R}^N$ our filter (assumed
+to have the same size as the signal, with zero-padding if necessary).
+The circular convolution of $h$ and $x$ is defined as
 
 \[
 y[n] = (h * x)[n] = \sum_{k=0}^{N-1} h[k]\,x[(n-k) \bmod N] \text{~\cite{ImagerieNumeriqueTheme7Block2}}
 \]
 
-L'opération modulo signifie que les indices du signal sont pris dans 
+The modulo operation means that the signal indices are taken in
 \(\mathbb{Z}_N\). 
-Ainsi, lorsqu'un indice sort de l'intervalle \(\{0,\ldots,N-1\}\), 
-il est ramené à sa classe correspondante dans \(\mathbb{Z}_N\).
-Le signal est donc interprété comme périodique, comme l'illustre la 
-figure~\ref{fig:padding_circulaire}. 
+Thus, when an index falls outside the interval \(\{0,\ldots,N-1\}\),
+it is mapped back to its corresponding class in \(\mathbb{Z}_N\).
+The signal is therefore interpreted as periodic, as illustrated in
+Figure~\ref{fig:padding_circulaire}.
 
 \begin{figure}[H]
     \centering
@@ -292,7 +292,7 @@ figure~\ref{fig:padding_circulaire}.
     \node[pad, right=of pR1] (pR2) {$x_1$};
     
     \draw [decorate,decoration={brace,amplitude=5pt,mirror}]
-        (x0.south west) -- (x3.south east) node[midway,below=10pt] {Signal original $x$};
+        (x0.south west) -- (x3.south east) node[midway,below=10pt] {Original signal $x$};
     
     \draw [decorate,decoration={brace,amplitude=5pt}, gray]
         (pL2.north west) -- (pL1.north east) node[midway,above=10pt] {\textit{Padding}};
@@ -304,87 +304,87 @@ figure~\ref{fig:padding_circulaire}.
     \draw[->, thick, gray, dashed, bend right=45] (x0.south) to node[below] {} (pR1.south);
 
     \end{tikzpicture}
-    \caption{Représentation du \textit{padding} circulaire pour un signal 1D. Les bords du signal se répètent de manière périodique.}
+    \caption{Circular \textit{padding} for a 1D signal. The signal boundaries repeat periodically.}
     \label{fig:padding_circulaire}
 \end{figure}
 
-\paragraph{Remarque sur l'hypothèse de périodicité.}
+\paragraph{Remark on the periodicity assumption.}
 
-Dans cette section, nous travaillons avec des convolutions circulaires. Cela revient à considérer les
-signaux comme périodiquement prolongés : lorsque l'on dépasse une extrémité du signal, on revient
-de l'autre côté. Cette hypothèse est très utile mathématiquement, car elle permet de diagonaliser les
-convolutions par la base de Fourier discrète.
+In this section, we work with circular convolutions. This amounts to treating
+signals as periodically extended: when we pass one end of the signal, we continue
+from the other end. This assumption is mathematically useful because it allows
+convolutions to be diagonalized by the discrete Fourier basis.
 
-Elle ne correspond cependant pas toujours au comportement exact des images réelles aux bords :
-si les extrémités ne se raccordent pas naturellement, la périodisation peut créer une discontinuité
-artificielle. Ce point est discuté plus en détail en annexe~\ref{app:periodicite-bords-gibbs}.
+However, it does not always match the exact boundary behavior of real images:
+if the ends do not join naturally, periodization can create an artificial
+discontinuity. This point is discussed in greater detail in Appendix~\ref{app:periodicite-bords-gibbs}.
 
-\section{Les fonctions de Fourier comme fonctions propres de la convolution circulaire}
+\section{Fourier Functions as Eigenfunctions of Circular Convolution}
 \label{sec:fourier-vecteurs-propres}
 
-\paragraph{Cas unidimensionnel}
+\paragraph{One-dimensional case.}
 
-On se place dans l'espace des signaux discrets périodiques de période $N$ :
+We work in the space of periodic discrete signals with period $N$:
 \[
 V_N = \{x : \mathbb{Z}_N \rightarrow \mathbb{C}\}.
 \]
-Un élément de $V_N$ peut être vu soit comme une fonction discrète périodique, soit comme un vecteur de $\mathbb{C}^N$.
+An element of $V_N$ can be viewed either as a periodic discrete function or as a vector in $\mathbb{C}^N$.
 
-Pour un filtre $h \in \mathbb{C}^N$ fixé, la convolution circulaire définit un opérateur linéaire
+For a fixed filter $h \in \mathbb{C}^N$, circular convolution defines a linear operator
 \[
 \mathcal{C}_h : V_N \rightarrow V_N,
 \qquad
 \mathcal{C}_h(x) = h * x.
 \]
 
-Pour chaque fréquence $f \in \{0,\dots,N-1\}$, on utilise le vecteur de Fourier normalisé
-$\phi_f$ défini en \eqref{eq:def_base_fourier_1d}.
+For each frequency $f \in \{0,\dots,N-1\}$, we use the normalized Fourier vector
+$\phi_f$ defined in \eqref{eq:def_base_fourier_1d}.
 
-Le résultat fondamental liant la convolution circulaire et la base de Fourier s'écrit alors :
+The fundamental result connecting circular convolution and the Fourier basis is then
 
 \begin{equation}
 \mathcal{C}_h(\phi_f) = \lambda_f \phi_f,
 \label{eq:fourier_fonction_propre_conv_1d}
 \end{equation}
 
-c'est-à-dire, composante par composante :
+or, component by component,
 \[
 (h * \phi_f)[n] = \lambda_f \phi_f[n],
 \]
-où
+where
 \[
 \lambda_f =
 \sum_{k=0}^{N-1} h[k] e^{-2\mathrm{i}\pi f k/N}.
 \]
 
-Il est important de remarquer que $\lambda_f$ dépend du filtre $h$ et de la fréquence $f$,
-mais pas de la position $n$. Ainsi, lorsque l'entrée de l'opérateur de convolution circulaire
-est une onde de Fourier, la convolution ne modifie pas sa forme spatiale : elle se contente
-de la multiplier par un scalaire complexe. Autrement dit, $\lambda_f$ est une valeur propre et
-$\phi_f$ une fonction propre de l'opérateur de convolution circulaire
+Note that $\lambda_f$ depends on the filter $h$ and the frequency $f$,
+but not on the position $n$. Thus, when the input to the circular convolution operator
+is a Fourier mode, convolution does not alter its spatial form: it simply
+multiplies it by a complex scalar. In other words, $\lambda_f$ is an eigenvalue and
+$\phi_f$ an eigenfunction of the circular convolution operator
 $\mathcal{C}_h$.
 
 \begin{proof}
 \begin{alignat*}{2}
     (\mathcal{C}_h(\phi_f))[n] &= (h * \phi_f)[n] \\
     &= \sum_{k=0}^{N-1} h[k]\,\phi_f[(n-k) \bmod N] \\
-    \text{\small (périodicité de $\phi_f$)} \quad &= \sum_{k=0}^{N-1} h[k]\,\phi_f[n-k] \\
-    \text{\small (propriété de l'exponentielle)} \quad &= \sum_{k=0}^{N-1} h[k] e^{-2\mathrm{i}\pi f k/N}\phi_f[n] \\
+    \text{\small (periodicity of $\phi_f$)} \quad &= \sum_{k=0}^{N-1} h[k]\,\phi_f[n-k] \\
+    \text{\small (property of exponentials)} \quad &= \sum_{k=0}^{N-1} h[k] e^{-2\mathrm{i}\pi f k/N}\phi_f[n] \\
     &= \left(\sum_{k=0}^{N-1} h[k] e^{-2\mathrm{i}\pi f k/N}\right)\phi_f[n] \\
     &= \lambda_f \phi_f[n].
 \end{alignat*}
 
 \end{proof}
 
-Ce résultat correspond au théorème de convolution discret : dans le domaine de Fourier,
-une convolution circulaire devient une multiplication fréquence par fréquence. Ainsi,
-lorsque l'entrée est une onde de Fourier pure \(\phi_f\), la convolution ne change pas
-sa fréquence ; elle la multiplie seulement par un scalaire. On obtient donc \ref{eq:fourier_fonction_propre_conv_1d}
+This result corresponds to the discrete convolution theorem: in the Fourier domain,
+circular convolution becomes frequency-wise multiplication. Thus,
+when the input is a pure Fourier mode \(\phi_f\), convolution does not change
+its frequency; it only multiplies it by a scalar. We therefore obtain Equation~\ref{eq:fourier_fonction_propre_conv_1d}.
 
-\subsection{Conséquence matricielle : diagonalisation des matrices circulantes}
+\subsection{Consequence: Diagonalization of Circulant Matrices}
 
-Pour un filtre $h$ fixe, la convolution circulaire 1D définit une application linéaire de $\mathbb{C}^N \rightarrow \mathbb{C}^N$
-car pour tous $x, y \in \mathbb{C}^N$ et tous $\alpha, \beta \in \mathbb{C}$ nous avons que
+For a fixed filter $h$, 1D circular convolution defines a linear map $\mathbb{C}^N \rightarrow \mathbb{C}^N$,
+since for all $x, y \in \mathbb{C}^N$ and all $\alpha, \beta \in \mathbb{C}$,
 \begin{align*}
 h * (\alpha x + \beta y) &= \alpha (h * x) + \beta (h * y)
 \end{align*}
@@ -399,16 +399,16 @@ h * (\alpha x + \beta y) &= \alpha (h * x) + \beta (h * y)
 
 \end{proof}
 
-Comme cette opération est linéaire, le rappel de l'annexe~\ref{app:representation-lineaire-matrice}
-garantit qu'elle peut être représentée, une fois une base choisie, par une matrice
-$C_h \in \mathbb{C}^{N \times N}$ telle que pour tout signal d'entrée $x \in \mathbb{C}^N$ :
+Since this operation is linear, the result reviewed in Appendix~\ref{app:representation-lineaire-matrice}
+guarantees that, once a basis has been chosen, it can be represented by a matrix
+$C_h \in \mathbb{C}^{N \times N}$ such that, for every input signal $x \in \mathbb{C}^N$,
 
 $$
 y = C_h x.
 $$
 
-où $C_h$ est une matrice circulante construite à partir du filtre $h$ telle que la première ligne est organisée de manière à reproduire $y[0]$,
-puis chaque ligne suivante est obtenue par décalage circulaire :
+Here, $C_h$ is a circulant matrix constructed from the filter $h$. Its first row is arranged to reproduce $y[0]$,
+and each subsequent row is obtained by a circular shift:
 
 $$
 C_h =
@@ -421,46 +421,46 @@ h[N-1] & h[N-2] & h[N-3] & \cdots & h[0]
 \end{pmatrix}.
 $$
 
-En effet, $y[0] = h[0]x[0] + h[1]x[N-1] + \cdots + h[N-1]x[1]$ correspond à la première ligne de $C_h$ 
-multipliée par le vecteur $x$, en appliquant itérativement la même logique on obtient les autres éléments de $y$.
+Indeed, $y[0] = h[0]x[0] + h[1]x[N-1] + \cdots + h[N-1]x[1]$ is the first row of $C_h$
+multiplied by the vector $x$. Applying the same reasoning iteratively gives the other elements of $y$.
 
 \vspace{0.5cm}
 
-En choisissant la base canonique de $\mathbb{C}^N$, l'opérateur linéaire $\mathcal{C}_h$
-est représenté par la matrice circulante $C_h$. La relation
-$\mathcal{C}_h(\phi_f) = \lambda_f \phi_f$ peut alors être réécrite sous forme matricielle :
+In the standard basis of $\mathbb{C}^N$, the linear operator $\mathcal{C}_h$
+is represented by the circulant matrix $C_h$. The relation
+$\mathcal{C}_h(\phi_f) = \lambda_f \phi_f$ can then be rewritten in matrix form:
 
 \begin{equation}
     C_h \phi_f = \lambda_f \phi_f
     \label{eq:fourier_eigen_matrice}
 \end{equation}
 
-Ainsi, chaque fonction de Fourier $\phi_f$ est un vecteur propre de la matrice circulante $C_h$,
-avec valeur propre associée $\lambda_f$. Ce qui signifie que dans le cadre 
-circulaire, la convolution agit diagonalement dans la base de Fourier.
+Thus, each Fourier function $\phi_f$ is an eigenvector of the circulant matrix $C_h$,
+with associated eigenvalue $\lambda_f$. This means that, in the circular
+setting, convolution acts diagonally in the Fourier basis.
 
-En utilisant la matrice de Fourier $F_N$ définie en \eqref{eq:def_matrice_fourier_1d},
-on regroupe les valeurs propres dans la matrice diagonale :
+Using the Fourier matrix $F_N$ defined in \eqref{eq:def_matrice_fourier_1d},
+we collect the eigenvalues in the diagonal matrix
 $$
 \Lambda_h =
 \operatorname{diag}(\lambda_0,\lambda_1,\ldots,\lambda_{N-1}).
 $$
 
-L'égalité vectorielle \eqref{eq:fourier_eigen_matrice} pour toutes les fréquences devient :
+Combining the vector equalities \eqref{eq:fourier_eigen_matrice} for all frequencies gives
 
 \begin{align}
 C_h F_N &= F_N \Lambda_h \notag \\
-\text{(par unitarité de \(F_N\))}\qquad
+\text{(by unitarity of \(F_N\))}\qquad
 \Longleftrightarrow\quad
 C_h &= F_N \Lambda_h F_N^H.
 \end{align}
 
-\section{Convolution circulaire en dimension 2}
+\section{Circular Convolution in Dimension 2}
 \label{sec:convolution-circulaire-2d}
 
-Nous étendons maintenant le résultat précédent au cas des images carrées. Soit
-$X\in\mathbb{C}^{N\times N}$ une image et soit
-$h\in\mathbb{C}^{N\times N}$ un filtre. La convolution circulaire 2D est définie par
+We now extend the preceding result to square images. Let
+$X\in\mathbb{C}^{N\times N}$ be an image and
+$h\in\mathbb{C}^{N\times N}$ a filter. 2D circular convolution is defined by
 \begin{equation}
     Y[m,n]
     =
@@ -473,14 +473,14 @@ $h\in\mathbb{C}^{N\times N}$ un filtre. La convolution circulaire 2D est défini
     \label{eq:def_convolution_circulaire_2d}
 \end{equation}
 
-Nous utilisons les images de Fourier 2D définies en \eqref{eq:def_base_fourier_2d} :
+We use the 2D Fourier images defined in \eqref{eq:def_base_fourier_2d}:
 \[
     \Phi_{u,v}[m,n]
     =
     \phi_u[m]\phi_v[n].
 \]
-Comme en dimension 1, un décalage circulaire d'une base de Fourier ne change pas sa forme, mais la
-multiplie par un facteur complexe :
+As in dimension 1, a circular shift of a Fourier basis function does not change its form, but
+multiplies it by a complex factor:
 \[
     \phi_u[(m-a)\bmod N]
     =
@@ -490,7 +490,7 @@ multiplie par un facteur complexe :
     =
     e^{-2\pi ivb/N}\phi_v[n].
 \]
-Ainsi,
+Thus,
 \[
     \Phi_{u,v}[(m-a)\bmod N,(n-b)\bmod N]
     =
@@ -498,9 +498,9 @@ Ainsi,
     \Phi_{u,v}[m,n],
 \]
 
-ou $(ua + vb) \in \mathbb{Z}_N$.
+where $(ua + vb) \in \mathbb{Z}_N$.
 
-En appliquant la convolution circulaire 2D à $\Phi_{u,v}$, on obtient
+Applying 2D circular convolution to $\Phi_{u,v}$ gives
 \begin{align}
 (h * \Phi_{u,v})[m,n]
 &=
@@ -518,7 +518,7 @@ h[a,b]e^{-2\pi i(ua+vb)/N}
 \Phi_{u,v}[m,n].
 \end{align}
 
-On définit donc
+We therefore define
 \begin{equation}
     \lambda_{u,v}
     =
@@ -527,7 +527,7 @@ On définit donc
     h[a,b]e^{-2\pi i(ua+vb)/N}.
     \label{eq:valeur_propre_convolution_2d}
 \end{equation}
-On obtient finalement
+Finally, we obtain
 \begin{equation}
     h * \Phi_{u,v}
     =
@@ -535,27 +535,27 @@ On obtient finalement
     \label{eq:fourier_fonction_propre_conv_2d}
 \end{equation}
 
-\section{Représentation matricielle d'une convolution 2D}
+\section{Matrix Representation of a 2D Convolution}
 
-Nous utilisons maintenant la vectorisation par colonnes définie en
-\eqref{eq:def_vectorisation_colonnes}. Comme la convolution circulaire est linéaire, il existe
-une matrice
+We now use the column-wise vectorization defined in
+\eqref{eq:def_vectorisation_colonnes}. Since circular convolution is linear, there exists
+a matrix
 \[
     M \in \mathbb{C}^{N^2\times N^2}
 \]
-telle que
+such that
 \begin{equation}
     \operatorname{vec}(Y)
     =
     M\operatorname{vec}(X).
 \end{equation}
 
-Autrement dit, le coefficient de $M$ situé à la ligne $m+Nn$ et à la colonne $r+Ns$ indique comment le pixel
-$X[r,s]$ contribue au pixel $Y[m,n]$.
+In other words, the coefficient of $M$ at row $m+Nn$ and column $r+Ns$ indicates how pixel
+$X[r,s]$ contributes to pixel $Y[m,n]$.
 
-La matrice $M$ en question applique le filtre $h$ sur chaque pixel de notre image $X$ en une seule opération.
-À cette fin, la matrice $M$ possède une structure bloc-circulante à blocs circulants (BCCB)
-comme illustré ci-dessous :
+The matrix $M$ applies the filter $h$ to every pixel of our image $X$ in a single operation.
+To do so, $M$ has a block-circulant structure with circulant blocks (BCCB),
+as illustrated below:
 
 \begin{figure}[H]
 \centering
@@ -609,7 +609,7 @@ $C_{N-1}$             & $C_{N-2}$  & $\cdots$ & $C_1$     & |[diagblock]|$C_0$ \
 % Titre compact avec sous-titre intégré
 \node[above=2pt of bigmatrix, align=center] {
     \textbf{\(M \in\mathbb{C}^{N^2\times N^2}\)} \\ 
-    \scriptsize (Bloc-circulante : décalage par blocs)
+    \scriptsize (Block-circulant: shifts of blocks)
 };
 
 % --- Flèche de zoom plus courte ---
@@ -630,61 +630,61 @@ $};
 
 % Titre compact pour Ck
 \node[above=2pt of smallmatrix, align=center] {
-    \textbf{Bloc \(C_k\) circulant} \\
-    \scriptsize (décalage interne)
+    \textbf{Circulant block \(C_k\)} \\
+    \scriptsize (internal shifts)
 };
 
 \end{tikzpicture}
 
-\caption{Structure compacte d'une matrice BCCB (doublement circulante).}
+\caption{Compact structure of a BCCB (doubly circulant) matrix.}
 \label{fig:bccb-structure}
 \end{figure}
 
-On dit alors que $M$ est une matrice \textbf{BCCB} (\textit{Block-Circulant with Circulant Blocks}~\cite{jain1989fundamentals}).
-Le détail est donné en annexe~\ref{app:preuve_bccb}.
+We therefore call $M$ a \textbf{BCCB} matrix (\textit{Block-Circulant with Circulant Blocks}~\cite{jain1989fundamentals}).
+Details are provided in Appendix~\ref{app:preuve_bccb}.
 
-Le résultat spectral obtenu pour la convolution circulaire 2D s'écrit alors, sous forme vectorisée,
+The spectral result obtained for 2D circular convolution then becomes, in vectorized form,
 \[
     M\operatorname{vec}(\Phi_{u,v})
     =
     \lambda_{u,v}\operatorname{vec}(\Phi_{u,v}).
 \]
 
-\subsection{Diagonalisation par le produit de Kronecker des bases de Fourier}
+\subsection{Diagonalization by the Kronecker Product of Fourier Bases}
 
-D'après le résultat précédent \ref{eq:fourier_fonction_propre_conv_2d} comme \(q_{u,v}=\operatorname{vec}(\Phi_{u,v})\), on obtient
+From the preceding result \ref{eq:fourier_fonction_propre_conv_2d}, since \(q_{u,v}=\operatorname{vec}(\Phi_{u,v})\), we obtain
 \[
     M q_{u,v}
     =
     \lambda_{u,v} q_{u,v}.
 \]
-l'égalité matricielle pour toutes les fréquences devient
+Combining the equalities for all frequencies gives the matrix identity
 \begin{equation}
     \begin{split}
         M Q_N &= Q_N \Lambda_h \\
-        \Longleftrightarrow \text{\footnotesize (unitarité de $Q_N$)} \quad M &= Q_N \Lambda_h Q_N^H.
+        \Longleftrightarrow \text{\footnotesize (unitarity of $Q_N$)} \quad M &= Q_N \Lambda_h Q_N^H.
     \end{split}
     \label{eq:diagonalisation_conv_2d}
 \end{equation}
-où $\Lambda_h$ est la matrice diagonale contenant les valeurs propres $\lambda_{u,v}$
-dans le même ordre que les colonnes $q_{u,v}$ de $Q_N$.
+Here, $\Lambda_h$ is the diagonal matrix containing the eigenvalues $\lambda_{u,v}$
+in the same order as the columns $q_{u,v}$ of $Q_N$.
 
-\section{Extension au cas multi-canaux}
+\section{Extension to the Multichannel Case}
 
-Jusqu'ici, nous avons considéré le cas d'une convolution mono-canal, c'est-à-dire que les images 
-d'entrée et de sortie sont constituées d'un seul canal (par exemple, une image en niveaux de gris). 
-Maintenant, nous allons considérer le cas plus général d'une convolution multi-canaux :
+So far, we have considered single-channel convolution, where the input
+and output images each have a single channel (for example, a grayscale image).
+We now consider the more general case of multichannel convolution:
 \[
     X \in\mathbb{C}^{m_{in} \times N \times N}, \qquad Y \in\mathbb{C}^{m_{out} \times N \times N},
 \]
-où $m_{in}$ et $m_{out}$ désignent le nombre de canaux d'entrée et de sortie respectivement.
+where $m_{in}$ and $m_{out}$ denote the number of input and output channels, respectively.
 
-Ainsi, pour chaque canal de sortie $Y_i$, nous avons que :
+For each output channel $Y_i$,
 \begin{equation}
-    Y_i = \sum_{j=1}^{m_{in}} h_{i,j} * X_j \qquad\text{pour } i=1,\dots,m_{out},
+    Y_i = \sum_{j=1}^{m_{in}} h_{i,j} * X_j \qquad\text{for } i=1,\dots,m_{out},
     \label{eq:conv_multi}
 \end{equation}
-où $h_{i,j}$ est le filtre de convolution appliqué au canal d'entrée $j$ pour produire le canal de sortie $i$.
+where $h_{i,j}$ is the convolution filter applied to input channel $j$ to produce output channel $i$.
 
 % \begin{figure}[H]
 %     \centering
@@ -832,23 +832,23 @@ où $h_{i,j}$ est le filtre de convolution appliqué au canal d'entrée $j$ pour
 %     \label{fig:conv_multi_canaux}
 % \end{figure}
 
-\subsection{Mélange des canaux à fréquence fixée}
+\subsection{Channel Mixing at a Fixed Frequency}
 \label{subsec:melange_canaux_frequence_fixee}
 
-Soit une fréquence spatiale $(u,v)$ et l'image de Fourier correspondante $\Phi_{u,v}$.
-On suppose que chaque canal d'entrée contient cette même fréquence spatiale, mais avec une amplitude
-différente :
+Consider a spatial frequency $(u,v)$ and the corresponding Fourier image $\Phi_{u,v}$.
+Assume that each input channel contains this same spatial frequency, but with a different
+amplitude:
 \[
     X_j = \alpha_j \Phi_{u,v},
     \qquad j=1,\dots,m_{\mathrm{in}}.
 \]
-Le vecteur
+The vector
 \[
     \alpha = (\alpha_1,\dots,\alpha_{m_{\mathrm{in}}})^T
 \]
-contient donc les amplitudes de cette fréquence dans les différents canaux d'entrée.
+therefore contains the amplitudes of this frequency in the different input channels.
 
-En injectant ces entrées dans \eqref{eq:conv_multi} et par linéarité de la convolution, on obtient, pour le canal de sortie $i$,
+Substituting these inputs into \eqref{eq:conv_multi} and using linearity of convolution gives, for output channel $i$,
 \begin{align*}
 Y_i
 &=
@@ -865,7 +865,7 @@ Y_i
 \Phi_{u,v}.
 \end{align*}
 
-On introduit alors la matrice de mélange associée à la fréquence $(u,v)$ :
+We then introduce the mixing matrix associated with frequency $(u,v)$:
 \[
     G^{(u,v)} \in \mathbb{C}^{m_{\mathrm{out}}\times m_{\mathrm{in}}},
     \qquad
@@ -873,18 +873,18 @@ On introduit alors la matrice de mélange associée à la fréquence $(u,v)$ :
     =
     \lambda^{i,j}_{u,v}.
 \]
-Si $\beta\in\mathbb{C}^{m_{\mathrm{out}}}$ désigne les amplitudes de sortie de cette même fréquence,
-on peut écrire simplement
+If $\beta\in\mathbb{C}^{m_{\mathrm{out}}}$ denotes the output amplitudes of this same frequency,
+we can simply write
 \[
     \beta = G^{(u,v)}\alpha.
 \]
 
-Cette écriture résume le rôle d'une convolution multi-canaux : pour une fréquence spatiale fixée,
-elle effectue un mélange linéaire entre les canaux. 
+This expression summarizes the role of multichannel convolution: for a fixed spatial frequency,
+it performs linear mixing across channels.
 
-\subsection{Forme matricielle globale}
+\subsection{Global Matrix Form}
 
-Pour écrire l'opération multi-canaux sous forme matricielle globale, on définit :
+To express the multichannel operation in global matrix form, we define
 \[
 \mathbf{x}
 =
@@ -905,18 +905,18 @@ Pour écrire l'opération multi-canaux sous forme matricielle globale, on défin
 \in \mathbb{C}^{m_{\mathrm{out}}N^2}.
 \]
 
-Pour chaque paire de canaux $(i,j)$, on note $B^{i,j}$ la matrice de convolution spatiale
-associée au filtre $h_{i,j}$, c'est-à-dire la matrice qui applique la convolution entre le canal
-d'entrée $j$ et le canal de sortie $i$.
-On utilise la base de Fourier 2D vectorisée $Q_N$ définie en
-\eqref{eq:def_base_fourier_2d_vectorisee}. Pour chaque paire de canaux $(i,j)$, la matrice
-$B^{i,j}$ se diagonalise donc sous la forme
+For each channel pair $(i,j)$, let $B^{i,j}$ denote the spatial convolution matrix
+associated with filter $h_{i,j}$, that is, the matrix applying convolution between input
+channel $j$ and output channel $i$.
+We use the vectorized 2D Fourier basis $Q_N$ defined in
+\eqref{eq:def_base_fourier_2d_vectorisee}. For each channel pair $(i,j)$, the matrix
+$B^{i,j}$ can therefore be diagonalized as
 \[
     B^{i,j}
     =
     Q_N D^{i,j} Q_N^H,
 \]
-où
+where
 \[
 D^{i,j}
 =
@@ -925,12 +925,12 @@ D^{i,j}
 \bigr)_{(u,v)\in\{0,\dots,N-1\}^2}.
 \]
 
-Les coefficients diagonaux de $D^{i,j}$ sont ordonnés selon l'indice aplati
-$w(u,v)$ défini en \eqref{eq:indice_frequence_aplati}.
+The diagonal entries of $D^{i,j}$ are ordered according to the flattened index
+$w(u,v)$ defined in \eqref{eq:indice_frequence_aplati}.
 
-À présent nous pouvons introduire la matrice globale $M \in \mathbb{C}^{m_{out}N^2 \times m_{in}N^2}$
-qui représente la couche de convolution complète sous la forme d'une matrice par blocs de taille
-$m_{out} \times m_{in}$, où chaque bloc $(i,j)$ correspond à l'application du filtre $h_{i,j}$ :
+We can now introduce the global matrix $M \in \mathbb{C}^{m_{out}N^2 \times m_{in}N^2}$,
+which represents the entire convolutional layer as a block matrix of size
+$m_{out} \times m_{in}$, where each block $(i,j)$ corresponds to the application of filter $h_{i,j}$:
 
 $$
 M =
@@ -941,15 +941,15 @@ B^{m_{out},1} & \cdots & B^{m_{out},m_{in}}
 \end{pmatrix}.
 $$
 
-Comme la même base $Q_N$ diagonalise tous les blocs spatiaux $B^{i,j}$, on peut factoriser le changement
-de base spatial de part et d'autre de la matrice par blocs. On obtient alors
+Since the same basis $Q_N$ diagonalizes all spatial blocks $B^{i,j}$, we can factor out the spatial
+change of basis on either side of the block matrix. This gives
 
 \begin{equation}
     M = (I_{m_{out}} \otimes Q_N) L (I_{m_{in}} \otimes Q_N)^H
     \label{eq:factorisation_M}
 \end{equation}
 
-où $L \in \mathbb{C}^{m_{out}N^2 \times m_{in}N^2}$ est une matrice composée de blocs diagonaux :
+where $L \in \mathbb{C}^{m_{out}N^2 \times m_{in}N^2}$ is a block matrix with diagonal blocks:
 
 $$
 L =
@@ -963,9 +963,9 @@ $$
 \vspace{0.5cm}
 \begin{proof}
 
-Par définition du produit de Kronecker, les opérations 
-$I_{m_{out}} \otimes Q_N$ et $(I_{m_{in}} \otimes Q_N)^H = I_{m_{in}} \otimes Q_N^H$ 
-génèrent des matrices diagonales par blocs :
+By the definition of the Kronecker product, the operations
+$I_{m_{out}} \otimes Q_N$ and $(I_{m_{in}} \otimes Q_N)^H = I_{m_{in}} \otimes Q_N^H$
+generate block-diagonal matrices:
 
 $$
 I_{m_{out}} \otimes Q_N = 
@@ -985,8 +985,8 @@ Q_N^H & 0 & \cdots & 0 \\
 \end{pmatrix}.
 $$
 
-En calculant le produit matriciel par blocs à gauche, $Q_N$ se distribue sur chaque bloc des lignes 
-correspondantes de $L$ :
+Evaluating the block matrix product on the left applies $Q_N$ to each block in the
+corresponding rows of $L$:
 
 $$
 (I_{m_{out}} \otimes Q_N) L = 
@@ -997,8 +997,8 @@ Q_N D^{m_{out},1} & \cdots & Q_N D^{m_{out},m_{in}}
 \end{pmatrix}.
 $$
 
-En multipliant ensuite ce résultat à droite par la seconde matrice diagonale par blocs, 
-$Q_N^H$ se distribue sur chaque bloc des colonnes correspondantes :
+Multiplying this result on the right by the second block-diagonal matrix
+applies $Q_N^H$ to each block in the corresponding columns:
 
 $$
 (I_{m_{out}} \otimes Q_N) L (I_{m_{in}} \otimes Q_N)^H = 
@@ -1009,8 +1009,8 @@ Q_N D^{m_{out},1} Q_N^H & \cdots & Q_N D^{m_{out},m_{in}} Q_N^H
 \end{pmatrix}.
 $$
 
-Puisque la décomposition de la convolution mono-canal donne $B^{i,j} = Q_N D^{i,j} Q_N^H$ pour 
-tout couple $(i,j)$, on obtient :
+Since the single-channel convolution decomposition gives $B^{i,j} = Q_N D^{i,j} Q_N^H$ for
+every pair $(i,j)$, we obtain
 
 $$
 (I_{m_{out}} \otimes Q_N) L (I_{m_{in}} \otimes Q_N)^H = 
@@ -1023,82 +1023,82 @@ B^{m_{out},1} & \cdots & B^{m_{out},m_{in}}
 $$
 \end{proof}
 
-On retrouve ainsi la forme de la \textbf{Proposition 1} de l'article de Tsuzuku et Sato~\cite{tsuzuku2019structural}. 
-Elle sépare deux phénomènes :
+This recovers the form of \textbf{Proposition 1} in the paper by Tsuzuku and Sato~\cite{tsuzuku2019structural}.
+It separates two phenomena:
 \begin{itemize}
-    \item les matrices $(I\otimes Q_N)$ réalisent le changement de base spatial vers le domaine de Fourier ;
-    \item la matrice centrale $L$ contient les mélanges entre canaux, organisés fréquence par fréquence.
+    \item the matrices $(I\otimes Q_N)$ perform the spatial change of basis to the Fourier domain;
+    \item the central matrix $L$ contains the channel mixing, organized frequency by frequency.
 \end{itemize}
 
-\section{Empilement linéaire de convolutions}
+\section{Linear Stacking of Convolutions}
 \label{sec:empilement-lineaire-convolutions}
 
-Nous allons maintenant introduire la notion d'empilement de couches de convolution. 
-L'idée est de modéliser mathématiquement le fonctionnement d'un réseau de neurones convolutifs profond, qui est 
-composé de plusieurs couches appliquées successivement.
+We now introduce the notion of stacked convolutional layers.
+The aim is to mathematically model the operation of a deep convolutional neural network, which
+consists of several layers applied successively.
 
-Comme nous l'avons vu dans les sections précédentes, notre cadre linéaire nous permet de représenter chaque couche 
-de convolution de stride \(1\) (stride = pas voir \ref{fig:stride_comparison} pour une illustration) par une grande matrice globale \(M^{(k)}\). 
-On note \(m_k\) le nombre de canaux en entrée de la couche \(k\), et \(m_{k+1}\) le nombre de canaux en sortie :
+As shown in the preceding sections, our linear framework allows us to represent each convolutional
+layer with stride \(1\) (stride denotes the step size; see \ref{fig:stride_comparison} for an illustration) by a large global matrix \(M^{(k)}\).
+Let \(m_k\) denote the number of input channels of layer \(k\), and \(m_{k+1}\) the number of output channels:
 \[
 M^{(k)} : \mathbb{C}^{m_k N^2} \longrightarrow \mathbb{C}^{m_{k+1}N^2}.
 \]
 
-Ainsi, pour une entrée vectorisée \(X \in \mathbb{C}^{m_1N^2}\), la sortie de la 
-première couche s'écrit :
+Thus, for a vectorized input \(X \in \mathbb{C}^{m_1N^2}\), the output of the
+first layer is
 $$
 X_1 = M^{(1)} X \in \mathbb{C}^{m_2 N^2}.
 $$
-En appliquant une seconde couche de convolution, on obtient :
+Applying a second convolutional layer gives
 $$
 X_2 = M^{(2)} X_1 = M^{(2)}(M^{(1)} X) = (M^{(2)} M^{(1)}) X.
 $$
-En continuant ainsi pour $d$ couches de convolution successives :
+Continuing in this way for $d$ successive convolutional layers gives
 \begin{equation}
 M(X) = \left(M^{(d)} M^{(d-1)} \cdots M^{(1)}\right)X.
 \label{eq:composition_couches}
 \end{equation}
 
-\subsection{Simplification par télescopage des transformations}
+\subsection{Simplification by Telescoping Transformations}
 
-L'intérêt majeur de la décomposition matricielle de l'équation \eqref{eq:factorisation_M} réside 
-dans son comportement lors du produit de plusieurs couches. Considérons deux couches 
-successives $M^{(1)}$ et $M^{(2)}$. Leur produit s'écrit :
+The main advantage of the matrix decomposition in Equation~\eqref{eq:factorisation_M} lies
+in its behavior when several layers are multiplied. Consider two successive
+layers $M^{(1)}$ and $M^{(2)}$. Their product is
 \begin{align*}
 M^{(2)}M^{(1)} &= \left[ (I_{m_3} \otimes Q_N) L^{(2)} (I_{m_2} \otimes Q_N)^H \right] \left[ (I_{m_2} \otimes Q_N) L^{(1)} (I_{m_1} \otimes Q_N)^H \right] \\
 &= (I_{m_3} \otimes Q_N) L^{(2)} \underbrace{\left( (I_{m_2} \otimes Q_N)^H (I_{m_2} \otimes Q_N) \right)}_{I_{m_2 N^2}} L^{(1)} (I_{m_1} \otimes Q_N)^H
 \end{align*}
 
-Par récurrence, pour un réseau de $d$ couches, la matrice globale $M$ se simplifie en :
+By induction, for a network of $d$ layers, the global matrix $M$ simplifies to
 \[
 M = (I_{m_{d+1}} \otimes Q_N) L (I_{m_1} \otimes Q_N)^H
 \]
-où $L = L^{(d)} L^{(d-1)} \cdots L^{(1)}$ représente l'accumulation des mélanges de canaux.
+where $L = L^{(d)} L^{(d-1)} \cdots L^{(1)}$ represents the accumulated channel mixing.
 
-\subsection{Indépendance fréquentielle et matrice de mélange $G^{(w)}$}
+\subsection{Frequency Independence and the Mixing Matrix $G^{(w)}$}
 
-Comme chaque bloc interne des matrices $L^{(k)}$ est diagonal, le produit de ces matrices conserve cette structure.
-En effet, le bloc $(i,j)$ du produit de deux matrices par blocs $L^{(2)}L^{(1)}$ s'écrit
+Since each internal block of the matrices $L^{(k)}$ is diagonal, their product preserves this structure.
+Indeed, block $(i,j)$ of the product of two block matrices $L^{(2)}L^{(1)}$ is
 \[
 (L^{(2)}L^{(1)})_{i,j}
 =
 \sum_k D^{(2)}_{i,k}D^{(1)}_{k,j}.
 \] 
-Or le produit de deux matrices diagonales est diagonal, et une somme de matrices diagonales reste diagonale.
-Par conséquent, chaque bloc de la matrice globale $L = L^{(d)}L^{(d-1)}\cdots L^{(1)}$ est encore une matrice diagonale de taille $N^2 \times N^2$.
+The product of two diagonal matrices is diagonal, and a sum of diagonal matrices remains diagonal.
+Consequently, each block of the global matrix $L = L^{(d)}L^{(d-1)}\cdots L^{(1)}$ is still a diagonal matrix of size $N^2 \times N^2$.
 
-Ainsi, dans un empilement linéaire de convolutions circulaires de stride $1$, la structure par fréquence
-est conservée. Pour une fréquence donnée, seule la répartition entre les canaux évolue.
+Thus, in a linear stack of circular convolutions with stride $1$, the frequency-wise structure
+is preserved. For a given frequency, only the distribution across channels changes.
 
-L'idée est alors la suivante : pour étudier ce que fait le réseau à une fréquence donnée, il n'est pas
-nécessaire de regarder toute la grande matrice $L$. Il suffit de regarder, dans chaque bloc
+The idea is therefore as follows: to study what the network does at a given frequency, we do not
+need to examine the entire large matrix $L$. It is sufficient to look within each block
 $D^{(i,j)}$.
 
-On regroupe ces coefficients dans une petite matrice
+We collect these coefficients in a small matrix
 \[
     G^{(w)} \in \mathbb{C}^{m_{\mathrm{out}}\times m_{\mathrm{in}}},
 \]
-définie par
+defined by
 \begin{equation}
     \bigl(G^{(w)}\bigr)_{i,j}
     =
@@ -1106,143 +1106,143 @@ définie par
     \label{eq:def_matrice_frequence}
 \end{equation}
 
-La matrice $G^{(w)}$ décrit donc le comportement du réseau à la fréquence $w$. Elle ne décrit plus
-toute l'image, mais seulement le mélange entre les canaux pour cette fréquence précise. C'est ce
-qui permet de réduire l'étude d'une grande couche convolutionnelle à l'étude d'une matrice beaucoup
-plus petite, fréquence par fréquence.
+The matrix $G^{(w)}$ therefore describes the network's behavior at frequency $w$. It no longer describes
+the entire image, but only the channel mixing at that specific frequency. This
+allows the study of a large convolutional layer to be reduced to the study of a much
+smaller matrix, frequency by frequency.
 
-\subsection{Analyse de sensibilité par décomposition en valeurs singulières (SVD)}
+\subsection{Sensitivity Analysis Using Singular Value Decomposition (SVD)}
 
-L'opérateur de convolution multi-canaux peut être représenté par une matrice
+The multichannel convolution operator can be represented by a matrix
 \[
     M \in \mathbb{C}^{m_{\mathrm{out}}N^2 \times m_{\mathrm{in}}N^2}.
 \]
-Comme nous cherchons à identifier les directions d'entrée qui sont les plus amplifiées par la couche de 
-convolution, il vient naturellement à l'esprit d'étudier les valeurs singulières de cette matrice.
+Since we seek to identify the input directions most strongly amplified by the convolutional
+layer, it is natural to study the singular values of this matrix.
 
-La décomposition en valeurs singulières de $M$ s'écrit
+The singular value decomposition of $M$ is
 \[
     M = U\Sigma V^H,
 \]
-où $U$ et $V$ sont des matrices unitaires, et où $\Sigma$ contient les valeurs singulières
+where $U$ and $V$ are unitary matrices, and $\Sigma$ contains the singular values
 \[
     \sigma_1 \geq \sigma_2 \geq \cdots \geq 0.
 \]
-Les colonnes de $V$ sont appelées vecteurs singuliers droits : elles correspondent aux directions
-dans l'espace d'entrée. Les colonnes de $U$ sont les vecteurs singuliers gauches : elles correspondent
-aux directions dans l'espace de sortie.
+The columns of $V$ are called right singular vectors: they correspond to directions
+in input space. The columns of $U$ are the left singular vectors: they correspond
+to directions in output space.
 
-Une valeur singulière mesure l'amplification d'une direction d'entrée. Plus précisément, si $v_i$ est
-un vecteur singulier droit associé à $\sigma_i$ et si $\|v_i\|_2=1$, alors
+A singular value measures the amplification of an input direction. More precisely, if $v_i$ is
+a right singular vector associated with $\sigma_i$ and $\|v_i\|_2=1$, then
 \[
     \|Mv_i\|_2 = \sigma_i.
 \]
-Ainsi, les grandes valeurs singulières correspondent aux directions d'entrée fortement amplifiées par
-l'opérateur $M$. En particulier,
+Thus, large singular values correspond to input directions strongly amplified by
+the operator $M$. In particular,
 \[
 \sigma_1(M)
 = \max_{x \neq 0} \frac{\|Mx\|_2}{\|x\|_2}
 = \max_{\|x\|_2 = 1} \|Mx\|_2
 = \|M\|_2.
 \]
-La direction associée à $\sigma_1$ est donc une direction de sensibilité maximale, lorsque cette valeur
-singulière est simple. Si elle est multiple, toute direction unitaire dans le sous-espace singulier associé
-donne la même amplification.
+The direction associated with $\sigma_1$ is therefore a direction of maximum sensitivity when this singular
+value is simple. If it has higher multiplicity, every unit-norm direction in the associated singular subspace
+gives the same amplification.
 
-Dans le cadre de notre analyse, les directions de forte sensibilité du réseau correspondent donc aux
-vecteurs singuliers droits associés aux grandes valeurs singulières. Le lien détaillé entre SVD,
-vecteurs propres de $M^H M$ et l'amplification est rappelé en annexe~\ref{app:svd-sensibilite}.
+In our analysis, the network's highly sensitive directions therefore correspond to
+right singular vectors associated with large singular values. The detailed relationship between SVD,
+eigenvectors of $M^H M$, and amplification is reviewed in Appendix~\ref{app:svd-sensibilite}.
 
-\subsection{Preuve de la structure du vecteur singulier de sensibilité}
+\subsection{Proof: Structure of the Singular Vector Characterizing Sensitivity}
 
 \begin{proof}
 
-Soit $\sigma$ une valeur singulière de la matrice de mélange
+Let $\sigma$ be a singular value of the mixing matrix
 $G^{(w)}\in\mathbb{C}^{m_{\mathrm{out}}\times m_{\mathrm{in}}}$.
-On note
+Let
 \[
     a\in\mathbb{C}^{m_{\mathrm{in}}},
     \qquad
     b\in\mathbb{C}^{m_{\mathrm{out}}}
 \]
-les vecteurs singuliers droit et gauche associés. On a donc
+denote the associated right and left singular vectors. We therefore have
 \[
     G^{(w)}a=\sigma b,
     \qquad
     G^{(w)H}b=\sigma a.
 \]
 
-Dans l'espace complet du réseau, le vecteur singulier droit associé à cette fréquence $w$ s'écrit
+In the full network space, the right singular vector associated with this frequency $w$ is
 \[
     v = (I_{m_1} \otimes Q_N) (a \otimes e_w),
 \]
-où $e_w$ est le vecteur de la base canonique, égal à $1$ à l'indice $w$ et à $0$ ailleurs.
+where $e_w$ is the standard basis vector, equal to $1$ at index $w$ and $0$ elsewhere.
 
-On vérifie d'abord cette affirmation en appliquant l'opérateur $M$ à ce candidat $v$ :
+We first verify this claim by applying the operator $M$ to this candidate $v$:
 \begin{align*}
 M v &= \left[ (I_{m_{d+1}} \otimes Q_N) L (I_{m_1} \otimes Q_N)^H \right] \left[ (I_{m_1} \otimes Q_N) (a \otimes e_w) \right] \\
 &= (I_{m_{d+1}} \otimes Q_N) L \underbrace{\left[ (I_{m_1} \otimes Q_N)^H (I_{m_1} \otimes Q_N) \right]}_{I_{m_1 N^2}} (a \otimes e_w) \\
 M v &= (I_{m_{d+1}} \otimes Q_N) L (a \otimes e_w)
 \end{align*}
 
-Analysons maintenant l'action de $L$ sur le vecteur $(a \otimes e_w)$. Rappelons que $L$ est une matrice par blocs où 
-chaque bloc $(i,j)$ est la matrice diagonale $D^{(i,j)}$. 
-Le vecteur $(a \otimes e_w)$ peut être vu comme un vecteur par blocs dont le $j$-ième bloc est le vecteur $a_j e_w$. 
-Ainsi, le $i$-ième bloc du vecteur résultant $y' = L (a \otimes e_w)$ se calcule par:
+We now examine the action of $L$ on the vector $(a \otimes e_w)$. Recall that $L$ is a block matrix in which
+each block $(i,j)$ is the diagonal matrix $D^{(i,j)}$.
+The vector $(a \otimes e_w)$ can be viewed as a block vector whose $j$-th block is the vector $a_j e_w$.
+Thus, the $i$-th block of the resulting vector $y' = L (a \otimes e_w)$ is computed as
 \[
 y'_i = \sum_{j=1}^{m_1} D^{(i,j)} (a_j e_w)
 \]
 
-Puisque $D^{(i,j)}$ est une matrice diagonale, sa multiplication par le vecteur de la base canonique $e_w$ 
-isole simplement son $w$-ième élément diagonal, multiplié par $e_w$. 
-Autrement dit,
+Since $D^{(i,j)}$ is diagonal, multiplying it by the standard basis vector $e_w$
+simply selects its $w$-th diagonal entry, multiplied by $e_w$.
+In other words,
 
 $$D^{(i,j)} e_w = (D^{(i,j)})_{w,w} \, e_w$$
 
-Or, par définition de notre matrice de mélange fréquentiel, ce coefficient $(D^{(i,j)})_{w,w}$ est 
-exactement l'élément $(i,j)$ de la matrice $G^{(w)}$. Nous obtenons donc directement :
+By the definition of our per-frequency mixing matrix, this coefficient $(D^{(i,j)})_{w,w}$ is
+exactly entry $(i,j)$ of the matrix $G^{(w)}$. We therefore obtain directly
 
 $$y'_i = \sum_{j=1}^{m_1} (G^{(w)})_{i,j} \, a_j \, e_w = \left( \sum_{j=1}^{m_1} (G^{(w)})_{i,j} a_j \right) e_w$$
 
-Le terme entre parenthèses n'est autre que la $i$-ième composante du produit matriciel $G^{(w)} a$. 
-Sachant que $G^{(w)} a = \sigma b$, il vient :
+The term in parentheses is the $i$-th component of the matrix product $G^{(w)} a$.
+Since $G^{(w)} a = \sigma b$, we obtain
 \[
 y'_i = (\sigma b)_i e_w = \sigma b_i e_w
 \]
 
-En réassemblant les blocs, nous déduisons que 
+Reassembling the blocks gives
 \begin{equation}
 L(a \otimes e_w) = \sigma(b \otimes e_w).
 \end{equation}
-Nous pouvons maintenant réinjecter ce résultat dans notre équation :
+We can now substitute this result back into our equation:
 \begin{align*}
 M v &= (I_{m_{d+1}} \otimes Q_N) \left( \sigma (b \otimes e_w) \right) \\
 &= \sigma \left( I_{m_{d+1}} b \otimes Q_N e_w \right) \\
 M v &= \sigma \left( b \otimes (Q_N)_w \right)
 \end{align*}
 
-Cette équation montre que l'application de $M$ à $v$ produit bien un vecteur de la forme
+This equation shows that applying $M$ to $v$ produces a vector of the form
 \[
     Mv=\sigma u,
     \qquad
     u=b\otimes (Q_N)_w.
 \]
 
-Il reste à vérifier l'équation adjointe. Comme
+It remains to verify the adjoint equation. Since
 \[
     u=(I_{m_{d+1}}\otimes Q_N)(b\otimes e_w),
 \]
-on obtient de la même manière
+we similarly obtain
 \[
     M^H u
     =
     (I_{m_1}\otimes Q_N)L^H(b\otimes e_w).
 \]
-Or la relation $G^{(w)H}b=\sigma a$ donne
+The relation $G^{(w)H}b=\sigma a$ gives
 \[
     L^H(b\otimes e_w)=\sigma(a\otimes e_w).
 \]
-Ainsi,
+Thus,
 \[
     M^Hu
     =
@@ -1250,7 +1250,7 @@ Ainsi,
     =
     \sigma v.
 \]
-Les deux relations de la SVD sont donc vérifiées :
+Both SVD relations are therefore satisfied:
 \[
     Mv=\sigma u,
     \qquad
@@ -1259,31 +1259,31 @@ Les deux relations de la SVD sont donc vérifiées :
 
 \end{proof}
 
-\subsection{Vérification de l'orthonormalité :}
+\subsection{Verification of Orthonormality}
 
 \begin{proof}
 
-Pour que l'ensemble des vecteurs $v = a \otimes (Q_N)_w$ forme rigoureusement la matrice unitaire $V$ de la SVD de $M$, il doit constituer une base orthonormée. Cela se démontre grâce aux propriétés du produit scalaire mixte ($(A \otimes B)^H (C \otimes D) = (A^H C) \otimes (B^H D)$) :
+For the set of vectors $v = a \otimes (Q_N)_w$ to rigorously form the unitary matrix $V$ in the SVD of $M$, it must constitute an orthonormal basis. This follows from the mixed-product property for inner products ($(A \otimes B)^H (C \otimes D) = (A^H C) \otimes (B^H D)$):
 
 \begin{itemize}
-    \item \textbf{Norme unitaire :} Comme $a$ et $(Q_N)_w$ sont unitaires, $v^H v = (a^H a) \otimes ((Q_N)_w^H (Q_N)_w) = 1 \times 1 = 1$.
-    \item \textbf{Orthogonalité intra-fréquentielle :} Pour une même fréquence $w$, l'orthogonalité native de deux vecteurs droits $a$ et $\tilde{a}$ est préservée : $v^H \tilde{v} = (a^H \tilde{a}) \otimes 1 = 0$.
-    \item \textbf{Orthogonalité inter-fréquentielle :} Pour $w \neq \tilde{w}$, les colonnes de Fourier sont orthogonales : $v^H \tilde{v} = (a^H \tilde{a}) \otimes ((Q_N)_w^H (Q_N)_{\tilde{w}}) = 0$.
+    \item \textbf{Unit Norm:} Since $a$ and $(Q_N)_w$ are unit vectors, $v^H v = (a^H a) \otimes ((Q_N)_w^H (Q_N)_w) = 1 \times 1 = 1$.
+    \item \textbf{Orthogonality Within a Frequency:} For a given frequency $w$, the original orthogonality of two right singular vectors $a$ and $\tilde{a}$ is preserved: $v^H \tilde{v} = (a^H \tilde{a}) \otimes 1 = 0$.
+    \item \textbf{Orthogonality Across Frequencies:} For $w \neq \tilde{w}$, the Fourier columns are orthogonal: $v^H \tilde{v} = (a^H \tilde{a}) \otimes ((Q_N)_w^H (Q_N)_{\tilde{w}}) = 0$.
 
 \end{itemize}
 
 \end{proof}
 
-\subsection{Expression finale du motif de Fourier}
+\subsection{Final Expression for the Fourier Pattern}
 
-Enfin, comme $Q_N e_w = (Q_N)_w$, l'expression du vecteur singulier devient
+Finally, since $Q_N e_w = (Q_N)_w$, the singular vector expression becomes
 \[
     v
     =
     a \otimes (Q_N)_w.
 \]
-Si l'indice $w$ correspond au couple de fréquences $(u,v)$, alors, avec la notation $q_{u,v}$ fixée
-dans la section~\ref{sec:conventions-fourier-vectorisation}, on peut écrire
+If index $w$ corresponds to the frequency pair $(u,v)$, then, using the notation $q_{u,v}$ established
+in Section~\ref{sec:conventions-fourier-vectorisation}, we can write
 \begin{equation}
     v
     =
@@ -1293,45 +1293,45 @@ dans la section~\ref{sec:conventions-fourier-vectorisation}, on peut écrire
     \label{eq:vecteur_singulier_fourier_final}
 \end{equation}
 
-Autrement dit, le vecteur singulier est composé de deux parties : un vecteur $a$, qui décrit le
-mélange entre les canaux, et une direction de Fourier $q_{u,v}$, qui décrit le motif spatial.
+In other words, the singular vector consists of two parts: a vector $a$, which describes
+channel mixing, and a Fourier direction $q_{u,v}$, which describes the spatial pattern.
 
-\section{Skip connections et couches de normalisation}
+\section{Skip Connections and Normalization Layers}
 \label{sec:skip-normalisation}
 
-Les résultats précédents ont été établis dans un cadre linéaire simplifié : les couches sont des convolutions
-de stride $1$, sans activation non linéaire et avec un \textit{padding} circulaire. Dans ce cadre, nous avons montré que les directions de sensibilité maximale peuvent s'écrire sous la forme
-d'un vecteur de canaux multiplié par une direction de Fourier spatiale, comme dans
+The preceding results were established in a simplified linear setting: the layers are convolutions
+with stride $1$, without nonlinear activations and with circular \textit{padding}. In this setting, we showed that directions of maximum sensitivity can be expressed as
+a channel vector multiplied by a spatial Fourier direction, as in
 \eqref{eq:vecteur_singulier_fourier_final}.
 
-Il reste cependant à vérifier que cette conclusion ne disparaît pas dès que l'on ajoute deux mécanismes courants
-des architectures convolutionnelles modernes : les \textit{skip connections} et les couches de normalisation. C'est
-l'objet des Propositions 3 et 4 de Tsuzuku et Sato~\cite{tsuzuku2019structural}.
+We must nevertheless verify that this conclusion remains valid when two common mechanisms
+of modern convolutional architectures are added: \textit{skip connections} and normalization layers. This is
+the subject of Propositions 3 and 4 of Tsuzuku and Sato~\cite{tsuzuku2019structural}.
 
-\subsection{Qu'est-ce qu'une \textit{skip connection} ?}
+\subsection{What Is a \textit{Skip Connection}?}
 
-Les architectures convolutionnelles modernes, comme les réseaux résiduels (\textit{ResNet}) \cite{he2016deep}, 
-utilisent fréquemment des \textit{skip connections}. 
-Le principe consiste à ajouter directement l'entrée d'un bloc à sa sortie, de sorte que le bloc n'apprenne plus 
-une transformation complète, mais une correction de l'identité.
+Modern convolutional architectures, such as residual networks (\textit{ResNet}) \cite{he2016deep},
+frequently use \textit{skip connections}.
+The principle is to add the input of a block directly to its output, so that the block learns
+a correction to the identity rather than an entire transformation.
 
-Si l'on note $\mathcal{F}$ la transformation réalisée par le bloc, la sortie s'écrit
+If $\mathcal{F}$ denotes the transformation performed by the block, its output is
 \begin{equation}
     x_{\ell+1} = \mathcal{F}(x_\ell) + x_\ell.
 \end{equation}
 
-Dans le cas simple où l'entrée et la sortie ont la même dimension, la branche de raccourci est donc l'identité. 
-Dans le cadre de notre analyse linéaire, si l'on modélise le bloc principal par $M$, 
-alors le bloc résiduel entier est représenté par
+In the simple case where input and output have the same dimension, the shortcut branch is therefore the identity.
+Within our linear analysis, if the main block is modeled by $M$,
+the entire residual block is represented by
 \begin{equation}
     M_{\mathrm{skip}} = M + I,
     \label{eq:skip_connection_matricielle}
 \end{equation}
-où $I$ désigne l'identité.
+where $I$ denotes the identity.
 
-Cette écriture est particulièrement utile pour notre étude spectrale car elle montre que l'ajout d'une 
-\textit{skip connection} ne change pas la nature de l'opérateur de base, mais ajoute simplement une contribution 
-identité au bloc convolutionnel.
+This expression is particularly useful for our spectral analysis because it shows that adding a
+\textit{skip connection} does not change the nature of the underlying operator, but simply adds an
+identity contribution to the convolutional block.
 
 \begin{figure}[H]
 \centering
@@ -1390,41 +1390,41 @@ identité au bloc convolutionnel.
 \node[lab] at (4.1,-0.95) {$x_{\ell+1}=Mx_\ell+x_\ell=(M+I)x_\ell$};
 
 \end{tikzpicture}
-\caption{Interprétation linéaire d'une \textit{skip connection}. Le chemin principal applique l'opérateur $M$, tandis que la branche de raccourci applique l'identité. Le bloc résiduel est donc représenté par l'opérateur $M+I$.}
+\caption{Linear interpretation of a \textit{skip connection}. The main path applies the operator $M$, while the shortcut branch applies the identity. The residual block is therefore represented by the operator $M+I$.}
 \end{figure}
 
-\subsection{Cas d'une skip connection}
+\subsection{The Case of a Skip Connection}
 
 \begin{proof}
 
-Analysons d'abord le cas d'une connexion résiduelle "idéale", c'est-à-dire lorsque l'entrée $X$ et la sortie 
-du bloc convolutionnel $M(X)$ \eqref{eq:composition_couches} possèdent exactement les mêmes dimensions (même résolution spatiale et même nombre 
-de canaux). La transformation globale s'écrit alors tout simplement :
+We first analyze an ``ideal'' residual connection, where the input $X$ and the output
+of the convolutional block $M(X)$ \eqref{eq:composition_couches} have exactly the same dimensions (the same spatial resolution and number
+of channels). The overall transformation is then simply
 $$
 M_{\mathrm{skip}}(X) = (M^{(d)} M^{(d-1)} \dots M^{(1)})(X) + X.
 $$
-Sous forme matricielle, cette addition équivaut à ajouter la matrice identité à notre opérateur de base, 
-ce qui nous ramène directement à l'équation \eqref{eq:skip_connection_matricielle}.
+In matrix form, this addition amounts to adding the identity matrix to our underlying operator,
+bringing us directly back to Equation~\eqref{eq:skip_connection_matricielle}.
 
-En pratique, lorsque la dimension des canaux change, l'addition directe devient impossible et la 
-branche de raccourci utilise alors une projection. 
-Si cette projection est elle-même convolutionnelle, elle entre dans le même cadre spectral que les couches
-étudiées précédemment. Le raisonnement reste donc identique en remplaçant l'identité par cette projection.
+In practice, when the channel dimension changes, direct addition becomes impossible and the
+shortcut branch instead uses a projection.
+If this projection is itself convolutional, it falls within the same spectral framework as the layers
+studied previously. The reasoning therefore remains the same, with the identity replaced by this projection.
 
-D'après la factorisation obtenue précédemment à l'équation \eqref{eq:factorisation_M}, l'opérateur $M$ peut
-s'écrire
+From the factorization previously obtained in Equation~\eqref{eq:factorisation_M}, the operator $M$ can
+be written as
 \[
 M = (I_m \otimes Q_N)L(I_m \otimes Q_N)^H,
 \]
 
-Comme $Q_N$ est unitaire, on a aussi
+Since $Q_N$ is unitary, we also have
 \[
 I_{mN^2}
 =
 (I_m \otimes Q_N)I_{mN^2}(I_m \otimes Q_N)^H.
 \]
 
-Ainsi,
+Thus,
 \begin{align*}
 M_{\mathrm{skip}}
 &= M + I_{mN^2} \\
@@ -1434,31 +1434,31 @@ M_{\mathrm{skip}}
 &= (I_m \otimes Q_N)(L + I_{mN^2})(I_m \otimes Q_N)^H.
 \end{align*}
 
-La skip connection ne change donc pas la base spatiale de diagonalisation. Elle modifie uniquement la matrice
-centrale $L$ en lui ajoutant l'identité.
+The skip connection therefore does not change the spatial diagonalization basis. It only modifies the
+central matrix $L$ by adding the identity.
 
-Pour rendre cette observation plus explicite, fixons une fréquence spatiale $w$, correspondant à un couple
-de fréquences $(u,v)$. Comme expliqué dans la section~\ref{sec:empilement-lineaire-convolutions}, l'action
-du réseau sur cette fréquence est décrite par une matrice de mélange définie en \eqref{eq:def_matrice_frequence}
+To make this observation more explicit, fix a spatial frequency $w$, corresponding to a frequency
+pair $(u,v)$. As explained in Section~\ref{sec:empilement-lineaire-convolutions}, the network's action
+at this frequency is described by a mixing matrix defined in \eqref{eq:def_matrice_frequence},
 \[
 G^{(w)} \in \mathbb{C}^{m \times m}.
 \]
-L'ajout de l'identité ne modifie pas la fréquence considérée : il ajoute simplement une contribution directe
-sur le même canal et la même fréquence. La matrice de mélange devient donc
+Adding the identity does not change the frequency under consideration: it simply adds a direct contribution
+to the same channel and frequency. The mixing matrix therefore becomes
 \[
 G_{\mathrm{skip}}^{(w)} = G^{(w)} + I_m.
 \]
 
-À fréquence fixée, la skip connection ajoute donc simplement une contribution directe dans la matrice
-de mélange.
+At a fixed frequency, the skip connection therefore simply adds a direct contribution to the mixing
+matrix.
 
-On peut alors appliquer exactement le même raisonnement que dans la section~\ref{sec:empilement-lineaire-convolutions}.
-En particulier, si $a$ est un vecteur singulier droit de $G_{\mathrm{skip}}^{(w)}$, alors le vecteur singulier droit
-correspondant dans l'espace complet reste de la forme
+We can then apply exactly the same reasoning as in Section~\ref{sec:empilement-lineaire-convolutions}.
+In particular, if $a$ is a right singular vector of $G_{\mathrm{skip}}^{(w)}$, the corresponding right singular vector
+in the full space retains the form
 \[
 v = a \otimes (Q_N)_w,
 \]
-c'est-à-dire,
+that is,
 \[
 v
 =
@@ -1467,55 +1467,55 @@ a \otimes q_{u,v}
 a \otimes \bigl((F_N)_v \otimes (F_N)_u\bigr),
 \]
 
-Une vérification algébrique détaillée de cette affirmation est donnée en annexe~\ref{app:preuve_skip_connection}.
+A detailed algebraic verification of this claim is provided in Appendix~\ref{app:preuve_skip_connection}.
 
-La skip connection conserve donc la forme du raisonnement précédent : pour chaque fréquence $w$,
-elle remplace simplement $G^{(w)}$ par $G^{(w)}+I_m$. Les directions singulières restent de la forme
+The skip connection therefore preserves the form of the preceding argument: for each frequency $w$,
+it simply replaces $G^{(w)}$ with $G^{(w)}+I_m$. The singular directions retain the form
 \[
     a\otimes q_{u,v}.
 \]
-Cela correspond à la Proposition~3 de Tsuzuku et Sato~\cite{tsuzuku2019structural}.
+This corresponds to Proposition~3 of Tsuzuku and Sato~\cite{tsuzuku2019structural}.
 
 \end{proof}
 
-\subsection{Cas des couches de normalisation}
+\subsection{The Case of Normalization Layers}
 
 \begin{proof}
 
-Les architectures convolutionnelles modernes utilisent aussi des couches de normalisation, notamment la
-\textit{batch normalization} introduite par Ioffe et Szegedy~\cite{ioffe2015batch}. À première vue, ces couches pourraient sembler sortir du cadre précédent, car elles
-ne sont pas des convolutions. Cependant, lors de la phase de test (aussi appelée \textit{inference}), les statistiques utilisées par la batch normalization sont
-fixées : la moyenne et la variance ne sont plus calculées à partir du mini-batch courant, mais proviennent des
-statistiques apprises pendant l'entraînement.
-Cette stabilisation transforme une opération complexe en une transformation affine statique.
+Modern convolutional architectures also use normalization layers, particularly
+\textit{batch normalization}, introduced by Ioffe and Szegedy~\cite{ioffe2015batch}. At first glance, these layers may appear to fall outside the preceding framework because they
+are not convolutions. However, during testing (also called \textit{inference}), the statistics used by batch normalization are
+fixed: the mean and variance are no longer computed from the current minibatch, but come from
+statistics learned during training.
+This stabilization turns a complex operation into a fixed affine transformation.
 
-Pour un canal de sortie $i$, elle applique une normalisation suivie d'un changement
-d'échelle et d'un décalage appris. À l'inférence, les statistiques utilisées ne sont plus
-celles du mini-batch courant, mais des estimations fixées pendant l'entraînement. On obtient
-alors
+For an output channel $i$, it applies normalization followed by a learned
+scaling and shift. At inference, the statistics used are no longer
+those of the current minibatch, but estimates fixed during training. This
+gives
 \[
 \operatorname{BN}_i(Y_i)
 =
 \gamma_i \frac{Y_i - \mu_i}{\sqrt{\sigma_i^2+\varepsilon}} + \beta_i,
 \]
-où $\mu_i$ et $\sigma_i^2$ sont les statistiques fixées du canal $i$, tandis que
-$\gamma_i$ et $\beta_i$ sont des paramètres appris.
+where $\mu_i$ and $\sigma_i^2$ are the fixed statistics of channel $i$, while
+$\gamma_i$ and $\beta_i$ are learned parameters.
 
-Comme $\mu_i$, $\sigma_i^2$, $\gamma_i$ et $\beta_i$ sont constants à l'inférence, cette
-transformation est affine. En posant
+Since $\mu_i$, $\sigma_i^2$, $\gamma_i$, and $\beta_i$ are constant at inference, this
+transformation is affine. Defining
 \[
 s_i = \frac{\gamma_i}{\sqrt{\sigma_i^2+\varepsilon}},
 \qquad
 t_i = \beta_i - s_i\mu_i,
 \]
-on obtient
+gives
 \[
 \operatorname{BN}_i(Y_i) = s_iY_i + t_i.
 \]
 
-Supposons d'abord que la convolution soit écrite sans biais, conformément au cadre linéaire utilisé
-jusqu'ici en \eqref{eq:conv_multi}. À l'inférence, la batch normalization agit alors canal par canal
-comme une transformation affine, et l'on obtient
+First, suppose the convolution is written without a bias, in keeping with the linear framework used
+so far in \eqref{eq:conv_multi}. At inference, batch normalization then acts channel by channel
+as an affine transformation, giving
 \[
 \operatorname{BN}_i(Y_i)
 =
@@ -1523,56 +1523,56 @@ s_i \sum_{j=1}^{m_{\mathrm{in}}} h_{i,j} * X_j + t_i
 =
 \sum_{j=1}^{m_{\mathrm{in}}} (s_i h_{i,j}) * X_j + t_i.
 \]
-La partie linéaire est donc encore une convolution, avec des filtres modifiés
+The linear part is therefore still a convolution, with modified filters
 \[
 h'_{i,j}=s_i h_{i,j}.
 \]
-Le terme constant $t_i$ est un biais affine ajouté au canal de sortie. 
-Comme l'analyse spectrale porte sur la partie linéaire de l'opérateur, ce terme constant ne modifie pas les 
-directions singulières étudiées.
+The constant term $t_i$ is an affine bias added to the output channel.
+Since spectral analysis concerns the linear part of the operator, this constant term does not modify the
+singular directions under study.
 
-Ainsi, une convolution suivie d'une batch normalization à l'inférence peut être représentée comme une nouvelle
-convolution, avec des poids et des biais modifiés.
+Thus, a convolution followed by batch normalization at inference can be represented as a new
+convolution with modified weights and biases.
 
-Il faut toutefois noter que cette conclusion concerne le mode inférence. Pendant l'entraînement, la batch
-normalization dépend des statistiques du mini-batch courant. L'opérateur n'est alors plus strictement le même
-pour chaque entrée individuelle. On retrouve bien le résultat de la Proposition 4 de Tsuzuku et Sato~\cite{tsuzuku2019structural}.
+However, this conclusion applies to inference mode. During training, batch
+normalization depends on the statistics of the current minibatch. The operator is then no longer exactly the same
+for each individual input. This recovers the result of Proposition 4 of Tsuzuku and Sato~\cite{tsuzuku2019structural}.
 
 \end{proof}
 
 \subsection{Conclusion}
 
-Les Propositions~3 et~4 montrent que les skip connections et les normalisations à l'inférence
-s'intègrent encore dans le cadre linéaire étudié ici. Elles modifient les matrices de mélange ou les
-paramètres effectifs des convolutions, mais pas la forme générale des directions singulières obtenues
-précédemment.
+Propositions~3 and~4 show that skip connections and normalization at inference
+still fit within the linear framework studied here. They modify the mixing matrices or the
+effective convolution parameters, but not the general form of the singular directions obtained
+previously.
 
-\section{Couches de réduction : stride et pooling moyen}
+\section{Downsampling Layers: Stride and Average Pooling}
 \label{sec:couches-reduction-stride-pooling}
 
-Cette section reprend la Proposition~5 de Tsuzuku et Sato~\cite{tsuzuku2019structural}. Le but est de mieux comprendre
-ce qui se passe lorsqu'une couche réduit la taille spatiale de l'image. En particulier, nous allons voir
-pourquoi, dans ce cas, les directions singulières ne correspondent plus forcément à une seule
-fréquence de Fourier.
+This section revisits Proposition~5 of Tsuzuku and Sato~\cite{tsuzuku2019structural}. The goal is to better understand
+what happens when a layer reduces the spatial size of an image. In particular, we examine
+why, in this case, the singular directions no longer necessarily correspond to a single
+Fourier frequency.
 
-\paragraph{Qu'est-ce qu'un \textit{stride} ?}
+\paragraph{What is a \textit{stride}?}
 
-Avant d'aller plus loin, il convient de définir la notion de \textit{stride}. 
-Dans une couche de convolution standard, le filtre glisse sur l'image en se décalant d'une position à la fois :
-on parle alors d'un \textit{stride} de $1$.
+Before proceeding, we define the notion of \textit{stride}.
+In a standard convolutional layer, the filter slides over the image one position at a time:
+this is referred to as a \textit{stride} of $1$.
 
-Cependant, on peut choisir d'imposer au filtre de faire des sauts plus grands, en se décalant de $s$ positions à 
-chaque étape, où $s$ est un entier strictement positif. Ce paramètre $s$ est le \textit{stride}.
-L'effet immédiat d'un $s > 1$ est de réduire la résolution spatiale de la sortie, puisque l'on ne calcule plus
-une valeur en chaque position, mais seulement une valeur toutes les $s$ positions comme illustre la figure \ref{fig:stride_comparison}.
+However, the filter can instead be required to make larger jumps, moving by $s$ positions at
+each step, where $s$ is a strictly positive integer. This parameter $s$ is the \textit{stride}.
+The immediate effect of $s > 1$ is to reduce the spatial resolution of the output, since a value is no longer computed
+at every position, but only every $s$ positions, as illustrated in Figure~\ref{fig:stride_comparison}.
 
-Du point de vue fréquentiel, cette réduction de résolution a une conséquence essentielle :
-elle rend certaines fréquences indiscernables. En effet, lorsque l'on ne conserve qu'une position sur $s$,
-plusieurs composantes de Fourier distinctes dans l'espace d'entrée peuvent produire la même composante
-dans l'espace de sortie. Autrement dit, le \textit{stride} introduit un phénomène de repliement spectral
-(\textit{aliasing}~\cite{gonzalez2008digital}) comme l'illustre la figure~\ref{fig:aliasing_mapping} : des 
-fréquences différentes avant réduction vont renvoyer vers la même fréquence après réduction.
-C'est précisément ce mécanisme qui jouera un rôle central dans l'analyse fréquentielle des couches de réduction.
+From a frequency perspective, this reduction in resolution has an essential consequence:
+it makes some frequencies indistinguishable. When only one position in $s$ is retained,
+several distinct Fourier components in input space can produce the same component
+in output space. In other words, \textit{stride} introduces spectral folding
+(\textit{aliasing}~\cite{gonzalez2008digital}), as illustrated in Figure~\ref{fig:aliasing_mapping}: different
+frequencies before downsampling map to the same frequency afterward.
+This mechanism plays a central role in the frequency analysis of downsampling layers.
 
 \begin{figure}[H]
     \centering
@@ -1582,8 +1582,8 @@ C'est précisément ce mécanisme qui jouera un rôle central dans l'analyse fr�
         \draw[thick, gray!60, fill=gray!2] (6,0) ellipse (1.5cm and 2.5cm);
 
         % Titres des ensembles
-        \node[font=\small\bfseries] at (0, 3.7) {Base d'entrée $F_N$};
-        \node[font=\small\bfseries] at (6, 3) {Base de sortie $F_{N/s}$};
+        \node[font=\small\bfseries] at (0, 3.7) {Input basis $F_N$};
+        \node[font=\small\bfseries] at (6, 3) {Output basis $F_{N/s}$};
 
         % --- POINTS/ONDES D'ENTRÉE ---
         % Groupe d'aliasing vers k_bar
@@ -1611,50 +1611,50 @@ C'est précisément ce mécanisme qui jouera un rôle central dans l'analyse fr�
         \draw[->, >=stealth, thick, blue!80, bend right=15] (k3) to (kout);
 
         % Annotations (Positionnement corrigé pour éviter les collisions)
-        \node[text=blue!90!black, font=\footnotesize, align=center] at (3, 2.3) {Sous-échantillonnage \\ (Aliasing)};
+        \node[text=blue!90!black, font=\footnotesize, align=center] at (3, 2.3) {Subsampling \\ (Aliasing)};
         \node[text=black!60, font=\tiny] at (3, 1.0) {$k \equiv k' \pmod{N/s}$};
 
         % Légende explicative en bas
         \node[draw=gray!50, rounded corners, fill=white, text=black!85, font=\footnotesize, text width=9cm, align=justify] at (3, -4.2) {
-            \textbf{Phénomène d'aliasing} : Plusieurs ondes de fréquences différentes dans la base large $F_N$ 
-            (espacées de $N'=N/s$) sont projetées sur une seule et même onde dans la base réduite $F_{N/s}$. 
-            Elles deviennent alors indiscernables après l'opération de réduction.
+            \textbf{Aliasing}: Several waves of different frequencies in the larger basis $F_N$
+            (spaced by $N'=N/s$) are projected onto a single wave in the reduced basis $F_{N/s}$.
+            They therefore become indistinguishable after downsampling.
         };
 
     \end{tikzpicture}
-    \caption{Représentation ensembliste du repliement de spectre généralisé. Les flèches illustrent la perte d'injectivité : un ensemble de $s$ fréquences sources contribue à une unique fréquence de sortie.}
+    \caption{Set-based representation of generalized spectral folding. The arrows illustrate the loss of injectivity: a set of $s$ source frequencies contributes to a single output frequency.}
     \label{fig:aliasing_mapping}
 \end{figure}
 
-\paragraph{Pourquoi les résultats précédents ne s'appliquent plus directement}
+\paragraph{Why the previous results no longer apply directly.}
 
-Les résultats précédents reposaient sur le fait qu'une convolution circulaire de stride $1$
-préserve la taille spatiale et agit séparément sur chaque fréquence de Fourier. Cette séparation
-permet d'obtenir des vecteurs singuliers associés à une seule fréquence. Dès qu'une couche réduit
-la résolution spatiale, cette propriété disparaît : le sous-échantillonnage regroupe plusieurs
-fréquences d'entrée dans une même fréquence de sortie. C'est ce regroupement, ou aliasing,
-que nous allons maintenant formaliser.
+The previous results relied on the fact that circular convolution with stride $1$
+preserves spatial size and acts separately on each Fourier frequency. This separation
+yields singular vectors associated with a single frequency. Once a layer reduces
+spatial resolution, this property disappears: subsampling groups several
+input frequencies into the same output frequency. We now formalize this
+grouping, or aliasing.
 
-\subsection{Sous-échantillonnage spatial et aliasing fréquentiel}
+\subsection{Spatial Subsampling and Frequency Aliasing}
 
-Pour simplifier l'analyse nous allons commencer par isoler l'effet du sous-échantillonnage, indépendamment de toute convolution.
-On suppose que $s$ divise $N$, et on note
+To simplify the analysis, we first isolate the effect of subsampling, independently of any convolution.
+Assume that $s$ divides $N$, and let
 \[
     N' = \frac{N}{s}.
 \]
-On définit l'opérateur de sous-échantillonnage
+We define the subsampling operator
 \[
     P_s : \mathbb{C}^N \longrightarrow \mathbb{C}^{N'}
 \]
-par
+by
 \begin{equation*}
     (P_s x)_r = x_{sr},
     \qquad r = 0,\dots,N'-1.
 \end{equation*}
-Autrement dit, $P_s$ conserve une valeur toutes les $s$ positions.
+In other words, $P_s$ retains one value every $s$ positions.
 
-Soit maintenant $(F_N)_k$ une direction de Fourier 1D de taille $N$. En appliquant $P_s$ à cette
-direction, on obtient, pour tout $r=0,\dots,N'-1$,
+Now let $(F_N)_k$ be a 1D Fourier direction of size $N$. Applying $P_s$ to this
+direction gives, for every $r=0,\dots,N'-1$,
 \begin{align*}
     \big(P_s (F_N)_k\big)_r
     &= ((F_N)_k)_{sr} \notag \\
@@ -1663,15 +1663,15 @@ direction, on obtient, pour tout $r=0,\dots,N'-1$,
     &= \frac{1}{\sqrt{N}}
        \exp\left(2\pi i \frac{k r}{N'}\right).
 \end{align*}
-Or l'exponentielle précédente dépend de $k$ modulo $N'$. En notant
+The preceding exponential depends on $k$ modulo $N'$. Writing
 \[
     \overline{k} = k \bmod N',
 \]
-et comme $N=sN'$, donc
+and since $N=sN'$, so that
 \[
     \frac{1}{\sqrt{N}} = \frac{1}{\sqrt{s}}\frac{1}{\sqrt{N'}},
 \]
-on obtient
+we obtain
 \begin{equation}
     P_s (F_N)_k
     =
@@ -1679,34 +1679,34 @@ on obtient
     \label{eq:sous_echantillonnage_fourier_1d}
 \end{equation}
 
-Ce qui signifie qu'après sous-échantillonnage, la fréquence $k$ de taille $N$ devient la fréquence $\overline{k}$ de taille $N'$.
-En effet, cette équation exprime précisément le phénomène d'\textit{aliasing}. Deux fréquences $k$ et $k'$
-telles que
+This means that, after subsampling, frequency $k$ at size $N$ becomes frequency $\overline{k}$ at size $N'$.
+This equation precisely expresses \textit{aliasing}. Two frequencies $k$ and $k'$
+such that
 \[
     k \equiv k' \pmod{N'}
 \]
-deviennent identiques après sous-échantillonnage.
-Ainsi, pour chaque fréquence $\overline{k} \in \{0,\dots,N'-1\}$, il existe un ensemble de $s$ fréquences sources
-dans le signal original,
+become identical after subsampling.
+Thus, for each frequency $\overline{k} \in \{0,\dots,N'-1\}$, there is a set of $s$ source frequencies
+in the original signal,
 \[
     \mathcal{A}_k
     =
     \left\{ \overline{k} + qN' \mid q \in \{0,\dots,s-1\} \right\},
 \]
-qui deviennent indistinguables après sous-échantillonnage !
+that become indistinguishable after subsampling.
 
-Autrement dit, l'opérateur de sous-échantillonnage n'est pas \textbf{injectif} dans le domaine fréquentiel : 
-$s$ fréquences distinctes de l'espace de départ, espacées de $N'$, se projettent sur une unique fréquence dans 
-l'espace d'arrivée.
+In other words, the subsampling operator is not \textbf{injective} in the frequency domain:
+$s$ distinct frequencies in the domain, spaced by $N'$, project onto a single frequency in
+the codomain.
 
-\paragraph{Extension au cas bidimensionnel.}
+\paragraph{Extension to the two-dimensional case.}
 
-On étend maintenant ce raisonnement aux images de taille $N \times N$. On définit l'opérateur de
-sous-échantillonnage spatial 2D
+We now extend this reasoning to images of size $N \times N$. We define the 2D spatial
+subsampling operator
 \[
     P_s^{(2D)} : \mathbb{C}^{N \times N} \longrightarrow \mathbb{C}^{N' \times N'}
 \]
-par
+by
 \begin{equation}
     \big(P_s^{(2D)}X\big)_{r,t}
     =
@@ -1714,17 +1714,17 @@ par
     \qquad r,t = 0,\dots,N'-1.
     \label{eq:def_sous_echantillonnage_2d}
 \end{equation}
-Il conserve donc une ligne sur $s$ et une colonne sur $s$.
+It therefore retains one row in $s$ and one column in $s$.
 
-Après vectorisation, on note $\Pi_s$ la matrice associée à l'opérateur
-$P_s^{(2D)}$. Pour la direction de Fourier vectorisée
+After vectorization, let $\Pi_s$ denote the matrix associated with the operator
+$P_s^{(2D)}$. For the vectorized Fourier direction
 \[
     q_{u,v}
     =
     (F_N)_v \otimes (F_N)_u,
 \]
-on peut appliquer le résultat 1D sur chacune des deux dimensions. En utilisant le résultat
-1D obtenu en \eqref{eq:sous_echantillonnage_fourier_1d} sur chacune des deux dimensions, on a
+the 1D result can be applied along each of the two dimensions. Using the
+1D result obtained in \eqref{eq:sous_echantillonnage_fourier_1d} along each dimension gives
 \begin{align}
     \Pi_s q_{u,v}
     &=
@@ -1740,22 +1740,22 @@ on peut appliquer le résultat 1D sur chacune des deux dimensions. En utilisant 
     (F_{N'})_{\overline{v}} \otimes (F_{N'})_{\overline{u}}.
     \label{eq:sous_echantillonnage_fourier_2d}
 \end{align}
-où
+Here,
 \[
     \overline{u} = u \bmod N',
     \qquad
     \overline{v} = v \bmod N'.
 \]
 
-Ainsi, deux fréquences 2D $(u,v)$ et $(u',v')$ deviennent indistinguables après sous-échantillonnage
-dès lors que
+Thus, two 2D frequencies $(u,v)$ and $(u',v')$ become indistinguishable after subsampling
+whenever
 \[
     u \equiv u' \pmod{N'},
     \qquad
     v \equiv v' \pmod{N'}.
 \]
-Pour chaque fréquence de sortie $(\overline{u},\overline{v})$, l'ensemble des fréquences d'entrée qui
-se projettent sur elle est donc
+For each output frequency $(\overline{u},\overline{v})$, the set of input frequencies
+that project onto it is therefore
 \begin{equation}
     \mathcal{A}_{\overline{u},\overline{v}}
     =
@@ -1767,13 +1767,13 @@ se projettent sur elle est donc
     \label{eq:classe_aliasing_2d}
 \end{equation}
 
-\subsection{Convolution avec stride et repliement spectral}
+\subsection{Strided Convolution and Spectral Folding}
 
-Revenons maintenant au cas d'une couche convolutionnelle. Une convolution avec stride $s$ peut être vue
-comme une convolution classique de stride $1$, suivie d'un sous-échantillonnage spatial non commutatif. Après vectorisation,
-si $M_h$ désigne l'opérateur associé à une convolution circulaire de stride $1$ par un noyau $h$, et si
-$\Pi_s$ désigne la matrice de sous-échantillonnage associée à $P_s^{(2D)}$, alors l'opérateur de convolution
-avec stride $s$ s'écrit
+We now return to a convolutional layer. A convolution with stride $s$ can be viewed
+as an ordinary convolution with stride $1$, followed by noncommutative spatial subsampling. After vectorization,
+if $M_h$ denotes the operator associated with circular convolution with stride $1$ and kernel $h$, and
+$\Pi_s$ denotes the subsampling matrix associated with $P_s^{(2D)}$, the convolution operator
+with stride $s$ is
 \begin{equation}
     M_h^{(s)}
     =
@@ -1781,20 +1781,20 @@ avec stride $s$ s'écrit
     \label{eq:conv_stride_sampling}
 \end{equation}
 
-Cette écriture signifie que l'on calcule d'abord toutes les valeurs de la convolution, puis que l'on ne conserve
-que les positions dont les deux indices spatiaux sont des multiples de $s$.
+This expression means that all convolution values are computed first, and only
+positions whose two spatial indices are multiples of $s$ are then retained.
 
-Comme $M_h$ est une convolution circulaire de stride $1$, cette direction est une direction propre de
-l'opérateur. En utilisant la diagonalisation rappelée en \eqref{eq:diagonalisation_conv_2d}, on a
+Since $M_h$ is a circular convolution with stride $1$, this direction is an eigendirection of
+the operator. Using the diagonalization recalled in \eqref{eq:diagonalisation_conv_2d}, we have
 \[
     M_h q_{u,v}
     =
     \lambda_{u,v} q_{u,v},
 \]
-où $\lambda_{u,v}$ est la valeur propre associée à la fréquence $(u,v)$.
+where $\lambda_{u,v}$ is the eigenvalue associated with frequency $(u,v)$.
 
-En appliquant ensuite le sous-échantillonnage, et en utilisant
-\eqref{eq:sous_echantillonnage_fourier_2d}, on obtient
+Applying subsampling next, and using
+\eqref{eq:sous_echantillonnage_fourier_2d}, gives
 
 \begin{align}
     M_h^{(s)} q_{u,v}
@@ -1808,24 +1808,24 @@ En appliquant ensuite le sous-échantillonnage, et en utilisant
     \label{eq:action_conv_stride_fourier}
 \end{align}
 
-où
+where
 \[
     q_{\overline{u},\overline{v}}^{(N')}
     =
     (F_{N'})_{\overline{v}} \otimes (F_{N'})_{\overline{u}}.
 \]
 
-avec
+Here,
 \[
     \overline{u}=u \bmod N',
     \qquad
     \overline{v}=v \bmod N'.
 \]
 
-L'équation \eqref{eq:action_conv_stride_fourier} montre que la convolution avec stride conserve une partie
-de la structure de Fourier, mais avec une différence essentielle : plusieurs fréquences d'entrée peuvent être
-envoyées vers la même fréquence de sortie. Plus précisément, toutes les fréquences appartenant à la même
-classe d'aliasing
+Equation~\eqref{eq:action_conv_stride_fourier} shows that strided convolution preserves part
+of the Fourier structure, but with an essential difference: several input frequencies can be
+mapped to the same output frequency. More precisely, all frequencies belonging to the same
+aliasing class
 \[
     \mathcal{A}_{\overline{u},\overline{v}}
     =
@@ -1835,42 +1835,42 @@ classe d'aliasing
         q_1,q_2\in\{0,\dots,s-1\}
     \right\}
 \]
-se retrouvent associées à la même fréquence de sortie $(\overline{u},\overline{v})$.
+are associated with the same output frequency $(\overline{u},\overline{v})$.
 
-Pour exprimer ce regroupement de manière matricielle, on introduit la matrice
+To express this grouping in matrix form, we introduce the matrix
 \[
     \mathcal{S}_s \in \mathbb{C}^{N'^2 \times N^2},
 \]
-qui décrit le repliement spectral dans la base de Fourier. Ses colonnes correspondent aux fréquences
-d'entrée $(u,v)$, et ses lignes aux fréquences de sortie $(\alpha,\beta)$. On définit
+which describes spectral folding in the Fourier basis. Its columns correspond to input
+frequencies $(u,v)$ and its rows to output frequencies $(\alpha,\beta)$. We define
 \begin{equation}
     (\mathcal{S}_s)_{(\alpha,\beta),(u,v)}
     =
     \begin{cases}
         \dfrac{1}{s},
-        & \text{si } \alpha = u \bmod N'
-        \text{ et } \beta = v \bmod N', \\[0.4em]
+        & \text{if } \alpha = u \bmod N'
+        \text{ and } \beta = v \bmod N', \\[0.4em]
         0,
-        & \text{sinon.}
+        & \text{otherwise.}
     \end{cases}
     \label{eq:def_matrice_sampling_fourier}
 \end{equation}
 
-Ainsi, pour une fréquence d'entrée $(u,v)$ donnée, la matrice $\mathcal{S}_s$ place un unique coefficient
-non nul sur la ligne correspondant à la fréquence de sortie
+Thus, for a given input frequency $(u,v)$, the matrix $\mathcal{S}_s$ places a single nonzero
+coefficient in the row corresponding to the output frequency
 \[
     (u \bmod N',\, v \bmod N').
 \]
-Ce coefficient vaut $\frac{1}{s}$, comme dans \eqref{eq:sous_echantillonnage_fourier_2d}.
+This coefficient equals $\frac{1}{s}$, as in \eqref{eq:sous_echantillonnage_fourier_2d}.
 
-L'action du sous-échantillonnage sur toute la base de Fourier s'écrit alors
+The action of subsampling on the entire Fourier basis can then be written as
 \begin{equation}
     \Pi_s Q_N
     =
     Q_{N'} \mathcal{S}_s.
     \label{eq:sampling_base_fourier}
 \end{equation}
-Comme $Q_N$ est unitaire, on obtient la factorisation
+Since $Q_N$ is unitary, we obtain the factorization
 \begin{equation}
     \Pi_s
     =
@@ -1878,13 +1878,13 @@ Comme $Q_N$ est unitaire, on obtient la factorisation
     \label{eq:factorisation_sampling_fourier}
 \end{equation}
 
-Cette écriture confirme que $\mathcal{S}_s$ représente bien l'aliasing dans le domaine fréquentiel.
-En effet, si
+This expression confirms that $\mathcal{S}_s$ represents aliasing in the frequency domain.
+Indeed, if
 \[
     \widehat{x}=Q_N^H x
 \]
-désigne les coefficients de Fourier de l'entrée, alors les coefficients de Fourier de la sortie sous-échantillonnée
-sont donnés par
+denotes the Fourier coefficients of the input, the Fourier coefficients of the subsampled output
+are given by
 \[
     \widehat{y}
     =
@@ -1892,7 +1892,7 @@ sont donnés par
     =
     \mathcal{S}_s \widehat{x}.
 \]
-Par définition de $\mathcal{S}_s$, cela donne, pour chaque fréquence de sortie $(\alpha,\beta)$,
+By the definition of $\mathcal{S}_s$, this gives, for each output frequency $(\alpha,\beta)$,
 \begin{equation}
     \widehat{y}_{\alpha,\beta}
     =
@@ -1902,16 +1902,16 @@ Par définition de $\mathcal{S}_s$, cela donne, pour chaque fréquence de sortie
     \label{eq:somme_coefficients_aliasing}
 \end{equation}
 
-Autrement dit, le sous-échantillonnage ne conserve pas séparément les coefficients de Fourier :
-il additionne les coefficients appartenant à une même classe d'aliasing. C'est ce mécanisme qui explique
-pourquoi, dans une couche avec stride, les directions singulières ne sont plus nécessairement associées
-à une seule fréquence de Fourier.
+In other words, subsampling does not retain the Fourier coefficients separately:
+it sums the coefficients belonging to the same aliasing class. This mechanism explains
+why, in a strided layer, singular directions are no longer necessarily associated
+with a single Fourier frequency.
 
-\subsection{Composition avec une convolution de stride $1$}
+\subsection{Composition with a Convolution of Stride $1$}
 
-On peut maintenant combiner le sous-échantillonnage avec une convolution circulaire de stride $1$.
-On considère une couche convolutionnelle multi-canaux de stride $1$, représentée par l'opérateur
-matriciel $M$. D'après la factorisation établie en \eqref{eq:factorisation_M}, on a
+We can now combine subsampling with circular convolution of stride $1$.
+Consider a multichannel convolutional layer with stride $1$, represented by the matrix
+operator $M$. From the factorization established in \eqref{eq:factorisation_M},
 \begin{equation*}
     M
     =
@@ -1920,23 +1920,23 @@ matriciel $M$. D'après la factorisation établie en \eqref{eq:factorisation_M},
     (I_{m_{\mathrm{in}}} \otimes Q_N)^H,
 \end{equation*}
 
-Une convolution avec stride $s$ s'obtient alors en appliquant d'abord la convolution de stride $1$,
-puis en gardant seulement une position sur $s$ dans chaque direction spatiale. Comme cette réduction
-est faite séparément sur chaque canal de sortie, on introduit
+A convolution with stride $s$ is then obtained by first applying convolution with stride $1$,
+and then retaining only one position in $s$ along each spatial direction. Since this reduction
+is performed separately on each output channel, we introduce
 \[
     \Pi_s^{\mathrm{out}}
     =
     I_{m_{\mathrm{out}}} \otimes \Pi_s.
 \]
-L'opérateur correspondant à la convolution avec stride $s$ s'écrit alors
+The operator corresponding to convolution with stride $s$ is then
 \begin{equation*}
     M^{(s)}
     =
     \Pi_s^{\mathrm{out}} M.
 \end{equation*}
 
-En remplaçant $M$ par sa factorisation de Fourier et $\Pi_s$ par la factorisation obtenue en
-\eqref{eq:factorisation_sampling_fourier}, on obtient
+Substituting the Fourier factorization of $M$ and the factorization of $\Pi_s$ obtained in
+\eqref{eq:factorisation_sampling_fourier} gives
 \begin{align*}
     M^{(s)}
     &=
@@ -1951,20 +1951,20 @@ En remplaçant $M$ par sa factorisation de Fourier et $\Pi_s$ par la factorisati
     (I_{m_{\mathrm{in}}} \otimes Q_N)^H.
 \end{align*}
 
-Cette écriture montre clairement où apparaît la différence avec le cas stride $1$. Le facteur $L$
-continue d'agir fréquence par fréquence. En revanche, le facteur $\mathcal{S}_s$ regroupe ensuite
-plusieurs fréquences d'entrée dans une même fréquence de sortie.
+This expression makes the difference from the stride-$1$ case clear. The factor $L$
+still acts frequency by frequency. The factor $\mathcal{S}_s$, however, subsequently groups
+several input frequencies into a single output frequency.
 
-Pour mieux voir ce regroupement, on reprend le même raisonnement que plus haut.
-Soit
+To examine this grouping more closely, we use the same reasoning as above.
+Let
 
 \begin{equation*}
     \widehat{x}_{u,v} \in \mathbb{C}^{m_{\mathrm{in}}}
-    \qquad \text{et} \qquad
+    \qquad \text{and} \qquad
     \widehat{z}_{u,v} = G^{(u,v)} \widehat{x}_{u,v}.
 \end{equation*}
 
-On applique ensuite le sous-échantillonnage pour une fréquence réduite $(\alpha,\beta)$,
+We then apply subsampling for a reduced frequency $(\alpha,\beta)$:
 \begin{align}
     \widehat{y}_{\alpha,\beta}
     &=
@@ -1978,14 +1978,14 @@ On applique ensuite le sous-échantillonnage pour une fréquence réduite $(\alp
     \label{eq:sortie_stride_classe_aliasing}
 \end{align}
 
-Pour écrire cette relation sous forme matricielle, on fixe un ordre arbitraire sur les fréquences de
-la classe d'aliasing :
+To express this relation in matrix form, we fix an arbitrary ordering of the frequencies in
+the aliasing class:
 \[
     \mathcal{A}_{\alpha,\beta}
     =
     \{(u_1,v_1),\dots,(u_{s^2},v_{s^2})\}.
 \]
-On regroupe ensuite les coefficients d'entrée correspondants dans un seul vecteur :
+We then collect the corresponding input coefficients in a single vector:
 \[
     \widehat{x}_{\mathcal{A}_{\alpha,\beta}}
     =
@@ -1997,7 +1997,7 @@ On regroupe ensuite les coefficients d'entrée correspondants dans un seul vecte
     \in \mathbb{C}^{m_{\mathrm{in}}s^2}.
 \]
 
-On obtient alors la matrice
+This gives the matrix
 \begin{equation}
     G_s^{(\alpha,\beta)}
     =
@@ -2016,16 +2016,16 @@ On obtient alors la matrice
     \label{eq:def_matrice_aliasing_stride}
 \end{equation}
 
-Cette matrice est simplement une façon compacte d'écrire la somme de
-\eqref{eq:sortie_stride_classe_aliasing}. En effet, multiplier
-$G_s^{(\alpha,\beta)}$ par le vecteur empilé
-$\widehat{x}_{\mathcal{A}_{\alpha,\beta}}$ donne exactement
+This matrix is simply a compact way to express the sum in
+\eqref{eq:sortie_stride_classe_aliasing}. Multiplying
+$G_s^{(\alpha,\beta)}$ by the stacked vector
+$\widehat{x}_{\mathcal{A}_{\alpha,\beta}}$ gives exactly
 \[
     \frac{1}{s}
     \sum_{(u,v)\in\mathcal{A}_{\alpha,\beta}}
     G^{(u,v)}\widehat{x}_{u,v}.
 \]
-On a donc par construction
+By construction, therefore,
 \begin{equation*}
     \widehat{y}_{\alpha,\beta}
     =
@@ -2033,15 +2033,15 @@ On a donc par construction
     \widehat{x}_{\mathcal{A}_{\alpha,\beta}}.
 \end{equation*}
 
-Cette formulation permet de ramener l'étude de la sensibilité structurelle d'une convolution avec stride $s$ à 
-une analyse locale, fréquence de sortie par fréquence de sortie. Pour chaque fréquence réduite $(\alpha,\beta)$, 
-il convient alors d'étudier les valeurs et vecteurs singuliers de la matrice $G_s^{(\alpha,\beta)}$.
+This formulation reduces the study of the structural sensitivity of a convolution with stride $s$ to
+a local analysis, one output frequency at a time. For each reduced frequency $(\alpha,\beta)$,
+we therefore study the singular values and vectors of the matrix $G_s^{(\alpha,\beta)}$.
 
-\subsection{Construction des vecteurs singuliers droits}
+\subsection{Construction of Right Singular Vectors}
 
 \begin{proof}
 
-Pour alléger les notations, on pose
+To simplify the notation, let
 \[
     \varphi_{u,v}^{(N)}
     =
@@ -2052,15 +2052,15 @@ Pour alléger les notations, on pose
     (F_{N'})_\beta \otimes (F_{N'})_\alpha.
 \]
 
-On fixe une fréquence de sortie $(\alpha,\beta)$ et sa classe d'aliasing
-$\mathcal{A}_{\alpha,\beta}$. En choisissant un ordre arbitraire sur cette classe,
-on écrit
+Fix an output frequency $(\alpha,\beta)$ and its aliasing class
+$\mathcal{A}_{\alpha,\beta}$. Choosing an arbitrary ordering of this class,
+we write
 \[
     \mathcal{A}_{\alpha,\beta}
     =
     \{(u_1,v_1),\dots,(u_{s^2},v_{s^2})\}.
 \]
-Soit
+Let
 \[
     p
     =
@@ -2073,8 +2073,8 @@ Soit
     \qquad
     p_{u_i,v_i}\in\mathbb{C}^{m_{\mathrm{in}}},
 \]
-un vecteur singulier droit de $G_s^{(\alpha,\beta)}$, associé à une valeur singulière
-$\sigma$ et à un vecteur singulier gauche $q\in\mathbb{C}^{m_{\mathrm{out}}}$. On a donc
+be a right singular vector of $G_s^{(\alpha,\beta)}$, associated with a singular value
+$\sigma$ and a left singular vector $q\in\mathbb{C}^{m_{\mathrm{out}}}$. We therefore have
 \begin{equation}
     G_s^{(\alpha,\beta)}p
     =
@@ -2086,7 +2086,7 @@ $\sigma$ et à un vecteur singulier gauche $q\in\mathbb{C}^{m_{\mathrm{out}}}$. 
     \label{eq:svd_matrice_aliasing_stride}
 \end{equation}
 
-À partir des blocs $p_{u,v}$, on construit le vecteur d'entrée
+From the blocks $p_{u,v}$, we construct the input vector
 \begin{equation}
     r
     =
@@ -2094,12 +2094,12 @@ $\sigma$ et à un vecteur singulier gauche $q\in\mathbb{C}^{m_{\mathrm{out}}}$. 
     p_{u,v}\otimes \varphi_{u,v}^{(N)}.
     \label{eq:construction_vecteur_singulier_stride}
 \end{equation}
-Ce vecteur n'est donc plus associé à une seule fréquence de Fourier : c'est une combinaison
-de toutes les fréquences appartenant à la même classe d'aliasing.
+This vector is therefore no longer associated with a single Fourier frequency: it is a combination
+of all frequencies belonging to the same aliasing class.
 
-Montrons maintenant que $r$ est un vecteur singulier droit de $M^{(s)}$. D'après
-\eqref{eq:sortie_stride_classe_aliasing}, l'action de $M^{(s)}$ sur les coefficients de Fourier
-associés à la classe $\mathcal{A}_{\alpha,\beta}$ est donnée par
+We now show that $r$ is a right singular vector of $M^{(s)}$. By
+\eqref{eq:sortie_stride_classe_aliasing}, the action of $M^{(s)}$ on the Fourier coefficients
+associated with the class $\mathcal{A}_{\alpha,\beta}$ is given by
 \[
     \widehat{y}_{\alpha,\beta}
     =
@@ -2107,39 +2107,39 @@ associés à la classe $\mathcal{A}_{\alpha,\beta}$ est donnée par
     \sum_{(u,v)\in\mathcal{A}_{\alpha,\beta}}
     G^{(u,v)}p_{u,v}.
 \]
-Par définition de $G_s^{(\alpha,\beta)}$, cette somme s'écrit simplement
+By the definition of $G_s^{(\alpha,\beta)}$, this sum is simply
 \[
     \widehat{y}_{\alpha,\beta}
     =
     G_s^{(\alpha,\beta)}p.
 \]
-En utilisant la relation de singularité \eqref{eq:svd_matrice_aliasing_stride}, on obtient donc
+Using the singular-vector relation \eqref{eq:svd_matrice_aliasing_stride}, we therefore obtain
 \[
     \widehat{y}_{\alpha,\beta}
     =
     \sigma q.
 \]
-Dans le domaine spatial, cela donne
+In the spatial domain, this gives
 \[
     M^{(s)}r
     =
     \sigma q\otimes \varphi_{\alpha,\beta}^{(N')}.
 \]
-En posant
+Defining
 \[
     w
     =
     q\otimes \varphi_{\alpha,\beta}^{(N')},
 \]
-on obtient
+gives
 \begin{equation}
     M^{(s)}r = \sigma w.
     \label{eq:relation_singuliere_stride_droite}
 \end{equation}
 
-Il reste à vérifier l'équation adjointe. L'adjoint de $M^{(s)}$ renvoie une fréquence de sortie
-$(\alpha,\beta)$ vers toutes les fréquences d'entrée de la classe
-$\mathcal{A}_{\alpha,\beta}$. On obtient alors
+It remains to verify the adjoint equation. The adjoint of $M^{(s)}$ maps an output frequency
+$(\alpha,\beta)$ back to all input frequencies in the class
+$\mathcal{A}_{\alpha,\beta}$. This gives
 \[
     M^{(s)H}w
     =
@@ -2151,11 +2151,11 @@ $\mathcal{A}_{\alpha,\beta}$. On obtient alors
     \otimes
     \varphi_{u,v}^{(N)}.
 \]
-Or la relation
+The relation
 \[
     G_s^{(\alpha,\beta)H}q=\sigma p
 \]
-implique, bloc par bloc, que
+implies, block by block, that
 \[
     \frac{1}{s}G^{(u,v)H}q
     =
@@ -2163,7 +2163,7 @@ implique, bloc par bloc, que
     \qquad
     (u,v)\in\mathcal{A}_{\alpha,\beta}.
 \]
-En remplaçant dans l'expression précédente, on obtient directement
+Substituting into the preceding expression gives directly
 \begin{equation}
     M^{(s)H}w
     =
@@ -2171,18 +2171,18 @@ En remplaçant dans l'expression précédente, on obtient directement
     \label{eq:relation_singuliere_stride_gauche}
 \end{equation}
 
-Les deux relations
+The two relations
 \[
     M^{(s)}r=\sigma w,
     \qquad
     M^{(s)H}w=\sigma r
 \]
-montrent donc que $r$ et $w$ forment bien une paire de vecteurs singuliers droit et gauche
-de $M^{(s)}$.
+therefore show that $r$ and $w$ form a pair of right and left singular vectors
+of $M^{(s)}$.
 
-Enfin, la normalisation est conservée. En effet, les fréquences de
-$\mathcal{A}_{\alpha,\beta}$ sont distinctes, donc les directions
-$\varphi_{u,v}^{(N)}$ correspondantes sont orthonormées. Ainsi,
+Finally, normalization is preserved. The frequencies in
+$\mathcal{A}_{\alpha,\beta}$ are distinct, so the corresponding directions
+$\varphi_{u,v}^{(N)}$ are orthonormal. Thus,
 \[
     \|r\|_2^2
     =
@@ -2191,42 +2191,42 @@ $\varphi_{u,v}^{(N)}$ correspondantes sont orthonormées. Ainsi,
     =
     \|p\|_2^2.
 \]
-Donc si $p$ est normalisé, alors $r$ l'est aussi. De même, si $q$ est normalisé,
-alors $w=q\otimes \varphi_{\alpha,\beta}^{(N')}$ est normalisé.
+If $p$ is normalized, then $r$ is also normalized. Similarly, if $q$ is normalized,
+then $w=q\otimes \varphi_{\alpha,\beta}^{(N')}$ is normalized.
 
-On retrouve ainsi le résultat annoncé par la Proposition~5 de Tsuzuku et Sato
-\cite{tsuzuku2019structural} : dans une couche de réduction, les directions singulières
-ne sont plus forcément des directions de Fourier pures. Elles peuvent être des combinaisons
-de fréquences appartenant à une même classe d'aliasing.
+This recovers the result stated in Proposition~5 of Tsuzuku and Sato
+\cite{tsuzuku2019structural}: in a downsampling layer, singular directions
+are no longer necessarily pure Fourier directions. They can be combinations
+of frequencies belonging to the same aliasing class.
 
 \end{proof}
 
-\subsection{Average pooling comme cas particulier}
+\subsection{Average Pooling as a Special Case}
 
-L'\textit{average pooling} consiste à remplacer chaque fenêtre locale de taille $s\times s$
-par la moyenne de ses pixels comme illustré dans la Figure~\ref{fig:avg_pooling_spatial}. Cette opération réduit donc la résolution spatiale, comme une
-convolution avec stride. La différence est qu'avant le sous-échantillonnage, on applique d'abord
-un filtre moyenneur fixe.
+\textit{Average pooling} replaces each local window of size $s\times s$
+with the average of its pixels, as illustrated in Figure~\ref{fig:avg_pooling_spatial}. This operation therefore reduces spatial resolution, like a
+strided convolution. The difference is that a fixed averaging filter is applied
+before subsampling.
 
-Dans le cadre circulaire utilisé ici, ce filtre peut être représenté par le noyau
+In the circular setting used here, this filter can be represented by the kernel
 \[
     h_{\mathrm{avg}}[a,b]
     =
     \begin{cases}
         \dfrac{1}{s^2},
-        & \text{si } a,b \in \{0,\dots,s-1\},\\[0.4em]
+        & \text{if } a,b \in \{0,\dots,s-1\},\\[0.4em]
         0,
-        & \text{sinon,}
+        & \text{otherwise,}
     \end{cases}
 \]
-où les indices spatiaux sont interprétés modulo $N$. La convolution par
-$h_{\mathrm{avg}}$ calcule donc une moyenne locale, puis le sous-échantillonnage conserve
-une position sur $s$ dans chaque direction spatiale.
+where spatial indices are interpreted modulo $N$. Convolution with
+$h_{\mathrm{avg}}$ therefore computes a local average, after which subsampling retains
+one position in $s$ along each spatial direction.
 
-Dans le cas multi-canaux, cette opération est appliquée séparément sur chaque canal. Si $m$
-désigne le nombre de canaux et si
-$C_{h_{\mathrm{avg}}}\in\mathbb{C}^{N^2\times N^2}$ désigne la matrice de convolution circulaire
-associée au noyau moyenneur, alors l'opérateur d'\textit{average pooling} s'écrit
+In the multichannel case, this operation is applied separately to each channel. If $m$
+denotes the number of channels and
+$C_{h_{\mathrm{avg}}}\in\mathbb{C}^{N^2\times N^2}$ denotes the circular convolution matrix
+associated with the averaging kernel, the \textit{average pooling} operator is
 \begin{equation}
     M_{\mathrm{avg}}^{(s)}
     =
@@ -2235,25 +2235,25 @@ associée au noyau moyenneur, alors l'opérateur d'\textit{average pooling} s'é
     \label{eq:average_pooling_convolution_sampling}
 \end{equation}
 
-On est donc exactement dans le cas étudié précédemment : une convolution circulaire de stride $1$,
-suivie d'un sous-échantillonnage. Le noyau moyenneur agit comme un filtre passe-bas, ce qui atténue
-certaines fréquences avant le repliement spectral. Mais le mécanisme d'aliasing reste le même :
-plusieurs fréquences d'entrée peuvent être regroupées dans une même fréquence de sortie.
+This is exactly the case studied previously: circular convolution with stride $1$,
+followed by subsampling. The averaging kernel acts as a low-pass filter, attenuating
+certain frequencies before spectral folding. However, the aliasing mechanism remains the same:
+several input frequencies can be grouped into a single output frequency.
 
-Par conséquent, les vecteurs singuliers droits d'une couche d'\textit{average pooling} peuvent eux aussi
-être choisis comme des combinaisons de fréquences appartenant à une même classe d'aliasing.
+Consequently, the right singular vectors of an \textit{average pooling} layer can also
+be chosen as combinations of frequencies belonging to the same aliasing class.
 
-\section{Contrainte image réelle}
+\section{Real-Valued Image Constraint}
 \label{sec:contrainte-image-reelle}
 
-La Proposition~6 de Tsuzuku et Sato~\cite{tsuzuku2019structural} vise à résoudre le problème lié à l'utilisation des 
-méthodes que nous venons de développer dans des cas concrets. En effet, les images manipulées par un réseau sont réelles, 
-tandis qu'une fonction de Fourier prise isolément est en général complexe. L'idée est de montrer que la contrainte de 
-valeur réelle d'une image peut être résolue en utilisant la symétrie hermitienne de ses coefficients de Fourier. Et pour cela nous allons 
-introduire les outils nécessaires pour comprendre cette symétrie.
+Proposition~6 of Tsuzuku and Sato~\cite{tsuzuku2019structural} addresses the problem of applying
+the methods just developed to practical cases. Images processed by a network are real-valued,
+whereas an individual Fourier function is generally complex. The idea is to show that the requirement
+that an image be real-valued can be met using the Hermitian symmetry of its Fourier coefficients. To this end, we
+introduce the tools needed to understand this symmetry.
 
-Commencons par la transformée de Fourier discrète 2D~\cite{ImagerieNumeriqueTheme7Block2}. Pour une image
-$X\in\mathbb{C}^{N\times N}$, on définit
+We begin with the 2D discrete Fourier transform~\cite{ImagerieNumeriqueTheme7Block2}. For an image
+$X\in\mathbb{C}^{N\times N}$, we define
 \begin{equation*}
     \widehat{X}_{u,v}
     =
@@ -2268,7 +2268,7 @@ $X\in\mathbb{C}^{N\times N}$, on définit
     u,v\in\{0,\dots,N-1\}.
 \end{equation*}
 
-L'image peut être reconstruite à partir de ses coefficients de Fourier par la transformée inverse :
+The image can be reconstructed from its Fourier coefficients using the inverse transform:
 \begin{equation}
     X[m,n]
     =
@@ -2281,14 +2281,14 @@ L'image peut être reconstruite à partir de ses coefficients de Fourier par la 
     \label{eq:idft2d_definition}
 \end{equation}
 
-Ces formules sont compatibles avec les bases de Fourier introduites précédemment, à un facteur de
-normalisation près. Ici, nous suivons la notation $S(X)$ utilisée dans l'article \cite{tsuzuku2019structural} afin de reproduire
-directement la Proposition~6.
+These formulas are compatible with the Fourier bases introduced previously, up to a
+normalization factor. Here, we follow the notation $S(X)$ used in the paper \cite{tsuzuku2019structural} to reproduce
+Proposition~6 directly.
 
-\subsection{Symétrie hermitienne des coefficients de Fourier}
+\subsection{Hermitian Symmetry of Fourier Coefficients}
 
-La contrainte de valeur réelle d'une image se traduit par une symétrie particulière de ses coefficients de
-Fourier. Plus précisément, pour une image $X\in\mathbb{C}^{N\times N}$, on a
+The requirement that an image be real-valued corresponds to a particular symmetry of its Fourier
+coefficients. More precisely, for an image $X\in\mathbb{C}^{N\times N}$,
 \begin{equation}
     X\in\mathbb{R}^{N\times N}
     \quad\Longleftrightarrow\quad
@@ -2299,17 +2299,17 @@ Fourier. Plus précisément, pour une image $X\in\mathbb{C}^{N\times N}$, on a
     u,v\in\{0,\dots,N-1\}.
     \label{eq:symetrie_hermitienne_fourier}
 \end{equation}
-Cette propriété est la symétrie hermitienne de la transformée de Fourier d'un signal réel. Elle est
-classique en traitement du signal discret~\cite{oppenheim2009discrete}, et correspond ici à la
-Proposition~6 de Tsuzuku et Sato~\cite{tsuzuku2019structural}.
+This property is the Hermitian symmetry of the Fourier transform of a real-valued signal. It is
+a standard result in discrete signal processing~\cite{oppenheim2009discrete}, and here corresponds to
+Proposition~6 of Tsuzuku and Sato~\cite{tsuzuku2019structural}.
 
-Montrons d'abord le sens direct. Supposons que $X$ soit réelle, c'est-à-dire que
+We first prove the forward implication. Assume that $X$ is real-valued, that is,
 \[
     X[m,n]^* = X[m,n]
     \qquad
-    \text{pour tout } m,n.
+    \text{for all } m,n.
 \]
-Par définition de la DFT 2D, on a
+By the definition of the 2D DFT,
 \begin{align*}
     \widehat{X}^{*}_{u,v}
     &=
@@ -2329,17 +2329,17 @@ Par définition de la DFT 2D, on a
     &=
     \widehat{X}_{(-u)\bmod N,\,(-v)\bmod N}.
 \end{align*}
-On obtient donc bien
+We therefore obtain
 \[
     \widehat{X}_{u,v}
     =
     \widehat{X}^{*}_{(-u)\bmod N,\,(-v)\bmod N}.
 \]
 
-Prouvons maintenant le sens inverse. Supposons que les coefficients de Fourier vérifient la symétrie
-\eqref{eq:symetrie_hermitienne_fourier}. On veut montrer que l'image reconstruite est réelle.
-À partir de la transformée de Fourier inverse \eqref{eq:idft2d_definition}, on calcule le conjugué
-de $X[m,n]$ :
+We now prove the converse. Suppose the Fourier coefficients satisfy the symmetry
+\eqref{eq:symetrie_hermitienne_fourier}. We want to show that the reconstructed image is real-valued.
+Starting from the inverse Fourier transform \eqref{eq:idft2d_definition}, we compute the conjugate
+of $X[m,n]$:
 \begin{align*}
     X[m,n]^*
     &=
@@ -2355,13 +2355,13 @@ de $X[m,n]$ :
     \widehat{X}^{*}_{u,v}
     \exp\left(-2\pi i\frac{um+vn}{N}\right).
 \end{align*}
-Pour rappel d'après l'hypothèse de symétrie hermitienne, on a
+Recall that the Hermitian symmetry assumption gives
 \[
     \widehat{X}^{*}_{u,v}
     =
     \widehat{X}_{(-u)\bmod N,\,(-v)\bmod N}.
 \]
-Donc
+Therefore,
 \begin{align*}
     X[m,n]^*
     &=
@@ -2370,13 +2370,13 @@ Donc
     \widehat{X}_{(-u)\bmod N,\,(-v)\bmod N}
     \exp\left(-2\pi i\frac{um+vn}{N}\right).
 \end{align*}
-En effectuant le changement d'indices
+Changing indices according to
 \[
     u' = (-u)\bmod N,
     \qquad
     v' = (-v)\bmod N,
 \]
-on obtient
+gives
 \begin{align*}
     X[m,n]^*
     &=
@@ -2387,9 +2387,9 @@ on obtient
     &=
     X[m,n].
 \end{align*}
-Ainsi $X[m,n]^*=X[m,n]$ pour tout $m,n$, donc $X$ est réelle.
+Thus, $X[m,n]^*=X[m,n]$ for all $m,n$, so $X$ is real-valued.
 
-On a donc bien montré l'équivalence :
+We have therefore established the equivalence:
 \[
     X\in\mathbb{R}^{N\times N}
     \quad\Longleftrightarrow\quad
@@ -2398,15 +2398,15 @@ On a donc bien montré l'équivalence :
     \widehat{X}^{*}_{(-u)\bmod N,\,(-v)\bmod N}.
 \]
 
-\subsection{Conséquence pour les perturbations de Fourier}
+\subsection{Consequence for Fourier Perturbations}
 
-L'équivalence précédente s'applique directement aux perturbations que l'on souhaite ajouter aux images.
-Comme les images manipulées par le réseau sont réelles,
+The preceding equivalence applies directly to the perturbations we wish to add to images.
+Since the images processed by the network are real-valued,
 \[
     x \in \mathbb{R}^{N\times N\times c},
 \]
-une perturbation admissible doit elle aussi être réelle dans le domaine spatial. Ainsi, pour chaque canal,
-ses coefficients de Fourier doivent vérifier la symétrie hermitienne :
+an admissible perturbation must also be real-valued in the spatial domain. Thus, for each channel,
+its Fourier coefficients must satisfy Hermitian symmetry:
 \begin{equation}
     \widehat{\delta}_{(-u)\bmod N,\,(-v)\bmod N}
     =
@@ -2414,21 +2414,21 @@ ses coefficients de Fourier doivent vérifier la symétrie hermitienne :
     \label{eq:contrainte_reelle_perturbation_fourier}
 \end{equation}
 
-Autrement dit, si l'on utilise une fréquence \((u,v)\), il faut aussi utiliser sa fréquence opposée
+In other words, if a frequency \((u,v)\) is used, its opposite frequency
 \[
     ((-u)\bmod N,\,(-v)\bmod N)
 \]
-avec le coefficient conjugué. Cette condition garantit que la transformée inverse de Fourier donne une perturbation réelle.
+must also be used with the conjugate coefficient. This condition guarantees that the inverse Fourier transform yields a real-valued perturbation.
 
-Il existe quelques cas particuliers où une fréquence est égale à sa propre fréquence opposée modulo $N$.
-Ces fréquences vérifient
+There are a few special cases in which a frequency equals its own opposite modulo $N$.
+These frequencies satisfy
 \[
     (u,v)
     =
     ((-u)\bmod N,\,(-v)\bmod N).
 \]
-Dans ce cas, la condition précédente impose simplement que le coefficient de Fourier soit réel. Pour
-$N$ pair, cela concerne notamment les fréquences
+In this case, the preceding condition simply requires the Fourier coefficient to be real. For
+even $N$, this applies in particular to the frequencies
 \[
     (0,0),
     \qquad
@@ -2438,12 +2438,12 @@ $N$ pair, cela concerne notamment les fréquences
     \qquad
     (N/2,N/2).
 \]
-En dehors de ces cas particuliers, les fréquences doivent être prises par paires conjuguées.
+Outside these special cases, frequencies must be taken in conjugate pairs.
 
-C'est cette idée qui est utilisée par Tsuzuku et Sato dans leur \textit{Single Fourier Attack}
+Tsuzuku and Sato use this idea in their \textit{Single Fourier Attack}
 \cite{tsuzuku2019structural}. 
-Pour une fréquence non auto-conjuguée, une perturbation de type \textit{Single Fourier Attack}
-peut alors s'écrire sous la forme
+For a non-self-conjugate frequency, a \textit{Single Fourier Attack} perturbation
+can then be written as
 \begin{equation}
     \delta_{u,v}
     =
@@ -2456,129 +2456,129 @@ peut alors s'écrire sous la forme
     \label{eq:sfa_perturbation_fourier}
 \end{equation}
 
-Les coefficients $(1+i)$ et $(1-i)$ sont conjugués l'un de l'autre, et les deux directions de Fourier
-correspondent à des fréquences opposées. La perturbation respecte donc la condition
-\eqref{eq:contrainte_reelle_perturbation_fourier}, ce qui garantit qu'elle est réelle dans le domaine spatial.
+The coefficients $(1+i)$ and $(1-i)$ are conjugates of one another, and the two Fourier directions
+correspond to opposite frequencies. The perturbation therefore satisfies condition
+\eqref{eq:contrainte_reelle_perturbation_fourier}, guaranteeing that it is real-valued in the spatial domain.
 
-Le paramètre $\eta$ règle l'amplitude de la perturbation dans cette écriture théorique. En pratique,
-dans les expériences adversariales, on impose plutôt une borne sur les pixels, par exemple
+The parameter $\eta$ controls the perturbation amplitude in this theoretical expression. In practice,
+adversarial experiments instead impose a bound on the pixels, for example,
 \[
     \|\delta\|_\infty \leq \varepsilon.
 \]
 
-\section{Limites et portée du cadre théorique}
+\section{Limitations and Scope of the Theoretical Framework}
 
-Les résultats précédents donnent une explication mathématique claire de la place particulière
-des directions de Fourier dans les réseaux convolutionnels. Il faut toutefois préciser la portée
-exacte de ce résultat.
+The preceding results provide a clear mathematical explanation for the special role
+of Fourier directions in convolutional networks. However, the exact scope
+of this result must be specified.
 
-\subsection{Un résultat exact dans un cadre contrôlé}
+\subsection{An Exact Result in a Controlled Setting}
 
-Le raisonnement précédent est exact dans un cadre précis : convolutions circulaires, couches
-linéaires, et analyse de la sensibilité par valeurs singulières. Sous ces hypothèses, la
-factorisation donnée en \eqref{eq:factorisation_M} permet d'étudier le réseau fréquence par
-fréquence. Les directions singulières obtenues sont alors de la forme
+The preceding reasoning is exact in a specific setting: circular convolutions, linear
+layers, and sensitivity analysis using singular values. Under these assumptions, the
+factorization in \eqref{eq:factorisation_M} allows the network to be studied frequency by
+frequency. The resulting singular directions then have the form
 \[
     a \otimes q_{u,v},
 \]
-où $q_{u,v}$ décrit le motif spatial de Fourier et $a$ le mélange entre les canaux.
+where $q_{u,v}$ describes the spatial Fourier pattern and $a$ the channel mixing.
 
-Ce résultat doit donc être compris comme une propriété structurelle des convolutions, et non
-comme une description complète d'un CNN réel.
+This result should therefore be understood as a structural property of convolutions, rather than
+a complete description of an actual CNN.
 
-\subsection{Écart avec les architectures réelles}
+\subsection{Differences from Practical Architectures}
 
-Les architectures utilisées en pratique s'écartent de ce cadre exact. Le \textit{zero-padding}
-remplace souvent le padding circulaire, ce qui empêche une diagonalisation exacte par la base
-de Fourier. Les couches de réduction, comme les convolutions avec stride et l'\textit{average
-pooling}, introduisent un phénomène d'aliasing, déjà discuté dans la
-section~\ref{sec:couches-reduction-stride-pooling}.
+Architectures used in practice depart from this exact setting. \textit{Zero-padding}
+often replaces circular padding, preventing exact diagonalization by the Fourier
+basis. Downsampling layers, such as strided convolutions and \textit{average
+pooling}, introduce aliasing, as already discussed in
+Section~\ref{sec:couches-reduction-stride-pooling}.
 
-Enfin, les activations ReLU et le \textit{max-pooling} rendent le réseau non linéaire. Le réseau
-complet ne peut donc plus être vu comme un unique opérateur linéaire diagonalisable par Fourier.
-Cependant, ces opérations possèdent une structure linéaire par morceaux, ce qui permet de
-conserver une interprétation locale de l'analyse fréquentielle.
+Finally, ReLU activations and \textit{max-pooling} make the network nonlinear. The complete
+network can therefore no longer be viewed as a single linear operator diagonalizable in the Fourier basis.
+However, these operations have a piecewise linear structure, allowing
+a local interpretation of frequency analysis to be retained.
 
-\subsection{Portée locale de l'analyse fréquentielle dans les CNN non linéaires}
+\subsection{Local Scope of Frequency Analysis in Nonlinear CNNs}
 
-Dans cette sous-section, on considère que $f$ désigne l'application réalisée par le réseau
-jusqu'aux logits, avant l'opération finale d'\textit{argmax} qui n'est pas une application affine.
+In this subsection, $f$ denotes the mapping performed by the network
+up to the logits, before the final \textit{argmax} operation, which is not an affine map.
 
-Les réseaux utilisant des activations linéaires par morceaux, comme ReLU, peuvent être vus
-comme des fonctions affines par morceaux : l'espace d'entrée est découpé en régions, et sur
-chacune de ces régions, le réseau réalise une application affine~\cite{montufar2014number,balestriero2018spline}.
-Cette observation permet de préciser la portée de l'analyse fréquentielle dans les CNN réels :
-le réseau complet n'est pas globalement linéaire, mais son comportement peut être décrit
-localement par une application affine tant que les choix d'activation et de pooling restent fixés.
+Networks using piecewise linear activations, such as ReLU, can be viewed
+as piecewise affine functions: input space is divided into regions, and on
+each region the network performs an affine map~\cite{montufar2014number,balestriero2018spline}.
+This observation clarifies the scope of frequency analysis in practical CNNs:
+the complete network is not globally linear, but its behavior can be described
+locally by an affine map as long as the activation and pooling choices remain fixed.
 
-Ce qui m'amène à la proposition suivante :
+This leads me to the following proposition:
 
-\begin{proposition}[Linéarisation locale d'un CNN avec ReLU et max-pooling]
-Soit $f$ un réseau convolutionnel composé de couches convolutives, d'activations ReLU et de
-couches de max-pooling. Pour toute entrée $x$ ne se trouvant pas
-sur une frontière de changement de région linéaire, c'est-à-dire lorsque les signes des
-pré-activations ReLU sont non nuls et que les maxima sélectionnés dans les fenêtres de pooling
-sont uniques, il existe un voisinage $\mathcal{V}_x$ de $x$ tel que, pour tout
+\begin{proposition}[Local Linearization of a CNN with ReLU and Max-Pooling]
+Let $f$ be a convolutional network consisting of convolutional layers, ReLU activations, and
+max-pooling layers. For any input $x$ that does not lie
+on a boundary between linear regions, that is, when the ReLU
+pre-activations have nonzero signs and the selected maxima in the pooling windows
+are unique, there exists a neighborhood $\mathcal{V}_x$ of $x$ such that, for every
 $z \in \mathcal{V}_x$,
 \[
     f(z) = A_x z + b_x,
 \]
-où $A_x$ est une matrice dépendant de la région linéaire contenant $x$.
+where $A_x$ is a matrix depending on the linear region containing $x$.
 \end{proposition}
 
 \begin{proof}
-Une activation ReLU agit coordonnée par coordonnée selon
+A ReLU activation acts coordinate by coordinate according to
 \[
     \mathrm{ReLU}(t)=\max(t,0).
 \]
-Considérons une couche donnée du réseau, et notons $a_\ell$ son vecteur de pré-activations.
-Si le signe de chaque coordonnée de $a_\ell$ est fixé dans un voisinage de $x$, alors la ReLU
-agit comme une application linéaire sur cette région :
+Consider a given layer of the network, and let $a_\ell$ denote its pre-activation vector.
+If the sign of each coordinate of $a_\ell$ is fixed in a neighborhood of $x$, then ReLU
+acts as a linear map on this region:
 \[
     \mathrm{ReLU}(a_\ell)=D_\ell(x)a_\ell,
 \]
-où $D_\ell(x)$ est une matrice diagonale dont les coefficients valent $0$ ou $1$ selon que les
-coordonnées correspondantes sont désactivées ou activées.
+where $D_\ell(x)$ is a diagonal matrix whose entries are $0$ or $1$ depending on whether the
+corresponding coordinates are inactive or active.
 
-De même, une couche de max-pooling sélectionne, dans chaque fenêtre locale, la coordonnée
-de valeur maximale. Lorsque ce maximum est unique dans chaque fenêtre, les indices sélectionnés
-restent inchangés dans un voisinage suffisamment petit de $x$. Dans cette région, le max-pooling
-devient donc une application linéaire de sélection :
+Similarly, a max-pooling layer selects the coordinate with the largest value
+in each local window. When this maximum is unique in every window, the selected indices
+remain unchanged in a sufficiently small neighborhood of $x$. In this region, max-pooling
+therefore becomes a linear selection map:
 \[
     \mathrm{MaxPool}(z)=P_\ell(x)z,
 \]
-où $P_\ell(x)$ est une matrice de sélection dépendant de la région considérée. Cette matrice
-encode à la fois le choix des maxima locaux et la réduction spatiale induite par le pooling.
+where $P_\ell(x)$ is a selection matrix depending on the region under consideration. This matrix
+encodes both the selection of local maxima and the spatial reduction induced by pooling.
 
-Ainsi, tant que l'on reste dans une région où les signes des ReLU et les indices sélectionnés
-par le max-pooling ne changent pas, chaque opération du réseau est affine ou linéaire. La
-composition de ces opérations est donc elle-même affine. Il existe donc une matrice $A_x$ et un
-vecteur $b_x$ tels que
+Thus, as long as we remain in a region where the ReLU signs and the indices selected
+by max-pooling do not change, every network operation is affine or linear. The
+composition of these operations is therefore itself affine. There consequently exist a matrix $A_x$ and a
+vector $b_x$ such that
 \[
     f(z)=A_xz+b_x.
 \]
 
-Cette région locale peut être comprise comme l'ensemble des entrées pour lesquelles les masques 
-d'activation ReLU et les indices sélectionnés par les couches de max-pooling restent inchangés.
-\footnote{Une étude plus détaillée pourrait consister à définir explicitement cette région, 
-par exemple comme l'ensemble des points (z) vérifiant les mêmes signes de pré-activation 
-ReLU et les mêmes indices de maximum dans les fenêtres de pooling que l'entrée (x). 
-L'analyse de la taille de cette région donnerait une mesure plus précise de la validité 
-locale de la linéarisation, mais dépasse le cadre de ce travail.}
+This local region can be understood as the set of inputs for which the ReLU activation
+masks and the indices selected by the max-pooling layers remain unchanged.
+\footnote{A more detailed study could explicitly define this region,
+for example as the set of points (z) with the same ReLU pre-activation
+signs and indices of maxima in the pooling windows as the input (x).
+Analyzing the size of this region would provide a more precise measure of the local
+validity of the linearization, but lies beyond the scope of this work.}
 
 \end{proof}
 
-Cette proposition montre qu'un CNN composé de convolutions, de ReLU et de max-pooling est
-affine par morceaux. Autour d'une entrée $x$, tant que la perturbation ne change pas les masques d'activation ni les positions sélectionnées
-par le pooling, le comportement du réseau est exactement linéaire à un biais près. Ainsi, pour
-tout $x+\delta\in\mathcal{V}_x$, on a
+This proposition shows that a CNN consisting of convolutions, ReLU, and max-pooling is
+piecewise affine. Around an input $x$, as long as the perturbation changes neither the activation masks nor the positions selected
+by pooling, the network's behavior is exactly linear up to a bias. Thus, for
+every $x+\delta\in\mathcal{V}_x$,
 \[
     f(x+\delta)-f(x)=J_f(x)\delta.
 \]
 
-Dans une telle région, le jacobien peut être vu comme un produit de matrices associées aux
-différentes opérations du réseau. Par exemple, dans le cas schématique d'un empilement de blocs
-convolution--ReLU--pooling, on peut écrire
+In such a region, the Jacobian can be viewed as a product of matrices associated with
+the different network operations. For example, in the schematic case of a stack of
+convolution--ReLU--pooling blocks, we can write
 \[
     J_f(x)
     =
@@ -2586,34 +2586,34 @@ convolution--ReLU--pooling, on peut écrire
     \cdots
     P_1(x)D_1(x)M_1,
 \]
-où les matrices $M_\ell$ représentent les convolutions, les matrices $D_\ell(x)$ les masques
-ReLU, les matrices $P_\ell(x)$ les sélections induites par le max-pooling, et $W_L$ la partie
-linéaire finale.
+where the matrices $M_\ell$ represent convolutions, the matrices $D_\ell(x)$ the ReLU
+masks, the matrices $P_\ell(x)$ the selections induced by max-pooling, and $W_L$ the final
+linear part.
 
-Les matrices $D_\ell(x)$ et $P_\ell(x)$ dépendent de l'entrée. Elles empêchent donc, en général,
-une diagonalisation globale du réseau dans la base de Fourier. Une direction de Fourier n'est
-plus un vecteur propre exact de l'application complète.
+The matrices $D_\ell(x)$ and $P_\ell(x)$ depend on the input. In general, they therefore prevent
+global diagonalization of the network in the Fourier basis. A Fourier direction is
+no longer an exact eigenvector of the complete mapping.
 
-Cependant, les opérateurs convolutionnels $M_\ell$ restent présents dans le produit du
-jacobien. L'analyse fréquentielle conserve donc une portée locale : elle ne décrit plus exactement
-le réseau global, mais elle peut encore expliquer pourquoi certaines fréquences sont davantage
-amplifiées que d'autres autour de certaines entrées.
+However, the convolution operators $M_\ell$ remain present in the Jacobian
+product. Frequency analysis therefore retains a local scope: it no longer describes
+the global network exactly, but it can still explain why certain frequencies are more strongly
+amplified than others around particular inputs.
 
-On peut alors interpréter la \textit{Single Fourier Attack} comme une exploitation empirique de
-cette sensibilité locale. Cette lecture prolonge l'hypothèse de linéarité de Goodfellow et
+The \textit{Single Fourier Attack} can then be interpreted as empirically exploiting
+this local sensitivity. This interpretation extends the linearity hypothesis of Goodfellow et
 al.~\cite{goodfellow2015explaining}.
 
-\subsection{Portée réelle du résultat}
+\subsection{Actual Scope of the Result}
 
-Le cadre théorique ne permet pas de prédire exactement quelles fréquences seront les plus
-sensibles pour une architecture donnée. Cette sensibilité dépend aussi des poids appris, du jeu
-de données, du padding, des normalisations, des non-linéarités et des couches de réduction.
+The theoretical framework does not predict exactly which frequencies will be most
+sensitive for a given architecture. This sensitivity also depends on the learned weights, the
+dataset, padding, normalization, nonlinearities, and downsampling layers.
 
-En revanche, l'analyse explique pourquoi les directions de Fourier constituent des candidates
-naturelles : elles apparaissent directement dans l'étude linéaire des convolutions. Même dans un
-CNN non linéaire, cette structure peut rester partiellement visible à travers le jacobien local du
-modèle. La partie expérimentale servira donc à vérifier dans quelle mesure cette intuition reste
-observable en pratique.
+The analysis does, however, explain why Fourier directions are natural
+candidates: they arise directly in the linear study of convolutions. Even in a
+nonlinear CNN, this structure may remain partially visible through the model's local
+Jacobian. The experiments will therefore assess the extent to which this intuition remains
+observable in practice.
 
 % \section{Lien avec les perturbations adversariales universelles}
 
