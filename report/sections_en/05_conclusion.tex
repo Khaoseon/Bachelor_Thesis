@@ -1,0 +1,67 @@
+\chapter{Conclusion}
+
+Ce travail visait à explorer le lien intrinsèque entre la structure convolutionnelle des réseaux 
+de neurones (CNN) et l'émergence de directions de vulnérabilité privilégiées dans le domaine de 
+Fourier. Plus précisément, notre démarche a consisté à déterminer dans quelle mesure les propriétés 
+mathématiques inhérentes aux couches de convolution — au-delà des biais liés aux données ou au 
+processus d'entraînement — permettent d'expliquer l'existence de perturbations adversariales universelles.
+
+Pour ce faire, après avoir posé le cadre général des CNN et des attaques adversariales, nous 
+avons reconstruit et analysé le raisonnement théorique proposé par Tsuzuku et 
+Sato~\cite{tsuzuku2019structural}, en nous appuyant initialement sur un modèle linéaire simplifié.
+
+Afin de transposer ces résultats théoriques à l'architecture réelle des CNN, où la 
+présence d'activations ReLU et d'opérations de \textit{max-pooling} empêche toute 
+diagonalisation globale, nous avons introduit le concept de linéarisation locale via 
+l'analyse du jacobien du modèle. Cette extension théorique s'est avérée cruciale pour 
+justifier l'application de résultats fondés sur la linéarité à des architectures 
+fondamentalement non linéaires.
+
+L'ensemble de ces observations permet ainsi d'élucider le mécanisme par lequel une 
+perturbation fondée sur une unique fréquence de Fourier peut impacter si sévèrement 
+un réseau convolutionnel. L'amplification successive de cette perturbation au travers 
+des différentes couches offre une explication structurelle probante à l'existence des 
+perturbations universelles.
+
+Notre démarche expérimentale vient conforter cette intuition. Les \textit{heatmaps} 
+générées sur l'architecture \texttt{VGGSmallBN}, pour les jeux de données CIFAR-10 et 
+CIFAR-100, mettent en évidence une sensibilité fréquentielle fortement hétérogène. 
+Certaines fréquences engendrent en effet des \textit{fool ratios} significativement 
+supérieurs, démontrant que des perturbations d'amplitude égale n'ont pas un impact 
+équivalent : leur direction dans l'espace des entrées est un facteur déterminant. 
+La comparaison de ces résultats avec l'injection d'un bruit aléatoire de même amplitude 
+corrobore pleinement cette asymétrie.
+
+Par ailleurs, les résultats soulignent l'influence logique de la complexité de la tâche 
+de classification sur la robustesse du modèle. Le réseau s'avère globalement plus 
+vulnérable sur CIFAR-100 que sur CIFAR-10. Cette fragilité, examinée plus en détail 
+dans l'annexe~\ref{annexe:marges-logits}, est cohérente avec l'exigence accrue du problème : 
+face à un nombre de classes supérieur, les frontières de décision se multiplient et se 
+resserrent en raison de la proximité visuelle des catégories, permettant à une perturbation 
+de modifier plus aisément la prédiction. Néanmoins, en dépit de cette vulnérabilité accrue, 
+la sensibilité conserve une topologie structurée où certaines directions de Fourier demeurent prépondérantes.
+
+Il faut toutefois rester prudent sur la portée de ces résultats. Notre reproduction expérimentale 
+se limite à une architecture de type VGG et à des images de faible résolution. De plus, les 
+fréquences les plus sensibles ont été choisies à partir de \textit{heatmaps} calculées sur 
+l'ensemble de test. On ne peut donc pas affirmer que tous les réseaux convolutionnels présentent 
+exactement la même structure de vulnérabilité. En revanche, dans le cadre étudié ici, les directions 
+de Fourier apparaissent comme un outil pertinent pour mieux comprendre certaines sensibilités des CNN.
+
+Cette analyse peut aussi être reliée à la question de l'explicabilité des modèles. En effet, lorsqu'une 
+fréquence particulière modifie fortement les prédictions du réseau, cela indique que cette composante 
+de l'image joue un rôle important dans sa décision. Autrement dit, les fréquences sensibles ne 
+servent pas seulement à construire des perturbations adversariales : elles donnent aussi des indices 
+sur le type d'information que le réseau utilise pour classifier les images.
+
+Une suite possible à ce travail serait donc d'utiliser ces fréquences sensibles à la fois pour renforcer 
+les modèles et pour mieux les interpréter. Par exemple, elles pourraient servir à guider de nouvelles 
+formes d'augmentation de données, à limiter certaines amplifications internes, ou à comparer des 
+architectures plus robustes, notamment avec des mécanismes d'anti-aliasing.
+
+Cette direction permettrait de faire le lien entre trois aspects importants : la robustesse adversariale, 
+la résistance aux variations des données, et l'interprétation des décisions prises par le réseau. 
+L'objectif ne serait donc pas seulement de montrer que certaines fréquences de Fourier sont dangereuses 
+pour le modèle, mais aussi de comprendre comment leur identification peut aider à construire des réseaux 
+plus stables, plus robustes et plus compréhensibles.
+

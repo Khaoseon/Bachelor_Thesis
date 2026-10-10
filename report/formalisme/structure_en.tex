@@ -1,0 +1,72 @@
+% --- PACKAGES DE BASE ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{eso-pic}
+\usepackage{transparent}
+\usepackage{lmodern}
+\geometry{a4paper, total={160mm,245mm}, left=25mm, top=25mm}
+\usepackage{setspace}
+\setstretch{1.1}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subfig}
+\usepackage{amsmath, amssymb, amsfonts, mathrsfs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tcolorbox}
+\usepackage{longtable}
+\usepackage{enumitem} 
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{3d, angles, quotes, positioning, decorations.pathreplacing, matrix, fit, arrows.meta, calc}
+\usepackage{shorttoc}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue}
+\usepackage{booktabs}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+
+\renewcommand{\proofname}{Proof}
+
+\usepackage{graphicx}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\textit{\nouppercase{\leftmark}}}
+\fancyhead[R]{\thepage}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\huge\bfseries}{\thechapter\quad}{0pt}{}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\makeatletter
+\def\clap#1{\hbox to 0pt{\hss #1\hss}}
+\def\haut#1#2#3{\hbox to \hsize{\rlap{\vtop{\raggedright #1}}\hss \clap{\vtop{\centering #2}} \hss \llap{\vtop{\raggedleft #3}}}}
+\def\bas#1#2#3{\hbox to \hsize{\rlap{\vbox{\raggedright #1}}\hss \clap{\vbox{\centering #2}} \hss \llap{\vbox{\raggedleft #3}}}}
+
+\def\maketitle{%
+\thispagestyle{empty}
+\vbox to \vsize{%
+    \haut{}{\@blurb}{}
+    \vfill
+    \hrule height 2pt \vspace{0.4cm}
+    \begin{center}\huge \textbf{\@title}\end{center}
+    \vspace{0.2cm} \hrule height 2pt \vspace{2cm}
+    \begin{center}\Large \textit{Author:}\\ \textbf{\@author}\end{center}
+    \vspace{1cm}
+    \begin{center}\Large \textit{Supervisor:}\\ \textbf{Stephane Marchand Maillet}\end{center}
+    \vfill
+    \bas{}{\begin{flushright} \large \@location \end{flushright}}{}
+}\cleardoublepage}
+
+\def\location#1{\def\@location{#1}}
+\def\blurb#1{\def\@blurb{#1}}
+\makeatother

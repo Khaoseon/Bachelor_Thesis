@@ -1,0 +1,41 @@
+\documentclass[11pt,a4paper,oneside]{report}
+
+\input{formalisme/structure_en.tex}
+
+\title{Sensibilité structurelle des réseaux convolutionnels aux directions des bases de Fourier}
+\author{David Tournier Marrucho}
+\location{\today}
+\blurb{
+    \begin{center}
+        \includegraphics[width=4cm]{formalisme/logo_unige.png} \\[1.5em]
+        \textbf{Bachelor en Science Informatique} \\
+        UNIGE - Faculté des Sciences - Département d'Informatique
+    \end{center}
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\onehalfspacing
+\input{sections_en/Table_des_notations}
+\input{sections_en/01_introduction}
+\input{sections_en/02_contexte}
+\input{sections_en/03_theorie_fourier_convolution}
+\input{sections_en/04_reproduction_experimentale}
+\input{sections_en/05_conclusion}
+
+% \include{formalisme/AI-Statement}
+
+\appendix
+\input{appendices_en/representation_lineaire_matrice}
+\input{appendices_en/vecteurs_propres_diagonalisation}
+\input{appendices_en/Elements_complementaires.tex}
+
+\bibliographystyle{plain}
+\bibliography{formalisme/references}
+
+\end{document}
