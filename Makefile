@@ -45,9 +45,10 @@ SFA_FREQUENCY_J ?= 24
 
 help:
 	@printf "Main commands:\n"
-	@printf "  make report-fr            Compile the French report using existing figures.\n"
+	@printf "  make report               Compile the primary English report.\n"
 	@printf "  make report-en            Compile the English report using existing figures.\n"
-	@printf "  make reports              Compile both reports using existing figures.\n"
+	@printf "  make report-fr            Compile the original French report using existing figures.\n"
+	@printf "  make reports              Compile both reports.\n"
 	@printf "  make figures              Regenerate all final figures in outputs/figures.\n"
 	@printf "  make clean-figures        Remove only outputs/figures.\n"
 	@printf "  make report-from-scratch  Check artifacts, regenerate figures, and compile the PDF.\n"
@@ -71,13 +72,13 @@ check-figure-inputs:
 clean-figures:
 	rm -rf $(FIGURE_DIR)
 
-report pdf report-fr:
-	$(LATEXMK) -pdf -cd report/main.tex
-
-report-en:
+report pdf report-en:
 	$(LATEXMK) -pdf -cd report/main_en.tex
 
-reports: report-fr report-en
+report-fr:
+	$(LATEXMK) -pdf -cd report/main.tex
+
+reports: report-en report-fr
 
 report-from-scratch:
 	@if [ "$(CREATE_ENV)" = "true" ]; then \

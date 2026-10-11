@@ -2,14 +2,14 @@
 
 # Bachelor Project: CNN Robustness and Fourier Analysis
 
-This repository contains the code, experimental scripts, and final report for my Bachelor project on the frequency sensitivity of convolutional neural networks. It includes the original French thesis and an English translation.
+This repository contains the code, experimental scripts, and report for my Bachelor project on the frequency sensitivity of convolutional neural networks. The English report is the primary public version; the original French thesis is preserved as the original-language version.
 
 The project studies how directions from the Fourier basis can induce structured adversarial perturbations on CNNs trained on CIFAR-10 and CIFAR-100. It focuses on a targeted reproduction with convolutional models, frequency-sensitivity heatmaps, random-noise baselines, epsilon sweeps, and stability analyses.
 
 The compiled reports are available at:
 
-- [Original French report](report/main.pdf)
-- [English report](report/main_en.pdf)
+- **[English report](report/main_en.pdf)** — primary public version
+- [Original French report](report/main.pdf) — original-language version
 
 ## Research Question
 
@@ -93,7 +93,7 @@ Datasets supported by the code:
 
 ## Report
 
-The original report is written in French, with a separate English translation. Their entry points and language-specific sources are:
+The English report is the primary public version of this project. The original French thesis is preserved alongside it as the original-language version. Their entry points and language-specific sources are:
 
 ```text
 French:  report/main.tex     report/sections/     report/appendices/
