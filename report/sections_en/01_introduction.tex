@@ -1,0 +1,77 @@
+\chapter{Introduction}
+
+\textit{Convolutional neural networks}, often abbreviated as CNNs,
+are inspired by the vertebrate visual cortex and play a central role in computer vision.
+They are used to recognize objects, classify images, detect shapes, and automatically extract
+visual information.
+
+Their effectiveness stems largely from their ability to learn local patterns in
+images and progressively combine them into more abstract representations.
+
+\section*{Vulnerabilities and Adversarial Attacks}
+
+Despite their strong performance, these models can exhibit structural vulnerabilities.
+An image can be modified slightly, in a way that is imperceptible to the human eye,
+yet causes a substantial change in the network's prediction. This phenomenon is known as an
+\textbf{adversarial perturbation}~\cite{szegedy2014intriguing}.
+
+A particularly interesting aspect of these perturbations is that they can sometimes be universal. In some cases,
+a perturbation can be found that is based directly on the network's architecture
+(how it operates), exploiting a structural weakness in its internal workings.
+Once found, such a perturbation can be applied to any image,
+\textbf{regardless} of its content, and cause the model to make incorrect
+predictions on a substantial proportion of images. This is called a \textbf{universal} adversarial perturbation~\cite{moosavi2017universal}.
+
+The central question is then where this sensitivity comes from. One possible explanation
+attributes it to the training data or model optimization. In this work, we
+explore another possibility: \textbf{the very structure of convolutional networks}. CNNs
+rely on convolutional layers, which have specific mathematical properties.
+
+\section*{The Fourier Basis Approach}
+
+To investigate this question, we use the Fourier basis. An image can be
+described pixel by pixel, but it can also be decomposed into frequency patterns: slow variations,
+rapid oscillations, and horizontal, vertical, or diagonal patterns. These frequency patterns provide
+another way to describe the structures present in an image.
+
+Analyzing an image not only in the spatial domain, through its pixels, but
+also in the frequency domain therefore helps us understand which image components influence
+the network's behavior and which perturbation directions may become particularly sensitive.
+
+This connection is the starting point of the work by Tsuzuku and Sato~\cite{tsuzuku2019structural}, who show
+that certain convolutional networks are particularly sensitive to directions drawn from the Fourier basis.
+Their idea is that some universal adversarial perturbations can be better understood by studying
+how convolutional layers process frequencies.
+
+\begin{center}
+    \vspace{1em}
+    \rule{0.4\textwidth}{0.4pt} \\
+    \vspace{1em}
+    \begin{minipage}{0.85\textwidth}
+        \centering
+        \large \itshape
+        How does the convolutional architecture of CNNs give rise to preferred directions of vulnerability in
+        the Fourier domain, and to what extent does this structural sensitivity help us understand
+        the existence of universal adversarial perturbations?
+    \end{minipage} \\
+    \vspace{1em}
+    \rule{0.4\textwidth}{0.4pt}
+    \vspace{1em}
+\end{center}
+
+The goal of this report is to revisit this idea and reconstruct it step by step in greater detail,
+introducing the concepts needed to understand the results so that any reader with a basic knowledge
+of linear algebra and machine learning can understand the implications of this work.
+
+\section*{Report Organization}
+
+To address this question, the report is organized as follows:
+
+\begin{itemize}[label=\textbullet, leftmargin=1.5cm]
+    \item \textbf{Chapter 2:} General background on convolutional networks, robustness, and adversarial perturbations.
+    \item \textbf{Chapter 3:} Theoretical foundations connecting convolution and the Fourier basis.
+    In particular, this chapter shows how Fourier functions emerge naturally in linear analysis.
+    \item \textbf{Chapter 4:} Experimental reproduction, the protocol used, and frequency sensitivity \textit{heatmaps},
+    followed by a discussion of the results and limitations.
+    \item \textbf{Conclusion:} Summary of the findings and directions for future research.
+\end{itemize}

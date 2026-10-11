@@ -41,25 +41,27 @@ SFA_SWEEP_EPSILONS ?= 1/255 2/255 3/255 5/255 10/255
 SFA_FREQUENCY_I ?= 16
 SFA_FREQUENCY_J ?= 24
 
-.PHONY: help figures check-figure-inputs clean-figures report pdf report-from-scratch train-vgg heatmap-vgg random-vgg sfa-eps-sweep-vgg clean-pyc
+.PHONY: help figures check-figure-inputs clean-figures report pdf report-fr report-en reports report-from-scratch train-vgg heatmap-vgg random-vgg sfa-eps-sweep-vgg clean-pyc
 
 help:
-	@printf "Commandes principales:\n"
-	@printf "  make figures              Genere toutes les figures finales dans outputs/figures.\n"
-	@printf "  make clean-figures        Supprime uniquement outputs/figures.\n"
-	@printf "  make report | make pdf    Genere les figures puis compile report/main.tex.\n"
-	@printf "  make report-from-scratch  Verifie les artefacts, genere les figures, compile le PDF.\n"
-	@printf "\nArtefacts experimentaux utiles en cas de clone propre:\n"
-	@printf "  make train-vgg            Entraine le checkpoint VGGSmallBN final.\n"
-	@printf "  make heatmap-vgg          Genere la heatmap Fourier finale.\n"
-	@printf "  make random-vgg           Genere la baseline bruit aleatoire.\n"
-	@printf "  make sfa-eps-sweep-vgg    Genere le sweep epsilon SFA.\n"
+	@printf "Main commands:\n"
+	@printf "  make report-fr            Compile the French report using existing figures.\n"
+	@printf "  make report-en            Compile the English report using existing figures.\n"
+	@printf "  make reports              Compile both reports using existing figures.\n"
+	@printf "  make figures              Regenerate all final figures in outputs/figures.\n"
+	@printf "  make clean-figures        Remove only outputs/figures.\n"
+	@printf "  make report-from-scratch  Check artifacts, regenerate figures, and compile the PDF.\n"
+	@printf "\nExperimental artifacts useful for a clean clone:\n"
+	@printf "  make train-vgg            Train the final VGGSmallBN checkpoint.\n"
+	@printf "  make heatmap-vgg          Generate the final Fourier heatmap.\n"
+	@printf "  make random-vgg           Generate the random-noise baseline.\n"
+	@printf "  make sfa-eps-sweep-vgg    Generate the SFA epsilon sweep.\n"
 	@printf "\nVariables:\n"
-	@printf "  PYTHON=/chemin/python     Interpreteur Python a utiliser.\n"
-	@printf "  CREATE_ENV=true|false     Cree .venv avant report-from-scratch si true.\n"
-	@printf "  DATASET=cifar10|cifar100  Dataset pour les cibles d'artefacts.\n"
-	@printf "  FIGURE_DIR=outputs/figures Dossier de sortie des figures finales.\n"
-
+	@printf "  PYTHON=/path/to/python    Python interpreter to use.\n"
+	@printf "  CREATE_ENV=true|false     Create .venv before report-from-scratch when true.\n"
+	@printf "  DATASET=cifar10|cifar100  Dataset used by artifact-generation targets.\n"
+	@printf "  FIGURE_DIR=outputs/figures Output directory for final generated figures.\n"
+	
 figures:
 	$(PYTHON) scripts/build_report_figures.py --figure-dir $(FIGURE_DIR)
 
@@ -69,8 +71,13 @@ check-figure-inputs:
 clean-figures:
 	rm -rf $(FIGURE_DIR)
 
-report pdf: figures
+report pdf report-fr:
 	$(LATEXMK) -pdf -cd report/main.tex
+
+report-en:
+	$(LATEXMK) -pdf -cd report/main_en.tex
+
+reports: report-fr report-en
 
 report-from-scratch:
 	@if [ "$(CREATE_ENV)" = "true" ]; then \

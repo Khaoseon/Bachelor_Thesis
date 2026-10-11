@@ -1,0 +1,82 @@
+\chapter{Eigenvectors, Eigenvalues, and Diagonalization}
+\label{app:vecteurs-propres-diagonalisation}
+
+Let $V$ be a vector space of finite dimension $N$ over a field $\mathbb{K}$, and let
+\[
+f : V \rightarrow V
+\]
+be an endomorphism, that is, a linear map from $V$ to itself.
+
+A nonzero vector $v \in V$ is called an eigenvector of $f$ if there exists a scalar
+$\lambda \in \mathbb{K}$ such that
+\[
+f(v) = \lambda v.
+\]
+The scalar $\lambda$ is then called the eigenvalue associated with the eigenvector $v$.
+
+This relation means that the map $f$ does not change the direction of the vector $v$.
+It simply multiplies it by a scalar factor $\lambda$.
+
+Now consider a basis
+\[
+\mathcal{B} = (e_1,\dots,e_N)
+\]
+of $V$. As recalled in Appendix~\ref{app:representation-lineaire-matrice},
+the endomorphism $f$ can be represented by a matrix in this basis.
+
+A natural question is whether we can choose a basis in which the matrix
+of $f$ becomes particularly simple.
+
+The most favorable case is when the basis $\mathcal{B}$ consists entirely of
+eigenvectors of $f$. Suppose, therefore, that for every $i \in \{1,\dots,N\}$,
+\[
+f(e_i) = \lambda_i e_i.
+\]
+
+Then, in the basis $\mathcal{B}$, the coordinates of $f(e_i)$ are zero everywhere except at the
+$i$-th position:
+\[
+[f(e_i)]_{\mathcal{B}}
+=
+\begin{pmatrix}
+0 \\
+\vdots \\
+0 \\
+\lambda_i \\
+0 \\
+\vdots \\
+0
+\end{pmatrix}.
+\]
+
+The matrix representing $f$ in this basis therefore has these coordinate vectors as its columns.
+It is diagonal:
+\[
+A_{\mathcal{B}}
+=
+\begin{pmatrix}
+\lambda_1 & 0         & \cdots & 0 \\
+0         & \lambda_2 & \cdots & 0 \\
+\vdots    & \vdots    & \ddots & \vdots \\
+0         & 0         & \cdots & \lambda_N
+\end{pmatrix}.
+\]
+
+In other words, given a basis of eigenvectors, the action of $f$ becomes very simple:
+each coordinate is merely multiplied by the corresponding eigenvalue.
+
+Conversely, if the matrix of $f$ is diagonal in a given basis, then the vectors of that
+basis are eigenvectors of $f$.
+
+This observation explains why it is useful to find a basis of eigenvectors: in such a basis,
+the linear map no longer mixes directions. It acts independently on each direction
+of the basis.
+
+In this report, this idea is applied to circular convolution. The matrix associated
+with circular convolution has the Fourier vectors as eigenvectors. Thus, when
+the signal is expressed in the Fourier basis, the convolution operator becomes diagonal:
+\[
+C_h = F_N \Lambda_h F_N^{-1},
+\]
+where $F_N$ contains the Fourier vectors and $\Lambda_h$ is the diagonal matrix of the
+associated eigenvalues.

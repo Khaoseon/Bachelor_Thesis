@@ -1,0 +1,67 @@
+\chapter{Conclusion}
+
+This work aimed to explore the intrinsic connection between the convolutional structure of neural
+networks (CNNs) and the emergence of preferred directions of vulnerability in the
+Fourier domain. More specifically, our approach sought to determine the extent to which the
+mathematical properties inherent in convolutional layers, beyond biases associated with the data or
+the training process, can explain the existence of universal adversarial perturbations.
+
+To this end, after establishing the general framework of CNNs and adversarial attacks, we
+reconstructed and analyzed the theoretical reasoning proposed by Tsuzuku and
+Sato~\cite{tsuzuku2019structural}, initially using a simplified linear model.
+
+To extend these theoretical results to actual CNN architectures, where
+ReLU activations and \textit{max-pooling} operations prevent any
+global diagonalization, we introduced local linearization through
+analysis of the model's Jacobian. This theoretical extension proved crucial
+in justifying the application of results based on linearity to
+fundamentally nonlinear architectures.
+
+Together, these observations clarify the mechanism by which a
+perturbation based on a single Fourier frequency can affect a convolutional
+network so severely. The successive amplification of this perturbation through
+the different layers provides a compelling structural explanation for the existence of
+universal perturbations.
+
+Our experimental approach supports this intuition. The \textit{heatmaps}
+obtained for \texttt{VGGSmallBN} on the CIFAR-10 and
+CIFAR-100 datasets reveal highly heterogeneous frequency sensitivity.
+Certain frequencies produce significantly higher \textit{fool ratios},
+showing that perturbations of equal amplitude do not have an
+equivalent impact: their direction in input space is a determining factor.
+Comparison with random noise of the same amplitude
+fully corroborates this asymmetry.
+
+The results also highlight the expected influence of classification task
+complexity on model robustness. Overall, the network proves more
+vulnerable on CIFAR-100 than on CIFAR-10. This vulnerability, examined in greater detail
+in Appendix~\ref{annexe:marges-logits}, is consistent with the increased difficulty of the problem:
+with more classes, decision boundaries become more numerous and more closely
+spaced because of the visual similarity between categories, allowing a perturbation
+to change the prediction more easily. Nevertheless, despite this increased vulnerability,
+sensitivity retains a structured topology in which certain Fourier directions remain dominant.
+
+The scope of these results should nevertheless be interpreted cautiously. Our experimental reproduction
+is limited to a VGG-type architecture and low-resolution images. Moreover, the
+most sensitive frequencies were selected from \textit{heatmaps} computed on
+the test set. We therefore cannot claim that all convolutional networks exhibit
+exactly the same vulnerability structure. Within the setting studied here, however, Fourier
+directions appear to be a useful tool for better understanding certain sensitivities of CNNs.
+
+This analysis can also be related to model explainability. When a
+particular frequency substantially changes the network's predictions, this indicates that this component
+of the image plays an important role in its decision. In other words, sensitive frequencies
+are useful not only for constructing adversarial perturbations: they also provide clues
+about the type of information the network uses to classify images.
+
+A possible continuation of this work would therefore be to use these sensitive frequencies both to strengthen
+models and to interpret them more effectively. For example, they could guide new
+forms of data augmentation, limit certain internal amplifications, or support comparisons of
+more robust architectures, particularly those incorporating anti-aliasing mechanisms.
+
+This direction would connect three important aspects: adversarial robustness,
+resistance to variations in the data, and interpretation of the network's decisions.
+The goal would therefore be not only to show that certain Fourier frequencies are dangerous
+for the model, but also to understand how identifying them can help build networks
+that are more stable, more robust, and more interpretable.
+

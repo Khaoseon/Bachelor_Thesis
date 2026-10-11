@@ -1,0 +1,74 @@
+% !TeX root = ../main_en.tex
+
+\chapter*{Table of Notation}
+\addcontentsline{toc}{chapter}{Table of Notation}
+
+\renewcommand{\arraystretch}{1.35}
+\small
+
+\begin{longtable}{p{3cm} p{10.5cm}}
+    \hline
+    \textbf{Notation} & \textbf{Description} \\
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Notation} & \textbf{Description} \\
+    \hline
+    \endhead
+
+    \hline
+    \endfoot
+
+    \multicolumn{2}{l}{\textbf{Indices, Images, and Frequencies}} \\
+    \hline
+    $N$ & Spatial size of the images considered. In the CIFAR experiments, $N=32$. \\
+    $\mathbb{Z}_N$ & Set of indices $\{0,\dots,N-1\}$, interpreted modulo $N$. \\
+    $(m,n)$ & Spatial coordinates of a pixel: $m$ for the vertical direction and $n$ for the horizontal direction. \\
+    $(u,v)$ & 2D Fourier frequency: $u$ for the vertical frequency and $v$ for the horizontal frequency. \\
+    $w(u,v)$ & Flattened index associated with frequency $(u,v)$, used after vectorization. \\
+    $x$, $X$, $Y$ & Input image or signal, matrix-form input image, and output image. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Fourier Analysis and Convolution}} \\
+    \hline
+    $h$ & Convolution filter. \\
+    $h_{i,j}$ & Filter connecting input channel $j$ to output channel $i$. \\
+    $*$ & Circular convolution. \\
+    $\phi_k$ & 1D discrete Fourier vector associated with frequency $k$. \\
+    $\Phi_{u,v}$ & 2D Fourier mode associated with frequency $(u,v)$. \\
+    $F_N$ & 1D Fourier matrix whose columns are the vectors $\phi_k$. \\
+    $Q_N$ & Vectorized 2D Fourier matrix, defined by $Q_N = F_N \otimes F_N$. \\
+    $\operatorname{vec}(X)$ & Vectorization of image $X$ by stacking its columns. \\
+    $\lambda_f$, $\lambda^{i,j}_{u,v}$ & Eigenvalues associated with the action of a convolution filter on a Fourier frequency. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Matrix Representation of the Network}} \\
+    \hline
+    $I_r$ & Identity matrix of size $r \times r$. In particular, $I_N$ denotes the identity of size $N$, and $I_{m_k}$ the identity acting on the channels of layer $k$. \\
+    $M$ & Matrix representing a convolutional layer, or the global linear operator, depending on the context. \\
+    $M^{(k)}$ & Matrix representing the $k$-th convolutional layer from $\mathbb{C}^{m_kN^2}$ to $\mathbb{C}^{m_{k+1}N^2}$. \\
+    $m_{\mathrm{in}}$, $m_{\mathrm{out}}$ & Number of input and output channels of a convolutional layer considered in isolation. \\
+    $m_k$ & Number of input channels of layer $k$. \\
+    $L$ & Matrix describing channel mixing in the Fourier domain. \\
+    $G^{(w)}$ & Mixing matrix associated with a given frequency $w$. \\
+    $\sigma$ & Singular value, used to measure the amplification of an input direction. \\
+    $a$, $b$ & Right and left singular vectors associated with a given frequency. \\
+
+    \hline
+    \multicolumn{2}{l}{\textbf{Perturbations and Experimental Protocol}} \\
+    \hline
+    $\epsilon$ & Maximum permitted perturbation amplitude, measured in the $\ell_\infty$ norm. \\
+    $p_{u,v}$ & Real-valued spatial pattern constructed from frequency $(u,v)$. \\
+    $\delta_{u,v}$ & Normalized Fourier perturbation associated with frequency $(u,v)$. \\
+    $\tilde{x}$ & Perturbed image obtained by adding $\delta_{u,v}$ and then clipping to $[0,1]$. \\
+    $f$ & Classification model under study. \\
+    $\mathcal{D}$ & Set of images used for evaluation. \\
+    $\operatorname{FR}(u,v)$ & \textit{Fool ratio} obtained at frequency $(u,v)$, i.e., the proportion of predictions that change. \\
+    $H$ & Frequency sensitivity heatmap containing the values of $\operatorname{FR}(u,v)$. \\
+    $(u^\star,v^\star)$ & Frequency that maximizes the \textit{fool ratio}. \\
+
+    \hline
+\end{longtable}
+
+\normalsize
