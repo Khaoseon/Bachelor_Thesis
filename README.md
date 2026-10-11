@@ -1,4 +1,4 @@
-[![Report preview](report/preview.png)](report/main.pdf)
+[![Report preview](report/preview.png)](report/main_en.pdf)
 
 # Bachelor Project: CNN Robustness and Fourier Analysis
 
