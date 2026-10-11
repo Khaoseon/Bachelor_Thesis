@@ -2,13 +2,14 @@
 
 # Bachelor Project: CNN Robustness and Fourier Analysis
 
-This repository contains the code, experimental scripts, and final report for my Bachelor project on the frequency sensitivity of convolutional neural networks.
+This repository contains the code, experimental scripts, and final report for my Bachelor project on the frequency sensitivity of convolutional neural networks. It includes the original French thesis and an English translation.
 
 The project studies how directions from the Fourier basis can induce structured adversarial perturbations on CNNs trained on CIFAR-10 and CIFAR-100. It focuses on a targeted reproduction with convolutional models, frequency-sensitivity heatmaps, random-noise baselines, epsilon sweeps, and stability analyses.
 
-The compiled report is available at:
+The compiled reports are available at:
 
-[Read the full report](report/main.pdf)
+- [Original French report](report/main.pdf)
+- [English report](report/main_en.pdf)
 
 ## Research Question
 
@@ -25,11 +26,16 @@ The compiled report is available at:
 ├── report/
 │   ├── main.pdf
 │   ├── main.tex
+│   ├── main_en.pdf
+│   ├── main_en.tex
 │   ├── sections/
+│   ├── sections_en/
 │   ├── appendices/
+│   ├── appendices_en/
 │   ├── formalisme/
 │   └── figures/
 ├── scripts/
+│   ├── build_english_localized_figures.py
 │   ├── build_report_figures.py
 │   ├── evaluate_random_noise_baseline.py
 │   ├── evaluate_sfa_epsilon_sweep.py
@@ -87,17 +93,28 @@ Datasets supported by the code:
 
 ## Report
 
-The public report is tracked with its LaTeX sources and final figures:
+The original report is written in French, with a separate English translation. Their entry points and language-specific sources are:
 
 ```text
-report/main.tex
-report/main.pdf
-report/sections/
-report/appendices/
-report/figures/
+French:  report/main.tex     report/sections/     report/appendices/
+English: report/main_en.tex  report/sections_en/  report/appendices_en/
 ```
 
-The figures in `report/figures/` are the final figures used in the report. Intermediate artifacts used to produce them remain local in `outputs/` and are not published.
+The figures in `report/figures/` are the final committed figures used by the reports, so compiling either report does not rerun experiments. English-localized figures use the `_en.pdf` suffix where a separate asset is required. Intermediate artifacts used to produce the figures remain local in `outputs/` and are not published.
+
+Compiling the reports requires a working LaTeX installation, `latexmk`, and the LaTeX packages imported by the sources. These targets compile directly from the committed figures:
+
+```bash
+make report-fr
+make report-en
+make reports
+```
+
+Figure regeneration remains an explicit, separate operation:
+
+```bash
+make figures
+```
 
 ## Reproducibility Notes
 
