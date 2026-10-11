@@ -1075,7 +1075,7 @@ M = (I_{m_{d+1}} \otimes Q_N) L (I_{m_1} \otimes Q_N)^H
 \]
 where $L = L^{(d)} L^{(d-1)} \cdots L^{(1)}$ represents the accumulated channel mixing.
 
-\subsection{Frequency Independence and the Mixing Matrix $G^{(w)}$}
+\subsection{Frequency Decoupling and the Mixing Matrix $G^{(w)}$}
 
 Since each internal block of the matrices $L^{(k)}$ is diagonal, their product preserves this structure.
 Indeed, block $(i,j)$ of the product of two block matrices $L^{(2)}L^{(1)}$ is
@@ -2511,7 +2511,7 @@ This observation clarifies the scope of frequency analysis in practical CNNs:
 the complete network is not globally linear, but its behavior can be described
 locally by an affine map as long as the activation and pooling choices remain fixed.
 
-This leads me to the following proposition:
+This leads to the following proposition:
 
 \begin{proposition}[Local Linearization of a CNN with ReLU and Max-Pooling]
 Let $f$ be a convolutional network consisting of convolutional layers, ReLU activations, and
@@ -2603,7 +2603,7 @@ The \textit{Single Fourier Attack} can then be interpreted as empirically exploi
 this local sensitivity. This interpretation extends the linearity hypothesis of Goodfellow et
 al.~\cite{goodfellow2015explaining}.
 
-\subsection{Actual Scope of the Result}
+\subsection{Practical Scope of the Result}
 
 The theoretical framework does not predict exactly which frequencies will be most
 sensitive for a given architecture. This sensitivity also depends on the learned weights, the
