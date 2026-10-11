@@ -489,7 +489,7 @@ set to $\epsilon = 10/255$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/results/fourier_heatmap_comparison_vgg_cifar10_cifar100.pdf}
+    \includegraphics[width=0.7\textwidth]{figures/results/fourier_heatmap_comparison_vgg_cifar10_cifar100_en.pdf}
     \caption{Frequency sensitivity heatmaps for \texttt{VGGSmallBN} on CIFAR-10 and CIFAR-100.}
     \label{fig:heatmap_comparison_vgg_cifar10_cifar100}
 \end{figure}
@@ -515,7 +515,7 @@ localized in the frequency domain.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/results/fourier_fool_ratio_histogram_comparison_vgg_cifar10_cifar100.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/results/fourier_fool_ratio_histogram_comparison_vgg_cifar10_cifar100_en.pdf}
     \caption{Distribution of the \textit{fool ratios} obtained over all Fourier frequencies tested.}
     \label{fig:fool_ratio_histogram_comparison_vgg_cifar10_cifar100}
 \end{figure}
@@ -571,14 +571,14 @@ changes?
 
     \begin{minipage}{0.35\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/results/stability_cifar10_heatmap_mean.pdf}
+        \includegraphics[width=\textwidth]{figures/results/stability_cifar10_heatmap_mean_en.pdf}
         \vspace{-5pt} 
         {\small (a) CIFAR-10 -- mean \textit{fool ratio}}
     \end{minipage}
     \hspace{0.05\textwidth} 
     \begin{minipage}{0.35\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/results/stability_cifar10_heatmap_std.pdf}
+        \includegraphics[width=\textwidth]{figures/results/stability_cifar10_heatmap_std_en.pdf}
         \vspace{-5pt}
         {\small (b) CIFAR-10 -- standard deviation}
     \end{minipage}
@@ -587,14 +587,14 @@ changes?
 
     \begin{minipage}{0.35\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/results/stability_cifar100_heatmap_mean.pdf}
+        \includegraphics[width=\textwidth]{figures/results/stability_cifar100_heatmap_mean_en.pdf}
         \vspace{-5pt}
         {\small (c) CIFAR-100 -- mean \textit{fool ratio}}
     \end{minipage}
     \hspace{0.05\textwidth}
     \begin{minipage}{0.35\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/results/stability_cifar100_heatmap_std.pdf}
+        \includegraphics[width=\textwidth]{figures/results/stability_cifar100_heatmap_std_en.pdf}
         \vspace{-5pt}
         {\small (d) CIFAR-100 -- standard deviation}
     \end{minipage}
@@ -666,7 +666,7 @@ across the five seeds.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/results/layerwise_frequency_sensitivity_analysis_vgg_cifar10_multiseed.pdf}
+    \includegraphics[width=\textwidth]{figures/results/layerwise_frequency_sensitivity_analysis_vgg_cifar10_multiseed_en.pdf}
     \caption{Analysis of the internal amplification of Fourier perturbations across multiple seeds in
     \texttt{VGGSmallBN} on CIFAR-10. Left: frequencies are grouped by their
     mean \textit{fool ratio}. Bands indicate the standard error across the five seeds. Right:
@@ -713,7 +713,7 @@ noise.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/results/sfa_vs_random_comparison_vgg_cifar10_cifar100.pdf}
+    \includegraphics[width=0.85\textwidth]{figures/results/sfa_vs_random_comparison_vgg_cifar10_cifar100_en.pdf}
     \caption{Comparison between the best SFA direction and uniform random noise of the same amplitude
     $\epsilon = 10/255$. For random noise, the error bar represents the standard deviation over 100 trials.}
     \label{fig:sfa_vs_random_comparison_vgg_cifar10_cifar100}
@@ -753,7 +753,7 @@ $\epsilon$ over the following set:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{figures/results/sfa_epsilon_sweep_with_random_comparison_vgg_cifar10_cifar100.pdf}
+    \includegraphics[width=0.55\textwidth]{figures/results/sfa_epsilon_sweep_with_random_comparison_vgg_cifar10_cifar100_en.pdf}
     \caption{\textit{Fool ratio} as a function of amplitude $\epsilon$ for the best SFA frequency
     on each dataset.}
     \label{fig:sfa_epsilon_sweep_comparison_vgg_cifar10_cifar100}
@@ -768,7 +768,7 @@ to obtain a more substantial effect.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/results/sfa_visual_progression_vgg_cifar10.pdf}
+    \includegraphics[width=1\textwidth]{figures/results/sfa_visual_progression_vgg_cifar10_en.pdf}
     \caption{Visual progression of a \textit{Single Fourier Attack} on CIFAR-10 images.}
     \label{fig:sfa_visual_progression_vgg_cifar10}
 \end{figure}
